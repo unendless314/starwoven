@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --font-huninn: 'Huninn', 'Quicksand', 'Nunito', sans-serif;
+
+  --color-star-indigo-dark: #2E2A4F;
+  --color-star-indigo: #3D3A63;
+  --color-star-indigo-light: #4D4978;
+  --color-moon-blue: #8FB8E8;
+  --color-accent-blue: #80A9D4;
+  --color-light-bg: #EAF3F8;
+  --color-light-card: #FFFFFF;
+  --color-text-dark: #3A3A3A;
+  --color-text-muted: #6B7280;
+  --color-text-light: #F5F5F5;
+  --color-star-gold: #FCE794;
+}
+
+:root {
+  --star-dark: #2E2A4F;
+  --star-accent: #8FB8E8;
+  --bg-inner: #EAF3F8;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Huninn', 'Quicksand', 'Nunito', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

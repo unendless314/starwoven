@@ -1,0 +1,189 @@
+---
+import CTAButton from './CTAButton.astro';
+
+interface Props {
+  currentPath?: string;
+  theme?: 'dark' | 'light' | 'auto';
+}
+
+const { currentPath = Astro.url.pathname, theme = 'auto' } = Astro.props;
+
+// Determine if we should use dark navbar (for homepage) or light navbar (for inner pages)
+const isDark = theme === 'dark' || (theme === 'auto' && (currentPath === '/' || currentPath === ''));
+
+const normalizePath = (p: string) => {
+  const stripped = p.replace(/\/$/, '');
+  return stripped === '' ? '/' : stripped;
+};
+
+const normCurrent = normalizePath(currentPath);
+
+const navLinks = [
+  { name: '關於我們', href: '/about' },
+  { name: '命理服務', href: '/services' },
+  { name: '活動與課程', href: '/courses' },
+  { name: '靈氣與脈輪', href: '/reiki' },
+  { name: '光與阿卡西紀錄', href: '/akashic' },
+  { name: '星靈選物', href: '/shop' },
+];
+---
+
+<header class:list={[
+  'sticky top-0 z-50 w-full transition-colors duration-300 backdrop-blur-md',
+  isDark
+    ? 'bg-[#2E2A4F]/85 text-white border-b border-white/10'
+    : 'bg-[#EAF3F8]/90 text-[#3A3A3A] border-b border-[#80A9D4]/20 shadow-xs'
+]}>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center gap-3 group focus:outline-hidden">
+        <!-- Logo Icon (Moon & Twinkling Star) -->
+        <div class:list={[
+          'w-11 h-11 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shadow-xs',
+          isDark ? 'bg-white/10' : 'bg-[#80A9D4]/15'
+        ]}>
+          <svg class="w-7 h-7 text-[#8FB8E8]" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.89-5.4 1 1 0 0 0-1.04-1.42 8 8 0 1 1-7.66-13.18 1 1 0 0 0-.01-1.99c.01 0 .01 0 0 0z" />
+            <polygon points="19,4 20,7 23,8 20,9 19,12 18,9 15,8 18,7" class="text-[#FCE794] animate-pulse" />
+          </svg>
+        </div>
+        <div class="flex flex-col">
+          <span class:list={[
+            'text-xl font-bold tracking-wider leading-tight',
+            isDark ? 'text-white' : 'text-[#2E2A4F]'
+          ]}>
+            星靈織語
+          </span>
+          <span class:list={[
+            'text-xs tracking-widest uppercase font-light',
+            isDark ? 'text-white/70' : 'text-[#2E2A4F]/70'
+          ]}>
+            Starwoven
+          </span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden lg:flex items-center gap-6 xl:gap-8">
+        {navLinks.map((item) => {
+          const normHref = normalizePath(item.href);
+          const isActive = normCurrent === normHref || (normHref !== '/' && normCurrent.startsWith(normHref));
+          return (
+            <a
+              href={item.href}
+              class:list={[
+                'text-base transition-colors duration-150 py-1 relative tracking-wider',
+                isDark
+                  ? isActive ? 'text-white font-semibold after:bg-[#8FB8E8]' : 'text-white/85 hover:text-white after:bg-white/40'
+                  : isActive ? 'text-[#2E2A4F] font-semibold after:bg-[#80A9D4]' : 'text-[#3A3A3A] hover:text-[#2E2A4F] after:bg-[#80A9D4]/40',
+                isActive && 'after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full'
+              ]}
+            >
+              {item.name}
+            </a>
+          );
+        })}
+
+        <!-- CTA Button in Desktop Nav -->
+        <div class="ml-2">
+          <CTAButton variant="nav" text="預約諮詢" />
+        </div>
+      </nav>
+
+      <!-- Mobile Hamburger Button -->
+      <div class="flex lg:hidden items-center gap-3">
+        <CTAButton variant="nav" text="預約" class="text-xs px-3.5 py-1.5 sm:inline-flex" />
+        <button
+          id="mobile-menu-toggle"
+          type="button"
+          aria-label="切換選單"
+          aria-expanded="false"
+          class:list={[
+            'p-2 rounded-lg transition-colors focus:outline-hidden',
+            isDark ? 'text-white hover:bg-white/10' : 'text-[#3A3A3A] hover:bg-[#80A9D4]/15'
+          ]}
+        >
+          <svg id="menu-open-icon" class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="menu-close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mobile Dropdown Menu -->
+  <div
+    id="mobile-menu"
+    class:list={[
+      'hidden lg:hidden border-t px-6 py-5 transition-all duration-200',
+      isDark ? 'bg-[#2E2A4F] border-white/10 text-white' : 'bg-[#EAF3F8] border-[#80A9D4]/20 text-[#3A3A3A]'
+    ]}
+  >
+    <div class="flex flex-col space-y-3">
+      {navLinks.map((item) => {
+        const normHref = normalizePath(item.href);
+        const isActive = normCurrent === normHref || (normHref !== '/' && normCurrent.startsWith(normHref));
+        return (
+          <a
+            href={item.href}
+            class:list={[
+              'text-lg py-2 px-3 rounded-md transition-colors tracking-wide',
+              isActive
+                ? isDark ? 'bg-white/15 text-white font-semibold' : 'bg-[#80A9D4]/20 text-[#2E2A4F] font-semibold'
+                : isDark ? 'text-white/80 hover:bg-white/10 hover:text-white' : 'text-[#3A3A3A] hover:bg-[#80A9D4]/10 hover:text-[#2E2A4F]'
+            ]}
+          >
+            {item.name}
+          </a>
+        );
+      })}
+      <div class="pt-3 border-t border-current/10">
+        <CTAButton variant="primary" text="預約諮詢" class="w-full justify-center py-3" />
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  function setupMenu() {
+    const toggleBtn = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
+
+    if (!toggleBtn || !mobileMenu || !openIcon || !closeIcon) return;
+
+    toggleBtn.addEventListener('click', () => {
+      const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+      const willExpand = !isExpanded;
+      toggleBtn.setAttribute('aria-expanded', String(willExpand));
+      
+      mobileMenu.classList.toggle('hidden');
+      openIcon.classList.toggle('hidden');
+      closeIcon.classList.toggle('hidden');
+      document.body.classList.toggle('overflow-hidden', willExpand);
+    });
+
+    // Close menu when link is clicked
+    const links = mobileMenu.querySelectorAll('a');
+    links.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.add('hidden');
+        openIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        document.body.classList.remove('overflow-hidden');
+      });
+    });
+  }
+
+  // Setup on page load and on view transitions (if any)
+  setupMenu();
+  document.addEventListener('astro:page-load', setupMenu);
+</script>

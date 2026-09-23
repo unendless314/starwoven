@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTAButton from '../components/CTAButton.astro';
+
+const faqs = [
+  {
+    q: '學習光可以做什麼？',
+    a: '每個階段性所接觸的光都有不同的作用，有些光是舒緩情緒、有些則是讓思考更清晰，也有些是讓你燃起熱忱並更有行動力，還有甚至讓身體放鬆，減緩緊繃造成不適感。',
+  },
+  {
+    q: '什麼樣的人都可以學習光？',
+    a: '任何人都可以，每個人都能接觸光並且去感受光帶給你的改變！',
+  },
+  {
+    q: '我需要花多久的時間才能學完13道光？',
+    a: '每個禮拜都會教一道光，13道光差不多4個月，但想更完整至少要學習1年的時間。',
+  },
+  {
+    q: '學習完什麼時候可以對身邊的家人朋友使用？',
+    a: '當你開始學習光時就可以送給身邊的人了，光不是考試，隨時都能將祝福的能量傳遞出去。',
+  },
+];
+---
+
+<Layout
+  title="光與阿卡西紀錄 — 星靈織語 Starwoven"
+  description="光會推動人生中的轉變，阿卡西可以主動連結自己的狀態並且詢問指引。透過內外在覺察拾起自身力量，在探索生命路上不再孤單。"
+  theme="light"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header -->
+    <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] tracking-wider">光與阿卡西紀錄</h1>
+      <p class="text-base text-[#80A9D4] font-medium">授課講師：古古老師（助教：白白、凜月）</p>
+      <p class="text-lg text-[#3A3A3A]/80 leading-relaxed">
+        光會推動人生中的轉變，阿卡西可以主動連結自己的狀態並獲得指引。
+      </p>
+      <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
+    </header>
+
+    <!-- Core Philosophy -->
+    <section class="bg-white/80 p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/20 shadow-xs mb-16 space-y-4 text-base text-[#3A3A3A]/85 leading-relaxed">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-4">治癒別人，我們就獲得治癒</h2>
+      <p>
+        光與阿卡西可以加強我們對於覺察自我的能力。阿卡西是解讀能量的一種方式，透過不同的視角去解讀自己、他人、環境、物品與空間。
+      </p>
+      <p>
+        阿卡西紀錄結束後，傳遞光去淨化身體和空間的能量，甚至還能將光送給我們的內在小孩，與過去的自己和解。光與阿卡西的結合讓人能在面對生命變動時，拾起自己的力量並找到方向。
+      </p>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-8 text-center">常見問題（FAQ）</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {faqs.map((faq) => (
+          <div class="bg-white/80 p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs space-y-2">
+            <h3 class="text-base font-bold text-[#2E2A4F] flex items-start gap-2">
+              <span class="text-[#80A9D4] font-bold">Q：</span>
+              <span>{faq.q}</span>
+            </h3>
+            <p class="text-sm text-[#3A3A3A]/80 leading-relaxed pl-6">
+              {faq.a}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div class="text-center bg-white/60 p-8 rounded-3xl border border-[#80A9D4]/20 max-w-xl mx-auto space-y-4">
+      <h2 class="text-xl font-bold text-[#2E2A4F]">想深入探索光與阿卡西嗎？</h2>
+      <p class="text-sm text-[#3A3A3A]/80">歡迎加入 LINE 官方帳號私訊詢問課程與預約解讀。</p>
+      <CTAButton variant="primary" text="預約諮詢與解讀" />
+    </div>
+  </div>
+</Layout>

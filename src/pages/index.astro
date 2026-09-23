@@ -1,0 +1,706 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTAButton from '../components/CTAButton.astro';
+
+// ==========================================
+// 圖片素材路徑配置（ComfyUI 生圖或取得真圖後填入此處）
+// 例如：const imgTarotWorld = '/assets/home_a_tarot_world_v1.png';
+// 若為空字串，將自動顯示結構佔位框（Placeholder）
+// ==========================================
+
+// 【1. Hero 視覺區】
+const imgTarotWorld = '';       // 首頁-A：右側直式「塔羅世界牌」
+const imgZodiacWheel = '';      // 首頁-B：左下透視「十二星座星盤輪盤」
+const imgHeroBg = '';           // 首頁-L：底層星空圖（選填，留空時由 CSS 漸層與光斑渲染）
+
+// 【2. 四大核心服務卡片區】
+const imgServiceAstrology = ''; // 首頁-C：命理諮詢「行星與星環」
+const imgCourseBook = '';       // 首頁-D：課程學習「筆記本與筆」
+const imgEventCommunity = '';   // 首頁-E：實體活動「三人社群夥伴剪影」
+const imgShopCrystals = '';     // 首頁-F：星靈選物「水晶原礦與植物葉片」
+
+// 【3. 固定循環課程現場照片（待業主提供真圖）】
+const imgCourseMon = '';        // 首頁-G：每週一 阿卡西紀錄與光的課程活動照
+const imgCourseTue = '';        // 首頁-H：每週二 占星循環班活動照
+const imgCourseThu = '';        // 首頁-I：每週四 七脈輪與靈氣團練活動照
+const imgCourseFri = '';        // 首頁-J：每週五 托特塔羅循環班活動照
+const imgCourseSat = '';        // 首頁-K：每週六 生命靈數活動照
+
+// 【4. 課程優惠與報名連結（預設統一導向 Google 報名表單，各課程有獨立連結時可各別填入）】
+const defaultFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfRh7extf1LEiufBMWnV3cbecbuU8IfwqieEt1NT89rZi_h3w/viewform';
+const urlCourseAkashic = defaultFormUrl; // 1. 阿卡西紀錄與光的課程 連結
+const urlCourseReiki   = defaultFormUrl; // 2. 七脈輪與靈氣 連結
+const urlCourseThoth   = defaultFormUrl; // 3. 托特塔羅循環班 連結
+const urlCourseSignup  = defaultFormUrl; // 4. 點我進入報名連結
+
+// 課程資料陣列（資料驅動，方便未來隨時擴充與修改課表）
+const recurringCourses = [
+  {
+    id: 'mon',
+    day: '每週一',
+    title: '阿卡西紀錄\n與光的課程',
+    teacher: '古古老師',
+    time: '20:00-23:00',
+    price: '每堂500元',
+    image: imgCourseMon,
+    code: '首頁-G',
+  },
+  {
+    id: 'tue',
+    day: '每週二',
+    title: '占星循環班',
+    teacher: '皮皮老師',
+    time: '20:00-23:00',
+    price: '每堂500元',
+    image: imgCourseTue,
+    code: '首頁-H',
+  },
+  {
+    id: 'thu',
+    day: '每週四',
+    title: '七脈輪與\n靈氣團練',
+    teacher: '曉宇老師',
+    time: '20:00-23:00',
+    price: '每堂500元',
+    image: imgCourseThu,
+    code: '首頁-I',
+  },
+  {
+    id: 'fri',
+    day: '每週五',
+    title: '托特塔羅\n循環班',
+    teacher: '曉宇老師',
+    time: '20:00-23:00',
+    price: '每堂500元',
+    image: imgCourseFri,
+    code: '首頁-J',
+  },
+  {
+    id: 'sat',
+    day: '每週六',
+    title: '生命靈數',
+    teacher: '皮皮老師',
+    time: '20:00-23:00',
+    price: '每堂500元',
+    image: imgCourseSat,
+    code: '首頁-K',
+  },
+];
+
+// 【5. 命理師介紹圓框頭像（待提供現場真實照片）】
+const imgReaderYiEn = '';        // 首頁-M：以恩 圓形現場照片
+const imgReaderPiPi = '';        // 首頁-N：皮皮 圓形現場照片
+const imgReaderDaXin = '';       // 首頁-O：達心 圓形現場照片
+
+const featuredReaders = [
+  {
+    name: '以恩',
+    skills: [
+      '塔羅占卜、占星解析',
+      '塔羅占卜培訓',
+      '星靈織語創辦人',
+    ],
+    image: imgReaderYiEn,
+    code: '首頁-M',
+  },
+  {
+    name: '皮皮',
+    skills: [
+      '占星教學、師資培訓',
+      '占星解盤、生命靈數',
+      '星靈織語創辦人',
+    ],
+    image: imgReaderPiPi,
+    code: '首頁-N',
+  },
+  {
+    name: '達心',
+    skills: [
+      '八字命理、塔羅占卜',
+      '八字基礎教學',
+      '駐點占卜',
+    ],
+    image: imgReaderDaXin,
+    code: '首頁-O',
+  },
+];
+---
+
+<Layout
+  title="星靈織語 Starwoven — 每一段相遇，都是一場心靈的編織"
+  description="星靈織語提供命理與占卜服務，包含塔羅、占星、八字、靈氣調頻與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。"
+  theme="dark"
+>
+  <!-- ======================================================== -->
+  <!-- 1. Hero Section (主視覺區塊)                             -->
+  <!-- ======================================================== -->
+  <section
+    class="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-12 py-16 sm:py-24"
+    style={imgHeroBg ? `background-image: url('${imgHeroBg}'); background-size: cover; background-position: center;` : undefined}
+  >
+    <!-- 背景層：深靛藍漸層與星塵光斑粒子 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#241f42] via-[#2E2A4F] to-[#1d1a36] -z-20"></div>
+
+    <!-- 柔和星光與星塵光斑 (Bokeh / Dust) -->
+    <div class="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#8FB8E8]/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 right-1/4 w-[28rem] h-[28rem] bg-[#a29bfe]/10 rounded-full blur-3xl"></div>
+
+      <!-- 散落的光斑微粒 -->
+      <span class="absolute top-[12%] left-[18%] w-1.5 h-1.5 bg-white/70 rounded-full blur-[0.5px] animate-pulse"></span>
+      <span class="absolute top-[28%] left-[45%] w-2 h-2 bg-white/60 rounded-full blur-[1px]"></span>
+      <span class="absolute top-[15%] right-[25%] w-1.5 h-1.5 bg-[#FCE794]/80 rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[42%] right-[15%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1.5px]"></span>
+      <span class="absolute bottom-[30%] left-[22%] w-2 h-2 bg-white/50 rounded-full blur-[1px]"></span>
+      <span class="absolute bottom-[18%] left-[40%] w-3 h-3 bg-white/30 rounded-full blur-[2px]"></span>
+      <span class="absolute bottom-[25%] right-[32%] w-1.5 h-1.5 bg-[#8FB8E8]/80 rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[65%] right-[8%] w-2 h-2 bg-white/60 rounded-full blur-[1px]"></span>
+    </div>
+
+    <!-- Hero 主容器：左右兩欄佈局（桌機左右並排、手機垂直排列） -->
+    <div class="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center z-10">
+      
+      <!-- 左側欄位：文字位置 + 圖片位置 B (十二星座星盤) -->
+      <div class="lg:col-span-7 flex flex-col justify-between space-y-12 text-left">
+        
+        <!-- 主要文字區塊 -->
+        <div class="space-y-6 max-w-2xl">
+          <h1 class="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-wide sm:tracking-wider text-white leading-[1.25] font-huninn">
+            每一段相遇，<br />
+            都是一場心靈的編織。
+          </h1>
+
+          <p class="text-base sm:text-lg lg:text-xl text-white/85 font-light leading-relaxed tracking-wide pt-1">
+            以命理與占卜陪伴每一位來到這裡的人，<br class="hidden sm:inline" />
+            透過交流與練習，陪你從理解走向實踐。
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4 pt-2">
+            <CTAButton variant="hero" text="預約諮詢" />
+            <a
+              href="/services"
+              class="inline-flex items-center justify-center px-7 py-3 rounded-full border border-white/30 text-white hover:bg-white/10 transition-all duration-300 text-base tracking-wider backdrop-blur-xs"
+            >
+              探索命理服務
+            </a>
+          </div>
+        </div>
+
+        <!-- 圖片位置 B：十二星座透視星盤輪盤 -->
+        <div class="pt-4 sm:pt-6">
+          {imgZodiacWheel ? (
+            <div class="relative max-w-[420px] transition-transform hover:scale-105 duration-500">
+              <img
+                src={imgZodiacWheel}
+                alt="十二星座星盤輪盤"
+                class="w-full h-auto object-contain drop-shadow-[0_10px_35px_rgba(0,0,0,0.5)] -rotate-12"
+              />
+            </div>
+          ) : (
+            <div class="relative w-full max-w-[380px] sm:max-w-[420px] aspect-[16/10] rounded-3xl border-2 border-dashed border-[#8FB8E8]/40 bg-white/5 backdrop-blur-xs p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all hover:border-[#8FB8E8]/70 group">
+              <div class="w-20 h-20 rounded-full border border-[#8FB8E8]/30 flex items-center justify-center mb-3 group-hover:rotate-45 transition-transform duration-700">
+                <svg class="w-10 h-10 text-[#8FB8E8]/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                  <path d="M2 12h20" />
+                </svg>
+              </div>
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wider bg-[#8FB8E8]/20 text-[#8FB8E8] border border-[#8FB8E8]/30 mb-2">
+                首頁-B
+              </span>
+              <h3 class="text-sm sm:text-base font-medium text-white tracking-wider">
+                十二星座透視星盤輪盤
+              </h3>
+              <p class="text-xs text-white/60 mt-1">
+                建議規格：白線向量去背 PNG / SVG（微透視角度）
+              </p>
+            </div>
+          )}
+        </div>
+
+      </div>
+
+      <!-- 右側欄位：圖片位置 A (塔羅牌世界牌主視覺) -->
+      <div class="lg:col-span-5 flex justify-center items-center">
+        {imgTarotWorld ? (
+          <div class="relative w-full max-w-[460px] transition-transform hover:scale-102 duration-500">
+            <img
+              src={imgTarotWorld}
+              alt="塔羅牌・世界牌 (The World)"
+              class="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.6)]"
+            />
+          </div>
+        ) : (
+          <div class="relative w-full max-w-[360px] sm:max-w-[400px] aspect-[3/4] sm:aspect-[4/5] rounded-3xl border-2 border-dashed border-white/35 bg-white/5 backdrop-blur-xs p-8 flex flex-col items-center justify-center text-center shadow-[0_0_60px_rgba(143,184,232,0.12)] hover:border-white/60 transition-all group">
+            <div class="w-32 h-44 rounded-[2.5rem] border border-[#8FB8E8]/40 flex flex-col items-center justify-center mb-6 relative group-hover:scale-105 transition-transform duration-500">
+              <span class="absolute -top-2 -left-2 w-3 h-3 rounded-full bg-[#8FB8E8]/40"></span>
+              <span class="absolute -top-2 -right-2 w-3 h-3 rounded-full bg-[#8FB8E8]/40"></span>
+              <span class="absolute -bottom-2 -left-2 w-3 h-3 rounded-full bg-[#8FB8E8]/40"></span>
+              <span class="absolute -bottom-2 -right-2 w-3 h-3 rounded-full bg-[#8FB8E8]/40"></span>
+
+              <svg class="w-14 h-14 text-[#8FB8E8]/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z" />
+              </svg>
+            </div>
+
+            <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold tracking-wider bg-[#FCE794]/20 text-[#FCE794] border border-[#FCE794]/30 mb-2">
+              首頁-A（主視覺）
+            </span>
+            <h2 class="text-base sm:text-lg font-medium text-white tracking-widest">
+              塔羅牌・世界牌 (The World)
+            </h2>
+            <p class="text-xs text-white/65 mt-1.5 leading-relaxed max-w-[260px]">
+              手繪白線圖騰、花環舞者與四大元素獸<br />
+              建議規格：垂直比例去背 PNG / SVG
+            </p>
+          </div>
+        )}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 2. 四大核心服務探索區 (精準還原截圖四張卡片)              -->
+  <!-- ======================================================== -->
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#1d1a36] border-t border-white/10 overflow-hidden">
+    <!-- 星空光斑延伸 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#1d1a36] via-[#252140] to-[#1c1834] -z-20"></div>
+    <div class="absolute inset-0 pointer-events-none -z-10">
+      <span class="absolute top-[20%] left-[10%] w-2 h-2 bg-white/40 rounded-full blur-[1px]"></span>
+      <span class="absolute top-[45%] left-[85%] w-1.5 h-1.5 bg-[#FCE794]/60 rounded-full blur-[0.5px]"></span>
+      <span class="absolute bottom-[25%] left-[30%] w-2.5 h-2.5 bg-white/30 rounded-full blur-[1.5px]"></span>
+      <span class="absolute bottom-[15%] right-[20%] w-2 h-2 bg-[#8FB8E8]/50 rounded-full blur-[1px]"></span>
+    </div>
+
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <!-- 標題與副標 -->
+      <div class="text-center space-y-4 max-w-4xl mx-auto">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn leading-tight">
+          星靈織語，陪你一起探索生命的可能
+        </h2>
+        <p class="text-base sm:text-lg lg:text-xl text-white/80 font-light leading-relaxed tracking-wide">
+          每一場身心靈、命理活動，幫助你在迷惘時刻找到方向，在探索路上不再孤單。
+        </p>
+      </div>
+
+      <!-- 四大核心服務卡片 Grid（桌機4欄、平板2欄、手機1欄） -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+        
+        <!-- 卡片 1: 命理諮詢 (首頁-C：行星與星環) -->
+        <a
+          href="/services"
+          class="group block bg-[#EAF0F6] rounded-[2.5rem] p-8 sm:p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center border border-white/60"
+        >
+          <div class="h-28 flex items-center justify-center mb-6">
+            {imgServiceAstrology ? (
+              <img
+                src={imgServiceAstrology}
+                alt="命理諮詢 行星與星環插圖"
+                class="max-h-24 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div class="w-full h-full rounded-2xl border-2 border-dashed border-[#8FB8E8]/60 bg-white/60 flex flex-col items-center justify-center p-2 group-hover:border-[#2E2A4F]/50 transition-colors">
+                <svg class="w-10 h-10 text-[#2E2A4F]/70 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <circle cx="12" cy="12" r="6" />
+                  <path d="M2.5 12c0-3 4-6 9.5-6s9.5 3 9.5 6-4 6-9.5 6-9.5-3-9.5-6z" transform="rotate(-20 12 12)" />
+                </svg>
+                <span class="text-[11px] font-semibold text-[#2E2A4F]/80 tracking-wider">
+                  首頁-C：行星與星環
+                </span>
+              </div>
+            )}
+          </div>
+
+          <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] mb-6 font-huninn tracking-wider">
+            命理諮詢
+          </h3>
+
+          <ul class="space-y-3.5 text-lg sm:text-xl text-[#3A3A3A] font-huninn tracking-widest leading-relaxed">
+            <li>塔羅占卜</li>
+            <li>占星解析</li>
+            <li>八字命理</li>
+            <li>生命靈數</li>
+          </ul>
+        </a>
+
+        <!-- 卡片 2: 課程學習 (首頁-D：筆記本與筆) -->
+        <a
+          href="/courses"
+          class="group block bg-[#EAF0F6] rounded-[2.5rem] p-8 sm:p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center border border-white/60"
+        >
+          <div class="h-28 flex items-center justify-center mb-6">
+            {imgCourseBook ? (
+              <img
+                src={imgCourseBook}
+                alt="課程學習 筆記本與筆插圖"
+                class="max-h-24 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div class="w-full h-full rounded-2xl border-2 border-dashed border-[#8FB8E8]/60 bg-white/60 flex flex-col items-center justify-center p-2 group-hover:border-[#2E2A4F]/50 transition-colors">
+                <svg class="w-10 h-10 text-[#2E2A4F]/70 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                  <line x1="9" y1="7" x2="15" y2="7" />
+                  <line x1="9" y1="11" x2="13" y2="11" />
+                </svg>
+                <span class="text-[11px] font-semibold text-[#2E2A4F]/80 tracking-wider">
+                  首頁-D：筆記本與筆
+                </span>
+              </div>
+            )}
+          </div>
+
+          <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] mb-6 font-huninn tracking-wider">
+            課程學習
+          </h3>
+
+          <ul class="space-y-3.5 text-lg sm:text-xl text-[#3A3A3A] font-huninn tracking-widest leading-relaxed">
+            <li>占星基礎</li>
+            <li>塔羅基礎</li>
+            <li>體驗課程</li>
+            <li>主題工作坊</li>
+          </ul>
+        </a>
+
+        <!-- 卡片 3: 實體活動 (首頁-E：社群夥伴剪影) -->
+        <a
+          href="/courses"
+          class="group block bg-[#EAF0F6] rounded-[2.5rem] p-8 sm:p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center border border-white/60"
+        >
+          <div class="h-28 flex items-center justify-center mb-6">
+            {imgEventCommunity ? (
+              <img
+                src={imgEventCommunity}
+                alt="實體活動 社群夥伴剪影"
+                class="max-h-24 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div class="w-full h-full rounded-2xl border-2 border-dashed border-[#8FB8E8]/60 bg-white/60 flex flex-col items-center justify-center p-2 group-hover:border-[#2E2A4F]/50 transition-colors">
+                <svg class="w-10 h-10 text-[#2E2A4F]/70 mb-1" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                  <path d="M18 11c1.66 0 3-1.34 3-3s-1.34-3-3-3c-.33 0-.64.06-.93.16 1.18.81 1.93 2.18 1.93 3.84 0 1.65-.75 3.02-1.93 3.83.29.11.6.17.93.17zm1.5 3.5c1.45.69 2.5 1.83 2.5 3.5v2h3v-2c0-2.22-3.6-3.35-5.5-3.5z" opacity="0.6" />
+                  <path d="M6 11c1.66 0 3-1.34 3-3S7.66 5 6 5c-.33 0-.64.06-.93.16C6.25 5.97 7 7.34 7 9c0 1.65-.75 3.02-1.93 3.83.29.11.6.17.93.17zm-1.5 3.5c-1.45.69-2.5 1.83-2.5 3.5v2H-1v-2c0-2.22 3.6-3.35 5.5-3.5z" opacity="0.6" />
+                </svg>
+                <span class="text-[11px] font-semibold text-[#2E2A4F]/80 tracking-wider">
+                  首頁-E：社群夥伴剪影
+                </span>
+              </div>
+            )}
+          </div>
+
+          <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] mb-6 font-huninn tracking-wider">
+            實體活動
+          </h3>
+
+          <ul class="space-y-3.5 text-lg sm:text-xl text-[#3A3A3A] font-huninn tracking-widest leading-relaxed">
+            <li>星靈聚會</li>
+            <li>占卜交流會</li>
+            <li>命理交流會</li>
+            <li>靈氣交流會</li>
+          </ul>
+        </a>
+
+        <!-- 卡片 4: 星靈選物 (首頁-F：水晶與植物) -->
+        <a
+          href="/shop"
+          class="group block bg-[#EAF0F6] rounded-[2.5rem] p-8 sm:p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center border border-white/60"
+        >
+          <div class="h-28 flex items-center justify-center mb-6">
+            {imgShopCrystals ? (
+              <img
+                src={imgShopCrystals}
+                alt="星靈選物 水晶原礦與植物葉片"
+                class="max-h-24 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div class="w-full h-full rounded-2xl border-2 border-dashed border-[#8FB8E8]/60 bg-white/60 flex flex-col items-center justify-center p-2 group-hover:border-[#2E2A4F]/50 transition-colors">
+                <svg class="w-10 h-10 text-[#2E2A4F]/70 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
+                  <path d="M12 21L8 9h8l-4 12z" />
+                  <path d="M2 9h20" />
+                </svg>
+                <span class="text-[11px] font-semibold text-[#2E2A4F]/80 tracking-wider">
+                  首頁-F：水晶與植物
+                </span>
+              </div>
+            )}
+          </div>
+
+          <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] mb-6 font-huninn tracking-wider">
+            星靈選物
+          </h3>
+
+          <ul class="space-y-3.5 text-lg sm:text-xl text-[#3A3A3A] font-huninn tracking-widest leading-relaxed">
+            <li>二手牌卡</li>
+            <li>礦石水晶</li>
+            <li>手作品</li>
+            <li>寄售商品</li>
+          </ul>
+        </a>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 3. 固定循環課程預告 (精準還原截圖五門課卡片)              -->
+  <!-- ======================================================== -->
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#18152e] border-t border-white/10 overflow-hidden">
+    <!-- 星空光斑微光延伸 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#1c1834] via-[#221d3d] to-[#17142b] -z-20"></div>
+    <div class="absolute inset-0 pointer-events-none -z-10">
+      <span class="absolute top-[30%] right-[12%] w-2 h-2 bg-[#FCE794]/50 rounded-full blur-[0.5px]"></span>
+      <span class="absolute bottom-[20%] left-[15%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1px]"></span>
+      <span class="absolute top-[60%] left-[45%] w-1.5 h-1.5 bg-[#8FB8E8]/60 rounded-full blur-[0.5px]"></span>
+    </div>
+
+    <div class="max-w-7xl mx-auto space-y-12">
+      
+      <!-- 標題與「查看其他交流活動」導航按鈕 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn">
+          固定循環課程
+        </h2>
+        <a
+          href="/courses"
+          class="inline-flex items-center gap-2.5 self-start sm:self-auto bg-[#DFECF3] hover:bg-white text-[#2E2A4F] px-6 py-2.5 rounded-full font-huninn font-bold tracking-wider text-base sm:text-lg shadow-sm hover:shadow-md transition-all duration-300 group"
+        >
+          <span>查看其他交流活動</span>
+          <span class="group-hover:translate-x-1 transition-transform">➔</span>
+        </a>
+      </div>
+
+      <!-- 五門課程卡片 Grid（桌機 5 欄、平板 3 欄、手機 1~2 欄） -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6">
+        {recurringCourses.map((course) => (
+          <div class="group relative flex flex-col bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100">
+            
+            <!-- 1. 照片插槽（含左上角懸掛日期書籤緞帶） -->
+            <div class="relative w-full aspect-[4/5] bg-[#E2E8F0] overflow-hidden flex items-center justify-center">
+              
+              <!-- 懸掛日期書籤緞帶 (Ribbon Badge) -->
+              <div class="absolute top-0 left-3 sm:left-4 z-10 bg-[#383359] text-white px-3 sm:px-3.5 pt-3 pb-3.5 rounded-b-2xl shadow-md text-sm sm:text-base font-huninn font-bold tracking-wider text-center">
+                {course.day}
+              </div>
+
+              <!-- 照片或佔位框 -->
+              {course.image ? (
+                <img
+                  src={course.image}
+                  alt={`${course.day} ${course.title}`}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <div class="w-full h-full p-4 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 bg-gray-50/80 group-hover:bg-gray-100/80 transition-colors">
+                  <svg class="w-10 h-10 text-gray-400 mb-2 mt-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                    <circle cx="8.5" cy="8.5" r="1.5" />
+                    <polyline points="21 15 16 10 5 21" />
+                  </svg>
+                  <span class="text-xs font-semibold text-[#2E2A4F] bg-white px-2 py-0.5 rounded-full border border-gray-200 shadow-xs mb-1">
+                    {course.code}
+                  </span>
+                  <p class="text-[11px] text-gray-500 leading-tight">
+                    活動現場照片<br />
+                    <span class="text-[10px] text-gray-400">(待提供真實圖檔)</span>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <!-- 2. 下半部資訊卡片區 -->
+            <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between text-center space-y-3 bg-white">
+              
+              <!-- 課程名稱 -->
+              <h3 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] font-huninn tracking-wider min-h-[3.5rem] flex items-center justify-center whitespace-pre-line leading-snug">
+                {course.title}
+              </h3>
+
+              <!-- 講師名稱 -->
+              <p class="text-base sm:text-lg text-[#3A3A3A]/85 font-huninn tracking-wider">
+                {course.teacher}
+              </p>
+
+              <!-- 上課時間 -->
+              <p class="text-sm sm:text-base text-[#3A3A3A]/70 font-medium tracking-wide">
+                {course.time}
+              </p>
+
+              <!-- 費用 -->
+              <div class="pt-3 border-t border-gray-100">
+                <span class="text-base sm:text-lg font-bold text-[#2E2A4F] font-huninn tracking-wider">
+                  {course.price}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+        ))}
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- 課程優惠說明與報名連結區 (左右雙欄，還原截圖)            -->
+      <!-- ======================================================== -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-10 sm:pt-14">
+        
+        <!-- 左欄：課程收費與優惠說明白底卡片 -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-gray-100 flex flex-col justify-between space-y-8">
+          
+          <!-- 上部優惠文字 -->
+          <div class="space-y-2.5 font-huninn text-[#2E2A4F] text-lg sm:text-xl font-medium tracking-wider leading-relaxed">
+            <p>每堂課程完整 3 小時均價 500 元</p>
+            <p>同一系列課程包 4 堂優惠 1800 元</p>
+            <p class="text-[#3A3A3A]/80 text-base sm:text-lg">詳情可私訊官方 LINE 詢問</p>
+          </div>
+
+          <!-- 下部團練說明 + 官方 LINE 向量按鈕 -->
+          <div class="flex items-center justify-between gap-4 pt-6 border-t border-gray-100">
+            <div class="font-huninn text-[#2E2A4F] text-base sm:text-lg tracking-wider leading-relaxed">
+              <p>可單獨報名參加團練，</p>
+              <p>惟不適用包堂優惠。</p>
+            </div>
+
+            <!-- LINE 官方綠色向量按鈕（高畫質 SVG，點擊直達官方 LINE） -->
+            <a
+              href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="前往官方 LINE 預約諮詢"
+              title="前往官方 LINE 諮詢"
+              class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] p-3.5 flex items-center justify-center text-white shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 group"
+            >
+              <svg class="w-full h-full fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+              </svg>
+            </a>
+          </div>
+
+        </div>
+
+        <!-- 右欄：4 顆報名與介紹連結按鈕（暫時統一連至 Google 表單） -->
+        <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
+          <a
+            href={urlCourseAkashic}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
+          >
+            阿卡西紀錄與光的課程
+          </a>
+
+          <a
+            href={urlCourseReiki}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
+          >
+            七脈輪與靈氣
+          </a>
+
+          <a
+            href={urlCourseThoth}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
+          >
+            托特塔羅循環班
+          </a>
+
+          <a
+            href={urlCourseSignup}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
+          >
+            點我進入報名連結
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ======================================================== -->
+  <!-- 4. 命理師介紹 (精準還原截圖 圓框人像卡片)                    -->
+  <!-- ======================================================== -->
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#18152e] border-t border-white/10 overflow-hidden">
+    <!-- 星空背景微光延伸與星塵光斑 -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#17142b] via-[#201b3a] to-[#151226] -z-20"></div>
+    <div class="absolute inset-0 pointer-events-none -z-10">
+      <span class="absolute top-[20%] left-[8%] w-2 h-2 bg-[#FCE794]/40 rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[45%] right-[12%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1px]"></span>
+      <span class="absolute bottom-[25%] left-[25%] w-1.5 h-1.5 bg-[#8FB8E8]/50 rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[75%] right-[28%] w-2 h-2 bg-white/30 rounded-full blur-[1px]"></span>
+    </div>
+
+    <div class="max-w-7xl mx-auto space-y-16">
+      
+      <!-- 標題與「查看星靈織語成員」導航按鈕 -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn">
+          命理師介紹
+        </h2>
+        <a
+          href="/about"
+          class="inline-flex items-center gap-2.5 self-start sm:self-auto bg-[#DFECF3] hover:bg-white text-[#2E2A4F] px-6 py-2.5 rounded-full font-huninn font-bold tracking-wider text-base sm:text-lg shadow-sm hover:shadow-md transition-all duration-300 group"
+        >
+          <span>查看星靈織語成員</span>
+          <span class="group-hover:translate-x-1 transition-transform">➔</span>
+        </a>
+      </div>
+
+      <!-- 三位命理師 圓框頭像卡片 Grid（桌機三欄、手機單欄） -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 sm:gap-10 lg:gap-14">
+        {featuredReaders.map((reader) => (
+          <div class="group flex flex-col items-center text-center">
+            
+            <!-- 圓框照片容器（完美正圓、維持等比 object-cover 絕不變形） -->
+            <div class="relative w-52 h-52 sm:w-60 sm:h-60 lg:w-68 lg:h-68 rounded-full overflow-hidden shadow-2xl border-2 border-white/20 bg-[#2b254a] flex items-center justify-center group-hover:border-white/40 group-hover:shadow-[0_0_30px_rgba(143,184,232,0.3)] transition-all duration-500">
+              {reader.image ? (
+                <img
+                  src={reader.image}
+                  alt={reader.name}
+                  class="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                />
+              ) : (
+                <!-- 佔位框：高雅的人像剪影佔位圖示 -->
+                <div class="w-full h-full p-4 flex flex-col items-center justify-center text-center border-2 border-dashed border-white/30 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <svg class="w-14 h-14 text-white/40 mb-2 mt-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                  <span class="text-xs font-semibold text-[#2E2A4F] bg-[#DFECF3] px-2.5 py-0.5 rounded-full shadow-xs mb-1">
+                    {reader.code}
+                  </span>
+                  <p class="text-[11px] text-white/70 leading-tight">
+                    {reader.name} 現場照片<br />
+                    <span class="text-[10px] text-white/50">(待提供真實照片)</span>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <!-- 命理師姓名 -->
+            <h3 class="text-2xl sm:text-3xl font-bold text-white font-huninn tracking-wider mt-8 mb-4">
+              {reader.name}
+            </h3>
+
+            <!-- 專長與身分條列 -->
+            <ul class="space-y-2 text-base sm:text-xl text-white/85 font-huninn tracking-wider leading-relaxed">
+              {reader.skills.map((skill) => (
+                <li>{skill}</li>
+              ))}
+            </ul>
+
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+</Layout>

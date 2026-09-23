@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTAButton from '../components/CTAButton.astro';
+
+const founders = [
+  {
+    name: '以恩',
+    role: '星靈織語創辦人',
+    skills: ['塔羅占卜', '星盤解析', '臼井靈氣', '光的傳遞', '寵物溝通', '阿卡西紀錄解讀', '偉特塔羅占卜培訓'],
+  },
+  {
+    name: '皮皮',
+    role: '星靈織語創辦人',
+    skills: ['占星教學', '師資培訓', '占星課程循環班導師', '占星解盤', '生命靈數', '阿卡西解讀', '臼井靈氣', '光的傳遞'],
+  },
+];
+
+const members = [
+  { name: '達心', skills: ['八字命理', '塔羅占卜', '八字基礎教學', '臼井靈氣'] },
+  { name: '悠悠', skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
+  { name: '曉宇', skills: ['星盤解析', '塔羅占卜', '占星教學', '托特塔羅教學', '臼井靈氣', '阿育吠陀靈氣', '亢達里尼靈氣', '靈氣引導教學'] },
+  { name: '姆姆', skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
+  { name: 'Migo', skills: ['水晶手串設計', '七脈輪練習生', '臼井靈氣', '阿卡西紀錄解讀'] },
+  { name: '凜月', skills: ['偉特塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
+  { name: '白白', skills: ['文字療癒', '脈輪檢測', '光的能量', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
+  { name: '古古', skills: ['水晶飾品設計', '礦訊解讀', '火漆章占卜', '阿卡西紀錄解讀', '光的能量傳遞', 'Henna圖騰繪製'] },
+];
+---
+
+<Layout
+  title="關於我們 — 星靈織語 Starwoven"
+  description="陪你一起在星光下，織出屬於自己的生命故事。星靈織語由以恩、皮皮共同創辦，匯聚塔羅、占星、八字、靈氣等各領域夥伴。"
+  theme="light"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header -->
+    <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] tracking-wider">關於我們</h1>
+      <p class="text-lg text-[#3A3A3A]/80 leading-relaxed">
+        陪你一起在星光下，織出屬於自己的生命故事。
+      </p>
+      <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
+    </header>
+
+    <!-- Brand Story Section -->
+    <section class="bg-white/80 backdrop-blur-xs p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/20 shadow-xs mb-16">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-6">我們從抱團取暖開始，現在我們想要傳承。</h2>
+      <div class="space-y-4 text-base text-[#3A3A3A]/85 leading-relaxed">
+        <p>
+          專業不該只是個人的累積，更應該透過交流、分享與陪伴，持續傳承下去。
+        </p>
+        <p>
+          這裡匯聚塔羅、占星、八字、紫微、靈氣及各種不同領域的夥伴，從學習、交流到實際服務，讓有經驗的人願意分享，讓正在學習的人找到方向。
+        </p>
+        <p>
+          我們希望讓每一份知識與經驗不被埋沒，而是在一次次相遇中延續、傳承。星靈織語，織起人與人的連結，也讓每一道光持續傳下去。
+        </p>
+      </div>
+    </section>
+
+    <!-- Founders Section -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-8 text-center">星靈織語創辦人</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        {founders.map((founder) => (
+          <div class="bg-white/85 p-8 rounded-3xl border border-[#80A9D4]/25 shadow-sm text-center">
+            <div class="w-24 h-24 mx-auto rounded-full bg-[#80A9D4]/15 flex items-center justify-center text-3xl font-bold text-[#2E2A4F] mb-4">
+              {founder.name[0]}
+            </div>
+            <h3 class="text-2xl font-bold text-[#2E2A4F] mb-1">{founder.name}</h3>
+            <p class="text-sm font-medium text-[#80A9D4] mb-4">{founder.role}</p>
+            <div class="flex flex-wrap justify-center gap-1.5 pt-2 border-t border-gray-100">
+              {founder.skills.map((skill) => (
+                <span class="text-xs bg-[#EAF3F8] text-[#2E2A4F] px-2.5 py-1 rounded-full">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Team Members Wall -->
+    <section class="mb-16">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-8 text-center">星靈織語夥伴</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {members.map((member) => (
+          <div class="bg-white/80 p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs text-center flex flex-col">
+            <div class="w-16 h-16 mx-auto rounded-full bg-[#80A9D4]/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] mb-3">
+              {member.name[0]}
+            </div>
+            <h3 class="text-lg font-bold text-[#2E2A4F] mb-3">{member.name}</h3>
+            <div class="flex flex-wrap justify-center gap-1 mt-auto">
+              {member.skills.map((skill) => (
+                <span class="text-[11px] bg-[#EAF3F8] text-[#3A3A3A] px-2 py-0.5 rounded-md">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <div class="text-center bg-white/60 p-8 rounded-3xl border border-[#80A9D4]/20 max-w-xl mx-auto space-y-4">
+      <h2 class="text-xl font-bold text-[#2E2A4F]">想與星靈夥伴們相遇嗎？</h2>
+      <p class="text-sm text-[#3A3A3A]/80">歡迎加入我們的 LINE 官方帳號或參與交流會。</p>
+      <CTAButton variant="primary" text="預約諮詢與交流" />
+    </div>
+  </div>
+</Layout>

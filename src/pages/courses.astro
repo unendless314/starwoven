@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTAButton from '../components/CTAButton.astro';
+---
+
+<Layout
+  title="活動與課程 — 星靈織語 Starwoven"
+  description="一起學習，一起交流，一起成長。只要你對身心靈命理有熱忱，歡迎加入星靈織語的固定循環班、命理交流會與特色手作工作坊。"
+  theme="light"
+>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <!-- Header -->
+    <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
+      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] tracking-wider">活動與課程</h1>
+      <p class="text-lg text-[#3A3A3A]/80 leading-relaxed">
+        一起學習，一起交流，一起成長。<br />
+        只要你對身心靈命理有熱忱，歡迎加入星靈織語的學習旅程。
+      </p>
+      <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
+    </header>
+
+    <!-- Content Preview: Fixed Courses -->
+    <div class="space-y-12">
+      <section>
+        <h2 class="text-2xl font-bold text-[#2E2A4F] mb-6 flex items-center gap-2">
+          <span class="w-2.5 h-6 bg-[#80A9D4] rounded-full inline-block"></span>
+          固定循環課程
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[
+            { title: '生命靈數循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '每堂500元 / 包月四堂2000元' },
+            { title: '光與阿卡西紀錄', teacher: '古古老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
+            { title: '占星循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '每堂500元 / 包月四堂2000元' },
+            { title: '偉特塔羅團練', teacher: '以恩老師', time: '20:00-21:30', price: '每堂250元 / 包月四堂1000元' },
+            { title: '七脈輪與靈氣', teacher: '曉宇老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
+            { title: '托特塔羅循環班', teacher: '曉宇老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
+          ].map((course) => (
+            <div class="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs">
+              <h3 class="text-lg font-bold text-[#2E2A4F]">{course.title}</h3>
+              <p class="text-sm text-[#80A9D4] font-medium mt-1">講師：{course.teacher}</p>
+              <p class="text-xs text-[#3A3A3A]/70 mt-1">時段：{course.time}</p>
+              <div class="mt-4 pt-3 border-t border-gray-100 text-sm font-semibold text-[#2E2A4F]">
+                {course.price}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Workshops & Events -->
+      <section>
+        <h2 class="text-2xl font-bold text-[#2E2A4F] mb-6 flex items-center gap-2">
+          <span class="w-2.5 h-6 bg-[#8FB8E8] rounded-full inline-block"></span>
+          主題體驗與交流會
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="bg-white/80 p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs">
+            <h3 class="text-lg font-bold text-[#2E2A4F]">命理交流會（占星、八字、紫微斗數）</h3>
+            <p class="text-sm text-[#3A3A3A]/75 mt-2">費用：300元 / 人。歡迎所有身心靈系統夥伴互相研討、交流練習。</p>
+          </div>
+          <div class="bg-white/80 p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs">
+            <h3 class="text-lg font-bold text-[#2E2A4F]">體驗課程（獨角獸流體畫 / 禪繞畫 / 牌卡調香）</h3>
+            <p class="text-sm text-[#3A3A3A]/75 mt-2">不定期舉辦的直覺創作與能量調頻體驗，帶領大家沉澱心靈。</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- CTA Section -->
+    <div class="mt-16 text-center bg-white/60 p-8 rounded-3xl border border-[#80A9D4]/20 max-w-xl mx-auto space-y-4">
+      <h2 class="text-xl font-bold text-[#2E2A4F]">想了解更多課程或報名交流？</h2>
+      <p class="text-sm text-[#3A3A3A]/80">歡迎點選下方按鈕加入官方 LINE，私訊詢問詳細報名資訊。</p>
+      <CTAButton variant="primary" text="點選報名詢問" />
+    </div>
+  </div>
+</Layout>

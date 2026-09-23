@@ -1,0 +1,281 @@
+---
+import Navbar from '../components/Navbar.astro';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  theme?: 'dark' | 'light' | 'auto';
+}
+
+const {
+  title = '星靈織語 Starwoven — 每一段相遇，都是一場心靈的編織',
+  description = '星靈織語提供命理與占卜服務，包含塔羅、占星、八字、靈氣調頻與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。',
+  ogImage = '/assets/og-image.jpg',
+  theme = 'auto',
+} = Astro.props;
+
+const siteName = '星靈織語 Starwoven';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://starwoven.xyz');
+const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === '/' || Astro.url.pathname === ''));
+---
+
+<!DOCTYPE html>
+<html lang="zh-Hant" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={title} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238FB8E8'><path d='M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.89-5.4 1 1 0 0 0-1.04-1.42 8 8 0 1 1-7.66-13.18 1 1 0 0 0-.01-1.99c.01 0 .01 0 0 0z'/></svg>" />
+
+    <!-- Google Fonts: Huninn (粉圓體) + Quicksand + Nunito -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Huninn&family=Nunito:wght@400;600;700&family=Quicksand:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- GA_MEASUREMENT_ID -->
+    <!-- Google Analytics: Replace with actual ID when available -->
+  </head>
+
+  <body class:list={[
+    'min-h-full flex flex-col',
+    isDark ? 'bg-[#2E2A4F] text-[#F5F5F5]' : 'bg-[#EAF3F8] text-[#3A3A3A]'
+  ]}>
+    
+    <!-- Navbar Component -->
+    <Navbar theme={theme} />
+
+    <!-- Main Content Slot -->
+    <main class="flex-1 w-full">
+      <slot />
+    </main>
+
+    <!-- Global Footer: 精準還原 Canva「聯絡我們」與工作資訊頁尾 -->
+    <footer class:list={[
+      'w-full transition-colors duration-300 border-t overflow-hidden relative',
+      isDark
+        ? 'bg-[#18152e] text-white border-white/10'
+        : 'bg-[#DFECF3]/90 text-[#2E2A4F] border-[#80A9D4]/30'
+    ]}>
+      <!-- 星空/光斑氛圍背景（暗色主題下延伸星空質感） -->
+      {isDark && (
+        <div class="absolute inset-0 bg-gradient-to-b from-[#151226] via-[#1c1834] to-[#120f21] -z-20"></div>
+        <div class="absolute inset-0 pointer-events-none -z-10">
+          <span class="absolute top-[25%] left-[12%] w-1.5 h-1.5 bg-white/50 rounded-full blur-[0.5px]"></span>
+          <span class="absolute top-[60%] right-[18%] w-2 h-2 bg-[#FCE794]/40 rounded-full blur-[0.5px]"></span>
+          <span class="absolute bottom-[35%] left-[40%] w-2.5 h-2.5 bg-[#8FB8E8]/40 rounded-full blur-[1px]"></span>
+        </div>
+      )}
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+        
+        <!-- 1. 大標題：聯絡我們 -->
+        <h2 class:list={[
+          'text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider font-huninn text-center mb-12 sm:mb-16',
+          isDark ? 'text-white' : 'text-[#2E2A4F]'
+        ]}>
+          聯絡我們
+        </h2>
+
+        <!-- 2. 四大官方社群與賣場 QR Code 卡片 Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 mb-16 sm:mb-20">
+          
+          <!-- 卡片 1: Line ID -->
+          <a
+            href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col items-center text-center p-3 sm:p-4 rounded-3xl hover:bg-white/5 transition-all duration-300"
+          >
+            <span class:list={['text-xl sm:text-2xl font-bold font-huninn tracking-wider mb-1', isDark ? 'text-white' : 'text-[#2E2A4F]']}>
+              Line ID
+            </span>
+            <span class:list={['text-base sm:text-xl font-huninn tracking-wider mb-4 opacity-90', isDark ? 'text-white/80' : 'text-[#2E2A4F]/80']}>
+              starwoven
+            </span>
+            <div class="w-full max-w-[210px] aspect-square rounded-3xl bg-white p-3.5 shadow-xl group-hover:scale-105 group-hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] transition-all duration-300 flex items-center justify-center overflow-hidden border border-gray-100">
+              <img
+                src="/assets/footer_qr_line.png"
+                alt="Line ID starwoven QR Code"
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <span class="mt-2 text-xs opacity-50 sm:hidden">點擊直接前往 ➔</span>
+          </a>
+
+          <!-- 卡片 2: Instagram -->
+          <a
+            href="https://www.instagram.com/starwoven2026"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col items-center text-center p-3 sm:p-4 rounded-3xl hover:bg-white/5 transition-all duration-300"
+          >
+            <span class:list={['text-xl sm:text-2xl font-bold font-huninn tracking-wider mb-1', isDark ? 'text-white' : 'text-[#2E2A4F]']}>
+              Instagram
+            </span>
+            <span class:list={['text-base sm:text-xl font-huninn tracking-wider mb-4 opacity-90', isDark ? 'text-white/80' : 'text-[#2E2A4F]/80']}>
+              starwoven2026
+            </span>
+            <div class="w-full max-w-[210px] aspect-square rounded-3xl bg-white p-3.5 shadow-xl group-hover:scale-105 group-hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] transition-all duration-300 flex items-center justify-center overflow-hidden border border-gray-100">
+              <img
+                src="/assets/footer_qr_instagram.png"
+                alt="Instagram starwoven2026 QR Code"
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <span class="mt-2 text-xs opacity-50 sm:hidden">點擊直接前往 ➔</span>
+          </a>
+
+          <!-- 卡片 3: Line 社群 -->
+          <a
+            href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col items-center text-center p-3 sm:p-4 rounded-3xl hover:bg-white/5 transition-all duration-300"
+          >
+            <span class:list={['text-xl sm:text-2xl font-bold font-huninn tracking-wider mb-1', isDark ? 'text-white' : 'text-[#2E2A4F]']}>
+              Line 社群
+            </span>
+            <span class:list={['text-base sm:text-xl font-huninn tracking-wider mb-4 opacity-90', isDark ? 'text-white/80' : 'text-[#2E2A4F]/80']}>
+              星靈織語
+            </span>
+            <div class="w-full max-w-[210px] aspect-square rounded-3xl bg-white p-3.5 shadow-xl group-hover:scale-105 group-hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] transition-all duration-300 flex items-center justify-center overflow-hidden border border-gray-100">
+              <img
+                src="/assets/footer_qr_community.png"
+                alt="Line 社群 星靈織語 QR Code"
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <span class="mt-2 text-xs opacity-50 sm:hidden">點擊直接前往 ➔</span>
+          </a>
+
+          <!-- 卡片 4: iOpen Mall -->
+          <a
+            href="https://mall.iopenmall.tw/117352/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="group flex flex-col items-center text-center p-3 sm:p-4 rounded-3xl hover:bg-white/5 transition-all duration-300"
+          >
+            <span class:list={['text-xl sm:text-2xl font-bold font-huninn tracking-wider mb-1', isDark ? 'text-white' : 'text-[#2E2A4F]']}>
+              iOpen Mall
+            </span>
+            <span class:list={['text-base sm:text-xl font-huninn tracking-wider mb-4 opacity-90', isDark ? 'text-white/80' : 'text-[#2E2A4F]/80']}>
+              星靈選物
+            </span>
+            <div class="w-full max-w-[210px] aspect-square rounded-3xl bg-white p-3.5 shadow-xl group-hover:scale-105 group-hover:shadow-[0_10px_30px_rgba(255,255,255,0.15)] transition-all duration-300 flex items-center justify-center overflow-hidden border border-gray-100">
+              <img
+                src="/assets/footer_qr_iopenmall.png"
+                alt="iOpen Mall 星靈選物 QR Code"
+                class="w-full h-full object-contain"
+                loading="lazy"
+              />
+            </div>
+            <span class="mt-2 text-xs opacity-50 sm:hidden">點擊直接前往 ➔</span>
+          </a>
+
+        </div>
+
+        <!-- 3. 地址與 Google Map 導航連結列（橫向排版） -->
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8 pt-8 border-t border-current/15">
+          
+          <!-- 左側：SVG 地標圖示 + 地址與交通說明 -->
+          <div class="flex items-center gap-4 sm:gap-5 text-left">
+            <div class:list={[
+              'shrink-0 p-2 rounded-2xl',
+              isDark ? 'text-white' : 'text-[#2E2A4F]'
+            ]}>
+              <svg class="w-12 h-12 sm:w-14 sm:h-14" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <!-- 底部同心漣漪 -->
+                <ellipse cx="24" cy="41" rx="14" ry="4" stroke-dasharray="3 3" class="opacity-40" />
+                <ellipse cx="24" cy="41" rx="8" ry="2.5" class="opacity-70" />
+                <!-- 定位針本體與中心孔 -->
+                <path d="M24 38C24 38 35 25.5 35 17C35 10.925 30.075 6 24 6C17.925 6 13 10.925 13 17C13 25.5 24 38 24 38Z" />
+                <circle cx="24" cy="17" r="4.5" />
+              </svg>
+            </div>
+
+            <div class:list={[
+              'font-huninn tracking-wider',
+              isDark ? 'text-white' : 'text-[#2E2A4F]'
+            ]}>
+              <p class="text-xl sm:text-2xl lg:text-3xl font-bold leading-snug">
+                高雄市前金區河南二路140號2樓
+              </p>
+              <p class="text-base sm:text-lg lg:text-xl opacity-80 mt-1">
+                （近捷運前金站一號出口）
+              </p>
+            </div>
+          </div>
+
+          <!-- 右側：Google Map 外框膠囊按鈕 -->
+          <a
+            href="https://maps.app.goo.gl/ZZuc8QC1tHn13GxE6"
+            target="_blank"
+            rel="noopener noreferrer"
+            class:list={[
+              'inline-flex items-center gap-3 px-8 py-3.5 rounded-full border-2 font-huninn font-bold text-lg sm:text-xl tracking-wider shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95 shrink-0',
+              isDark
+                ? 'border-white/90 text-white bg-white/5 hover:bg-white hover:text-[#2E2A4F]'
+                : 'border-[#2E2A4F] text-[#2E2A4F] bg-white/40 hover:bg-[#2E2A4F] hover:text-white'
+            ]}
+          >
+            <span>點我連結Google map</span>
+            <span>➔</span>
+          </a>
+
+        </div>
+
+        <!-- 4. 底層版權宣告列 -->
+        <div class="pt-10 mt-12 border-t border-current/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs opacity-60">
+          <p>© 2026 星靈織語 Starwoven. All rights reserved.</p>
+          <p>純靜態展示版本（Demo MVP）</p>
+        </div>
+
+      </div>
+    </footer>
+
+    <!-- Reserved Hook: Bottom-right Floating LINE Button -->
+    <aside aria-label="LINE 浮動諮詢按鈕" class="fixed bottom-6 right-6 z-40">
+      <a
+        href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="透過 LINE 預約諮詢"
+        class="group flex items-center gap-2 bg-[#06C755] hover:bg-[#05b04c] text-white px-4 py-3 rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 active:scale-95"
+      >
+        <!-- LINE Icon -->
+        <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+          <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
+        </svg>
+        <span class="text-sm font-medium tracking-wide hidden sm:inline-block">預約諮詢</span>
+      </a>
+    </aside>
+
+  </body>
+</html>

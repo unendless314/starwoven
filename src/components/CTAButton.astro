@@ -1,0 +1,41 @@
+---
+interface Props {
+  text?: string;
+  href?: string;
+  variant?: 'primary' | 'nav' | 'hero' | 'outline' | 'floating';
+  class?: string;
+  showIcon?: boolean;
+}
+
+const {
+  text = '預約諮詢',
+  href = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url',
+  variant = 'primary',
+  class: className = '',
+  showIcon = true,
+} = Astro.props;
+
+const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 cursor-pointer select-none';
+
+const variantStyles = {
+  primary: 'bg-[#80A9D4] hover:bg-[#6b97c4] text-white px-7 py-3 rounded-full shadow-sm hover:shadow-md text-base tracking-wider active:scale-95',
+  nav: 'bg-[#80A9D4] hover:bg-[#6b97c4] text-white px-5 py-2 rounded-full shadow-sm hover:shadow text-sm tracking-wider active:scale-95',
+  hero: 'bg-[#80A9D4] hover:bg-[#6b97c4] text-white px-8 py-3.5 rounded-full shadow-lg hover:shadow-xl text-lg tracking-wider active:scale-95',
+  outline: 'border-2 border-[#80A9D4] text-[#80A9D4] hover:bg-[#80A9D4] hover:text-white px-6 py-2.5 rounded-full text-base tracking-wider active:scale-95',
+  floating: 'bg-[#06C755] hover:bg-[#05b34c] text-white p-3.5 rounded-full shadow-lg hover:shadow-2xl active:scale-95'
+};
+---
+
+<a
+  href={href}
+  target="_blank"
+  rel="noopener noreferrer"
+  class:list={[baseStyles, variantStyles[variant], className]}
+>
+  <span>{text}</span>
+  {showIcon && variant !== 'floating' && (
+    <svg class="w-4 h-4 ml-1.5 inline-block text-white/90" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 0L14.6 9.4L24 12L14.6 14.6L12 24L9.4 14.6L0 12L9.4 9.4L12 0Z" />
+    </svg>
+  )}
+</a>
