@@ -105,3 +105,30 @@
      - 將左側「高雄市前金區河南二路140號2樓（近捷運前金站一號出口）」轉為互動卡片按鈕。
      - 點擊後以新分頁開啟 Google Maps 導航（`https://maps.app.goo.gl/ZZuc8QC1tHn13GxE6`），附帶向外導覽指示圖示與懸停漣漪回饋。
   4. **問題結案**：同步關閉 `known_issues/README.md` 之第 2 項已知問題（LINE 社群卡片連結待補）。
+
+---
+
+## 2026-09-29 — DEC-008：導入全站 Dark / Light 模式切換機制（Navbar 太陽/月亮切換鈕、localStorage 偏好記憶、全站深淺雙向適配）
+
+- **背景**：
+  - 原設計中，首頁（Index）預設採深邃星空藍紫（`#2E2A4F`），而內頁（About、Services、Courses、Reiki、Akashic）預設採淡水彩柔和淺藍（`#EAF3F8`）。
+  - 使用者期望全站能提供深淺模式（Dark / Light Mode）切換功能，既能保留星空的神祕感，又能提供日間舒適的長文閱讀體驗。
+- **決策**：
+  1. **Tailwind v4 自訂 Dark 變體支援**：
+     - 在 `src/styles/global.css` 中配置 `@custom-variant dark (&:where(.dark, .dark *));`，無縫配合 Tailwind CSS v4 之全新 CSS-first 引擎。
+  2. **防閃爍（Zero-FOUC）全站底層腳本**：
+     - 在 `src/layouts/Layout.astro` `<head>` 置入行內阻斷式偵測腳本（`is:inline`）。
+     - 檢查 `localStorage.getItem('starwoven_theme')`，若有儲存偏好則立即套用；若尚無自訂紀錄，則首頁預設為深色星空、內頁預設為淺水彩，避免跳轉或重整時發生任何閃爍。
+  3. **導航列雙端切換鈕（Desktop & Mobile）**：
+     - 在 `src/components/Navbar.astro` 桌面導航右側（預約諮詢按鈕旁）與行動版漢堡選單內，均配置圓形日/夜切換鈕。
+     - 按鈕內嵌精緻之太陽（Sun）與月亮（Moon）SVG 圖示，隨主題狀態動態呈現對應圖示。
+     - 支援滑鼠點擊切換、鍵盤無障礙與觸控操作，切換時即刻同步全站 `html.dark` class 與 `localStorage` 偏好。
+  4. **全站 6 大頁面深淺色雙向適配**：
+     - **首頁 (`/`)**：
+       - 深色模式：維持經典星空夜景、金色月亮、深靛藍漸層（`#2E2A4F`）與金色文字光暈。
+       - 淺色模式：轉為晨曦清亮柔和水藍微光漸層（`from-[#DFECF3] via-[#EAF3F8] to-[#D5E5F0]`），文字切換為深藍灰（`#2D3748` / `#1F2937`），各區塊卡片轉為輕盈半透白底。
+     - **內頁 (`/about`, `/services`, `/courses`, `/reiki`, `/akashic`)**：
+       - 淺色模式：維持淡水藍手繪水彩洗感（`#EAF3F8`）。
+       - 深色模式：平滑過渡為深紫星夜背景（`#2E2A4F`），文字升階為明亮清晰之珍珠白與柔金（`text-white`, `text-[#FCE794]`），資訊卡片與課表套用高質感半透明毛玻璃微光（`dark:bg-white/10`, `dark:border-white/15`）。
+     - **頁尾（Footer）**：
+       - 隨全局模式切換深淺背景（深藍紫 `dark:bg-[#1E1B3A]` / 柔灰藍 `bg-[#DCE9F2]`），社群按鈕與實體地址導航卡片無縫適配雙主題色彩。

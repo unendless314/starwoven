@@ -27,38 +27,24 @@ const navLinks = [
 ];
 ---
 
-<header class:list={[
-  'sticky top-0 z-50 w-full transition-colors duration-300 backdrop-blur-md',
-  isDark
-    ? 'bg-[#2E2A4F]/85 text-white border-b border-white/10'
-    : 'bg-[#EAF3F8]/90 text-[#3A3A3A] border-b border-[#80A9D4]/20 shadow-xs'
-]}>
+<header class="sticky top-0 z-50 w-full transition-colors duration-300 backdrop-blur-md bg-[#EAF3F8]/90 text-[#3A3A3A] border-b border-[#80A9D4]/20 shadow-xs dark:bg-[#2E2A4F]/85 dark:text-white dark:border-white/10">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-20">
       
       <!-- Brand Logo -->
       <a href="/" class="flex items-center gap-3 group focus:outline-hidden">
         <!-- Logo Icon (Moon & Twinkling Star) -->
-        <div class:list={[
-          'w-11 h-11 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shadow-xs',
-          isDark ? 'bg-white/10' : 'bg-[#80A9D4]/15'
-        ]}>
+        <div class="w-11 h-11 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 shadow-xs bg-[#80A9D4]/15 dark:bg-white/10">
           <svg class="w-7 h-7 text-[#8FB8E8]" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.89-5.4 1 1 0 0 0-1.04-1.42 8 8 0 1 1-7.66-13.18 1 1 0 0 0-.01-1.99c.01 0 .01 0 0 0z" />
             <polygon points="19,4 20,7 23,8 20,9 19,12 18,9 15,8 18,7" class="text-[#FCE794] animate-pulse" />
           </svg>
         </div>
         <div class="flex flex-col">
-          <span class:list={[
-            'text-xl font-bold tracking-wider leading-tight',
-            isDark ? 'text-white' : 'text-[#2E2A4F]'
-          ]}>
+          <span class="text-xl font-bold tracking-wider leading-tight text-[#2E2A4F] dark:text-white transition-colors">
             星靈織語
           </span>
-          <span class:list={[
-            'text-xs tracking-widest uppercase font-light',
-            isDark ? 'text-white/70' : 'text-[#2E2A4F]/70'
-          ]}>
+          <span class="text-xs tracking-widest uppercase font-light text-[#2E2A4F]/70 dark:text-white/70 transition-colors">
             Starwoven
           </span>
         </div>
@@ -74,9 +60,9 @@ const navLinks = [
               href={item.href}
               class:list={[
                 'text-base transition-colors duration-150 py-1 relative tracking-wider',
-                isDark
-                  ? isActive ? 'text-white font-semibold after:bg-[#8FB8E8]' : 'text-white/85 hover:text-white after:bg-white/40'
-                  : isActive ? 'text-[#2E2A4F] font-semibold after:bg-[#80A9D4]' : 'text-[#3A3A3A] hover:text-[#2E2A4F] after:bg-[#80A9D4]/40',
+                isActive
+                  ? 'font-semibold text-[#2E2A4F] dark:text-white after:bg-[#80A9D4] dark:after:bg-[#8FB8E8]'
+                  : 'text-[#3A3A3A] hover:text-[#2E2A4F] dark:text-white/85 dark:hover:text-white after:bg-[#80A9D4]/40 dark:after:bg-white/40',
                 isActive && 'after:content-[""] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-full'
               ]}
             >
@@ -85,24 +71,55 @@ const navLinks = [
           );
         })}
 
+        <!-- Theme Toggle Button (Desktop) -->
+        <button
+          id="desktop-theme-toggle"
+          type="button"
+          aria-label="切換深淺色主題"
+          title="切換深淺色主題（夜間 / 日間）"
+          class="p-2.5 rounded-full border transition-all duration-300 hover:scale-110 active:scale-95 text-[#2E2A4F] bg-white/70 border-[#80A9D4]/30 hover:bg-white shadow-xs dark:text-[#FCE794] dark:bg-white/10 dark:border-white/20 dark:hover:bg-white/20 cursor-pointer"
+        >
+          <!-- Sun Icon (Active in dark mode -> click switches to light mode) -->
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+          </svg>
+          <!-- Moon Icon (Active in light mode -> click switches to dark mode) -->
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+          </svg>
+        </button>
+
         <!-- CTA Button in Desktop Nav -->
-        <div class="ml-2">
+        <div class="ml-1">
           <CTAButton variant="nav" text="預約諮詢" />
         </div>
       </nav>
 
-      <!-- Mobile Hamburger Button -->
-      <div class="flex lg:hidden items-center gap-3">
+      <!-- Mobile Actions (Theme Toggle + CTA + Hamburger) -->
+      <div class="flex lg:hidden items-center gap-2">
+        <!-- Theme Toggle Button (Mobile) -->
+        <button
+          id="mobile-theme-toggle"
+          type="button"
+          aria-label="切換深淺色主題"
+          title="切換深淺色主題"
+          class="p-2 rounded-full border transition-all duration-200 text-[#2E2A4F] bg-white/70 border-[#80A9D4]/30 dark:text-[#FCE794] dark:bg-white/10 dark:border-white/20 cursor-pointer"
+        >
+          <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+          </svg>
+          <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+          </svg>
+        </button>
+
         <CTAButton variant="nav" text="預約" class="text-xs px-3.5 py-1.5 sm:inline-flex" />
         <button
           id="mobile-menu-toggle"
           type="button"
           aria-label="切換選單"
           aria-expanded="false"
-          class:list={[
-            'p-2 rounded-lg transition-colors focus:outline-hidden',
-            isDark ? 'text-white hover:bg-white/10' : 'text-[#3A3A3A] hover:bg-[#80A9D4]/15'
-          ]}
+          class="p-2 rounded-lg transition-colors focus:outline-hidden text-[#3A3A3A] hover:bg-[#80A9D4]/15 dark:text-white dark:hover:bg-white/10"
         >
           <svg id="menu-open-icon" class="w-6 h-6 block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -119,10 +136,7 @@ const navLinks = [
   <!-- Mobile Dropdown Menu -->
   <div
     id="mobile-menu"
-    class:list={[
-      'hidden lg:hidden border-t px-6 py-5 transition-all duration-200',
-      isDark ? 'bg-[#2E2A4F] border-white/10 text-white' : 'bg-[#EAF3F8] border-[#80A9D4]/20 text-[#3A3A3A]'
-    ]}
+    class="hidden lg:hidden border-t px-6 py-5 transition-all duration-200 bg-[#EAF3F8] border-[#80A9D4]/20 text-[#3A3A3A] dark:bg-[#2E2A4F] dark:border-white/10 dark:text-white"
   >
     <div class="flex flex-col space-y-3">
       {navLinks.map((item) => {
@@ -134,8 +148,8 @@ const navLinks = [
             class:list={[
               'text-lg py-2 px-3 rounded-md transition-colors tracking-wide',
               isActive
-                ? isDark ? 'bg-white/15 text-white font-semibold' : 'bg-[#80A9D4]/20 text-[#2E2A4F] font-semibold'
-                : isDark ? 'text-white/80 hover:bg-white/10 hover:text-white' : 'text-[#3A3A3A] hover:bg-[#80A9D4]/10 hover:text-[#2E2A4F]'
+                ? 'bg-[#80A9D4]/20 text-[#2E2A4F] font-semibold dark:bg-white/15 dark:text-white'
+                : 'text-[#3A3A3A] hover:bg-[#80A9D4]/10 hover:text-[#2E2A4F] dark:text-white/80 dark:hover:bg-white/10 dark:hover:text-white'
             ]}
           >
             {item.name}
@@ -150,6 +164,23 @@ const navLinks = [
 </header>
 
 <script>
+  function setupThemeToggle() {
+    const desktopBtn = document.getElementById('desktop-theme-toggle');
+    const mobileBtn = document.getElementById('mobile-theme-toggle');
+
+    function toggle() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      const newTheme = isDark ? 'dark' : 'light';
+      try {
+        localStorage.setItem('starwoven_theme', newTheme);
+      } catch (e) {}
+      document.documentElement.setAttribute('data-theme', newTheme);
+    }
+
+    desktopBtn?.addEventListener('click', toggle);
+    mobileBtn?.addEventListener('click', toggle);
+  }
+
   function setupMenu() {
     const toggleBtn = document.getElementById('mobile-menu-toggle');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -183,6 +214,9 @@ const navLinks = [
   }
 
   // Setup on page load and on view transitions (if any)
+  setupThemeToggle();
   setupMenu();
-  document.addEventListener('astro:page-load', setupMenu);
-</script>
+  document.addEventListener('astro:page-load', () => {
+    setupThemeToggle();
+    setupMenu();
+  });

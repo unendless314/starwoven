@@ -199,32 +199,32 @@ const featuredReaders = [
 <Layout
   title="星靈織語 Starwoven — 每一段相遇，都是一場心靈的編織"
   description="星靈織語提供命理與占卜服務，包含塔羅、占星、八字、靈氣調頻與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。"
-  theme="dark"
+  theme="auto"
 >
   <!-- ======================================================== -->
   <!-- 1. Hero Section (主視覺區塊)                             -->
   <!-- ======================================================== -->
   <section
-    class="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-12 py-16 sm:py-24"
+    class="relative min-h-[90vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 lg:px-12 py-16 sm:py-24 transition-colors duration-300"
     style={imgHeroBg ? `background-image: url('${imgHeroBg}'); background-size: cover; background-position: center;` : undefined}
   >
-    <!-- 背景層：深靛藍漸層與星塵光斑粒子 -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#241f42] via-[#2E2A4F] to-[#1d1a36] -z-20"></div>
+    <!-- 背景層：深靛藍漸層與星塵光斑粒子（深色） / 柔和水彩藍（淺色） -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#DFECF3] via-[#EAF3F8] to-[#D5E5F0] dark:from-[#241f42] dark:via-[#2E2A4F] dark:to-[#1d1a36] -z-20 transition-all duration-300"></div>
 
     <!-- 柔和星光與星塵光斑 (Bokeh / Dust) -->
     <div class="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#8FB8E8]/10 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-1/3 right-1/4 w-[28rem] h-[28rem] bg-[#a29bfe]/10 rounded-full blur-3xl"></div>
+      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-[#8FB8E8]/20 dark:bg-[#8FB8E8]/10 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-1/3 right-1/4 w-[28rem] h-[28rem] bg-[#80A9D4]/20 dark:bg-[#a29bfe]/10 rounded-full blur-3xl"></div>
 
       <!-- 散落的光斑微粒 -->
-      <span class="absolute top-[12%] left-[18%] w-1.5 h-1.5 bg-white/70 rounded-full blur-[0.5px] animate-pulse"></span>
-      <span class="absolute top-[28%] left-[45%] w-2 h-2 bg-white/60 rounded-full blur-[1px]"></span>
-      <span class="absolute top-[15%] right-[25%] w-1.5 h-1.5 bg-[#FCE794]/80 rounded-full blur-[0.5px]"></span>
-      <span class="absolute top-[42%] right-[15%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1.5px]"></span>
-      <span class="absolute bottom-[30%] left-[22%] w-2 h-2 bg-white/50 rounded-full blur-[1px]"></span>
-      <span class="absolute bottom-[18%] left-[40%] w-3 h-3 bg-white/30 rounded-full blur-[2px]"></span>
-      <span class="absolute bottom-[25%] right-[32%] w-1.5 h-1.5 bg-[#8FB8E8]/80 rounded-full blur-[0.5px]"></span>
-      <span class="absolute top-[65%] right-[8%] w-2 h-2 bg-white/60 rounded-full blur-[1px]"></span>
+      <span class="absolute top-[12%] left-[18%] w-1.5 h-1.5 bg-[#8FB8E8] dark:bg-white/70 rounded-full blur-[0.5px] animate-pulse"></span>
+      <span class="absolute top-[28%] left-[45%] w-2 h-2 bg-[#80A9D4]/60 dark:bg-white/60 rounded-full blur-[1px]"></span>
+      <span class="absolute top-[15%] right-[25%] w-1.5 h-1.5 bg-[#FCE794] rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[42%] right-[15%] w-2.5 h-2.5 bg-[#8FB8E8]/40 dark:bg-white/40 rounded-full blur-[1.5px]"></span>
+      <span class="absolute bottom-[30%] left-[22%] w-2 h-2 bg-[#8FB8E8]/50 dark:bg-white/50 rounded-full blur-[1px]"></span>
+      <span class="absolute bottom-[18%] left-[40%] w-3 h-3 bg-[#80A9D4]/30 dark:bg-white/30 rounded-full blur-[2px]"></span>
+      <span class="absolute bottom-[25%] right-[32%] w-1.5 h-1.5 bg-[#8FB8E8] rounded-full blur-[0.5px]"></span>
+      <span class="absolute top-[65%] right-[8%] w-2 h-2 bg-[#80A9D4]/50 dark:bg-white/60 rounded-full blur-[1px]"></span>
     </div>
 
     <!-- Hero 主容器：左右兩欄佈局（桌機左右並排、手機垂直排列） -->
@@ -235,12 +235,12 @@ const featuredReaders = [
         
         <!-- 主要文字區塊 -->
         <div class="space-y-6 max-w-2xl">
-          <h1 class="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-wide sm:tracking-wider text-white leading-[1.25] font-huninn">
+          <h1 class="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl font-bold tracking-wide sm:tracking-wider text-[#2E2A4F] dark:text-white leading-[1.25] font-huninn transition-colors">
             每一段相遇，<br />
             都是一場心靈的編織。
           </h1>
 
-          <p class="text-base sm:text-lg lg:text-xl text-white/85 font-light leading-relaxed tracking-wide pt-1">
+          <p class="text-base sm:text-lg lg:text-xl text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed tracking-wide pt-1 transition-colors">
             以命理與占卜陪伴每一位來到這裡的人，<br class="hidden sm:inline" />
             透過交流與練習，陪你從理解走向實踐。
           </p>
@@ -249,7 +249,7 @@ const featuredReaders = [
             <CTAButton variant="hero" text="預約諮詢" />
             <a
               href="/services"
-              class="inline-flex items-center justify-center px-7 py-3 rounded-full border border-white/30 text-white hover:bg-white/10 transition-all duration-300 text-base tracking-wider backdrop-blur-xs"
+              class="inline-flex items-center justify-center px-7 py-3 rounded-full border border-[#2E2A4F]/30 text-[#2E2A4F] hover:bg-[#2E2A4F]/10 dark:border-white/30 dark:text-white dark:hover:bg-white/10 transition-all duration-300 text-base tracking-wider backdrop-blur-xs"
             >
               探索命理服務
             </a>
@@ -333,9 +333,9 @@ const featuredReaders = [
   <!-- ======================================================== -->
   <!-- 2. 四大核心服務探索區 (精準還原截圖四張卡片)              -->
   <!-- ======================================================== -->
-  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#1d1a36] border-t border-white/10 overflow-hidden">
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#EAF3F8] dark:bg-[#1d1a36] border-t border-[#80A9D4]/20 dark:border-white/10 overflow-hidden transition-colors duration-300">
     <!-- 星空光斑延伸 -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#1d1a36] via-[#252140] to-[#1c1834] -z-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#DFECF3] via-[#EAF3F8] to-[#DFECF3] dark:from-[#1d1a36] dark:via-[#252140] dark:to-[#1c1834] -z-20 transition-all duration-300"></div>
     <div class="absolute inset-0 pointer-events-none -z-10">
       <span class="absolute top-[20%] left-[10%] w-2 h-2 bg-white/40 rounded-full blur-[1px]"></span>
       <span class="absolute top-[45%] left-[85%] w-1.5 h-1.5 bg-[#FCE794]/60 rounded-full blur-[0.5px]"></span>
@@ -347,10 +347,10 @@ const featuredReaders = [
       
       <!-- 標題與副標 -->
       <div class="text-center space-y-4 max-w-4xl mx-auto">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn leading-tight">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-[#2E2A4F] dark:text-white font-huninn leading-tight transition-colors">
           星靈織語，陪你一起探索生命的可能
         </h2>
-        <p class="text-base sm:text-lg lg:text-xl text-white/80 font-light leading-relaxed tracking-wide">
+        <p class="text-base sm:text-lg lg:text-xl text-[#3A3A3A]/80 dark:text-white/80 font-light leading-relaxed tracking-wide transition-colors">
           每一場身心靈、命理活動，幫助你在迷惘時刻找到方向，在探索路上不再孤單。
         </p>
       </div>
@@ -517,9 +517,9 @@ const featuredReaders = [
   <!-- ======================================================== -->
   <!-- 3. 固定循環課程預告 (精準還原截圖五門課卡片)              -->
   <!-- ======================================================== -->
-  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#18152e] border-t border-white/10 overflow-hidden">
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#EAF3F8] dark:bg-[#18152e] border-t border-[#80A9D4]/20 dark:border-white/10 overflow-hidden transition-colors duration-300">
     <!-- 星空光斑微光延伸 -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#1c1834] via-[#221d3d] to-[#17142b] -z-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#DCE9F2] via-[#EAF3F8] to-[#D8E6F0] dark:from-[#1c1834] dark:via-[#221d3d] dark:to-[#17142b] -z-20 transition-all duration-300"></div>
     <div class="absolute inset-0 pointer-events-none -z-10">
       <span class="absolute top-[30%] right-[12%] w-2 h-2 bg-[#FCE794]/50 rounded-full blur-[0.5px]"></span>
       <span class="absolute bottom-[20%] left-[15%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1px]"></span>
@@ -530,7 +530,7 @@ const featuredReaders = [
       
       <!-- 標題與「查看其他交流活動」導航按鈕 -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-[#2E2A4F] dark:text-white font-huninn transition-colors">
           固定循環課程
         </h2>
         <a
@@ -618,15 +618,15 @@ const featuredReaders = [
         
         <!-- 區塊標題 -->
         <div class="text-center space-y-3">
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#8FB8E8] text-xs sm:text-sm font-huninn tracking-widest">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#80A9D4]/20 dark:bg-white/10 border border-[#80A9D4]/30 dark:border-white/15 text-[#2E2A4F] dark:text-[#8FB8E8] text-xs sm:text-sm font-huninn tracking-widest transition-colors">
             <span>✦</span>
             <span>學員真實回饋</span>
             <span>✦</span>
           </div>
-          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-huninn tracking-wider">
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2E2A4F] dark:text-white font-huninn tracking-wider transition-colors">
             每一次的心靈相遇，都是溫暖共鳴
           </h3>
-          <p class="text-sm sm:text-base text-white/75 font-huninn max-w-xl mx-auto">
+          <p class="text-sm sm:text-base text-[#3A3A3A]/80 dark:text-white/75 font-huninn max-w-xl mx-auto transition-colors">
             陪伴你從理解走向實踐，傾聽每一位在星靈織語探索生命的真實感受。
           </p>
         </div>
@@ -634,13 +634,13 @@ const featuredReaders = [
         <!-- 輪播容器（平滑無限循環，懸停暫停） -->
         <div class="relative w-full overflow-hidden py-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
           <!-- 左右兩側柔和漸層遮罩 -->
-          <div class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#1f1b38] to-transparent z-10"></div>
-          <div class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#1f1b38] to-transparent z-10"></div>
+          <div class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#EAF3F8] dark:from-[#1f1b38] to-transparent z-10 transition-colors"></div>
+          <div class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#EAF3F8] dark:from-[#1f1b38] to-transparent z-10 transition-colors"></div>
 
           <!-- 輪播軌道（雙倍列表無縫對接） -->
           <div class="testimonial-marquee flex gap-5 sm:gap-6">
             {[...studentReviews, ...studentReviews].map((review) => (
-              <div class="w-[290px] sm:w-[350px] min-h-[220px] sm:min-h-[250px] shrink-0 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border border-white/60 flex flex-col justify-between hover:scale-[1.02] hover:shadow-2xl transition-all duration-300">
+              <div class="w-[290px] sm:w-[350px] min-h-[220px] sm:min-h-[250px] shrink-0 bg-white/95 dark:bg-[#231f40]/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border border-gray-200/80 dark:border-white/20 flex flex-col justify-between hover:scale-[1.02] hover:shadow-2xl transition-all duration-300">
                 <div>
                   <!-- 頂部：頭像小圖 + ID + 課程標籤/Google來源 + 星等 -->
                   <div class="flex items-center gap-3.5 mb-4">
@@ -652,7 +652,7 @@ const featuredReaders = [
                     </div>
                     <div class="flex-1 min-w-0">
                       <div class="flex items-center justify-between">
-                        <span class="font-huninn font-bold text-[#2E2A4F] text-base truncate">
+                        <span class="font-huninn font-bold text-[#2E2A4F] dark:text-white text-base truncate transition-colors">
                           {review.id}
                         </span>
                         <!-- 5 星等 -->
@@ -663,12 +663,12 @@ const featuredReaders = [
                       
                       <!-- 標籤區：有 tag 顯示課程；無 tag 但有 source 顯示 Google 評價；兩者皆無則乾淨隱藏 -->
                       {review.tag ? (
-                        <span class="inline-block text-xs text-[#80A9D4] font-medium tracking-wider mt-0.5">
+                        <span class="inline-block text-xs text-[#80A9D4] dark:text-[#8FB8E8] font-medium tracking-wider mt-0.5 transition-colors">
                           {review.tag}
                         </span>
                       ) : review.source ? (
-                        <span class="inline-flex items-center gap-1 text-[11px] text-[#4285F4] font-medium tracking-wide mt-0.5">
-                          <svg class="w-3 h-3 text-[#4285F4] shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                        <span class="inline-flex items-center gap-1 text-[11px] text-[#4285F4] dark:text-[#8FB8E8] font-medium tracking-wide mt-0.5 transition-colors">
+                          <svg class="w-3 h-3 text-[#4285F4] dark:text-[#8FB8E8] shrink-0" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
@@ -681,14 +681,14 @@ const featuredReaders = [
                   </div>
 
                   <!-- 評語內容 -->
-                  <p class="text-sm sm:text-base text-[#3A3A3A] font-huninn tracking-wide leading-relaxed">
+                  <p class="text-sm sm:text-base text-[#3A3A3A] dark:text-white/90 font-huninn tracking-wide leading-relaxed transition-colors">
                     「{review.comment}」
                   </p>
                 </div>
 
-                <div class="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-huninn">
+                <div class="mt-5 pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between text-xs text-gray-400 dark:text-white/50 font-huninn transition-colors">
                   <span>{review.source || (review.tag ? '課堂真實回饋' : '真實好評推薦')}</span>
-                  <span class="text-[#80A9D4] font-medium">心靈成長見證</span>
+                  <span class="text-[#80A9D4] dark:text-[#8FB8E8] font-medium">心靈成長見證</span>
                 </div>
 
               </div>
@@ -704,9 +704,9 @@ const featuredReaders = [
   <!-- ======================================================== -->
   <!-- 4. 命理師介紹 (精準還原截圖 圓框人像卡片)                    -->
   <!-- ======================================================== -->
-  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#18152e] border-t border-white/10 overflow-hidden">
+  <section class="relative py-20 sm:py-28 px-4 sm:px-6 lg:px-8 bg-[#DFECF3]/90 dark:bg-[#18152e] border-t border-[#80A9D4]/20 dark:border-white/10 overflow-hidden transition-colors duration-300">
     <!-- 星空背景微光延伸與星塵光斑 -->
-    <div class="absolute inset-0 bg-gradient-to-b from-[#17142b] via-[#201b3a] to-[#151226] -z-20"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#D8E6F0] via-[#E2EDF5] to-[#D3E3EE] dark:from-[#17142b] dark:via-[#201b3a] dark:to-[#151226] -z-20 transition-all duration-300"></div>
     <div class="absolute inset-0 pointer-events-none -z-10">
       <span class="absolute top-[20%] left-[8%] w-2 h-2 bg-[#FCE794]/40 rounded-full blur-[0.5px]"></span>
       <span class="absolute top-[45%] right-[12%] w-2.5 h-2.5 bg-white/40 rounded-full blur-[1px]"></span>
@@ -718,7 +718,7 @@ const featuredReaders = [
       
       <!-- 標題與「查看星靈織語成員」導航按鈕 -->
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-white font-huninn">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-wider text-[#2E2A4F] dark:text-white font-huninn transition-colors">
           命理師介紹
         </h2>
         <a
@@ -762,12 +762,12 @@ const featuredReaders = [
             </div>
 
             <!-- 命理師姓名 -->
-            <h3 class="text-2xl sm:text-3xl font-bold text-white font-huninn tracking-wider mt-8 mb-4">
+            <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] dark:text-white font-huninn tracking-wider mt-8 mb-4 transition-colors">
               {reader.name}
             </h3>
 
             <!-- 專長與身分條列 -->
-            <ul class="space-y-2 text-base sm:text-xl text-white/85 font-huninn tracking-wider leading-relaxed">
+            <ul class="space-y-2 text-base sm:text-xl text-[#3A3A3A]/85 dark:text-white/85 font-huninn tracking-wider leading-relaxed transition-colors">
               {reader.skills.map((skill) => (
                 <li>{skill}</li>
               ))}

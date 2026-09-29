@@ -25,22 +25,22 @@ const faqs = [
 <Layout
   title="光與阿卡西紀錄 — 星靈織語 Starwoven"
   description="光會推動人生中的轉變，阿卡西可以主動連結自己的狀態並且詢問指引。透過內外在覺察拾起自身力量，在探索生命路上不再孤單。"
-  theme="light"
+  theme="auto"
 >
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] tracking-wider">光與阿卡西紀錄</h1>
-      <p class="text-base text-[#80A9D4] font-medium">授課講師：古古老師（助教：白白、凜月）</p>
-      <p class="text-lg text-[#3A3A3A]/80 leading-relaxed">
+      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] dark:text-white tracking-wider transition-colors">光與阿卡西紀錄</h1>
+      <p class="text-base text-[#80A9D4] dark:text-[#8FB8E8] font-medium transition-colors">授課講師：古古老師（助教：白白、凜月）</p>
+      <p class="text-lg text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed transition-colors">
         光會推動人生中的轉變，阿卡西可以主動連結自己的狀態並獲得指引。
       </p>
       <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
     </header>
 
     <!-- Core Philosophy -->
-    <section class="bg-white/80 p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/20 shadow-xs mb-16 space-y-4 text-base text-[#3A3A3A]/85 leading-relaxed">
-      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-4">治癒別人，我們就獲得治癒</h2>
+    <section class="bg-white/80 dark:bg-white/10 p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs mb-16 space-y-4 text-base text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed transition-all">
+      <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-4 transition-colors">治癒別人，我們就獲得治癒</h2>
       <p>
         光與阿卡西可以加強我們對於覺察自我的能力。阿卡西是解讀能量的一種方式，透過不同的視角去解讀自己、他人、環境、物品與空間。
       </p>
@@ -51,15 +51,15 @@ const faqs = [
 
     <!-- FAQ Section -->
     <section class="mb-16">
-      <h2 class="text-2xl font-bold text-[#2E2A4F] mb-8 text-center">常見問題（FAQ）</h2>
+      <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-8 text-center transition-colors">常見問題（FAQ）</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {faqs.map((faq) => (
-          <div class="bg-white/80 p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs space-y-2">
-            <h3 class="text-base font-bold text-[#2E2A4F] flex items-start gap-2">
-              <span class="text-[#80A9D4] font-bold">Q：</span>
+          <div class="bg-white/80 dark:bg-white/10 p-6 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs space-y-2 transition-all">
+            <h3 class="text-base font-bold text-[#2E2A4F] dark:text-white flex items-start gap-2 transition-colors">
+              <span class="text-[#80A9D4] dark:text-[#8FB8E8] font-bold">Q：</span>
               <span>{faq.q}</span>
             </h3>
-            <p class="text-sm text-[#3A3A3A]/80 leading-relaxed pl-6">
+            <p class="text-sm text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed pl-6 transition-colors">
               {faq.a}
             </p>
           </div>
@@ -68,9 +68,9 @@ const faqs = [
     </section>
 
     <!-- CTA Section -->
-    <div class="text-center bg-white/60 p-8 rounded-3xl border border-[#80A9D4]/20 max-w-xl mx-auto space-y-4">
-      <h2 class="text-xl font-bold text-[#2E2A4F]">想深入探索光與阿卡西嗎？</h2>
-      <p class="text-sm text-[#3A3A3A]/80">歡迎加入 LINE 官方帳號私訊詢問課程與預約解讀。</p>
+    <div class="text-center bg-white/60 dark:bg-white/10 p-8 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 max-w-xl mx-auto space-y-4 transition-colors">
+      <h2 class="text-xl font-bold text-[#2E2A4F] dark:text-white transition-colors">想深入探索光與阿卡西嗎？</h2>
+      <p class="text-sm text-[#3A3A3A]/80 dark:text-white/80 transition-colors">歡迎加入 LINE 官方帳號私訊詢問課程與預約解讀。</p>
       <CTAButton variant="primary" text="預約諮詢與解讀" />
     </div>
   </div>
