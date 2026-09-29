@@ -1,78 +1,612 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CTAButton from '../components/CTAButton.astro';
+
+// ==========================================
+// 課程與活動圖片素材路徑配置（ComfyUI 生圖或取得真圖後填入）
+// 若為空字串，將自動呈現精美手繪風格 SVG 佔位符與代碼標籤
+// ==========================================
+
+// 【1. 固定循環課程現場照片（6張）】
+const imgCourseAkashic = '';    // 課程-A：光與阿卡西紀錄現場照片
+const imgCourseAstrology = '';  // 課程-B：占星循環班現場照片
+const imgCourseWaite = '';      // 課程-C：偉特塔羅團練現場照片
+const imgCourseReiki = '';      // 課程-D：七脈輪與靈氣現場照片
+const imgCourseThoth = '';      // 課程-E：托特塔羅循環班現場照片
+const imgCourseNumerology = ''; // 課程-F：生命靈數循環班現場照片
+
+// 【2. 交流會現場照片】
+const imgMeetup = '';           // 課程-G：命理交流會現場照片
+
+// 【3. 四大主題體驗課程情境海報（4張）】
+const imgWorkshopMeihua = '';   // 課程-H：塏易學 梅花易數情境海報
+const imgWorkshopUnicorn = '';  // 課程-I：獨角獸流體畫情境海報
+const imgWorkshopZentangle = '';// 課程-J：禪繞畫體驗 禪繞羽毛情境海報
+const imgWorkshopAroma = '';    // 課程-K：牌卡調香體驗情境海報
+
+// 固定循環課程資料
+const recurringCourses = [
+  {
+    id: 'mon',
+    code: '課程-A',
+    day: '每週一',
+    dayColor: 'bg-[#80A9D4] text-white',
+    title: '光與阿卡西紀錄',
+    teacher: '古古老師',
+    time: '20:00 - 23:00',
+    price: '包月四堂 2000元',
+    priceNote: '平均每堂 500元',
+    extraNote: '可單報阿卡西紀錄團練（20:00-21:00 每次250元）',
+    image: imgCourseAkashic,
+    icon: 'akashic',
+  },
+  {
+    id: 'tue',
+    code: '課程-B',
+    day: '每週二',
+    dayColor: 'bg-[#9880B8] text-white',
+    title: '占星循環班',
+    teacher: '皮皮老師',
+    time: '20:00 - 23:00',
+    price: '包月四堂 2000元',
+    priceNote: '平均每堂 500元',
+    extraNote: '第一次包月報名送 1.5 小時個人基礎加強',
+    image: imgCourseAstrology,
+    icon: 'astrology',
+  },
+  {
+    id: 'wed',
+    code: '課程-C',
+    day: '每週三',
+    dayColor: 'bg-[#5B8EA6] text-white',
+    title: '偉特塔羅團練',
+    teacher: '以恩老師',
+    time: '20:00 - 21:30',
+    price: '包月四堂 1000元',
+    priceNote: '平均每堂 250元',
+    extraNote: '亦可單堂報名團練（每次250元）',
+    image: imgCourseWaite,
+    icon: 'tarot',
+  },
+  {
+    id: 'thu',
+    code: '課程-D',
+    day: '每週四',
+    dayColor: 'bg-[#58A497] text-white',
+    title: '七脈輪與靈氣',
+    teacher: '曉宇老師',
+    time: '20:00 - 23:00',
+    price: '包月四堂 2000元',
+    priceNote: '平均每堂 500元',
+    extraNote: '可單報靈氣團練（21:45-23:00 每次250元）',
+    image: imgCourseReiki,
+    icon: 'reiki',
+  },
+  {
+    id: 'fri',
+    code: '課程-E',
+    day: '每週五',
+    dayColor: 'bg-[#C27BA0] text-white',
+    title: '托特塔羅循環班',
+    teacher: '曉宇老師',
+    time: '20:00 - 23:00',
+    price: '包月四堂 2000元',
+    priceNote: '平均每堂 500元',
+    extraNote: '可單報托特塔羅團練（20:00-21:00 每次250元）',
+    image: imgCourseThoth,
+    icon: 'thoth',
+  },
+  {
+    id: 'sat',
+    code: '課程-F',
+    day: '每週六',
+    dayColor: 'bg-[#E08D5B] text-white',
+    title: '生命靈數循環班',
+    teacher: '皮皮老師',
+    time: '20:00 - 23:00',
+    price: '包月四堂 2000元',
+    priceNote: '平均每堂 500元',
+    extraNote: '從靈數連線、流年到合盤對應，扎實建立解盤思維',
+    image: imgCourseNumerology,
+    icon: 'numerology',
+  },
+];
+
+// 交流會資料
+const meetupInfo = {
+  code: '課程-G',
+  title: '命理交流會',
+  fee: '300元 / 人',
+  topics: ['占星', '八字', '紫微斗數', '多元命理系統研討'],
+  sessions: [
+    { date: '9/05（六）', time: '15:00 - 18:00' },
+    { date: '9/20（日）', time: '15:00 - 18:00' },
+    { date: '9/26（六）', time: '15:00 - 18:00' },
+  ],
+  description: '占星、八字、紫微斗數等命理系統，都歡迎一起來交流！不論是初學者還是執業老師，在溫暖無壓力的空間裡，互相切磋盤面、交流實務心得。',
+  image: imgMeetup,
+};
+
+// 四大主題體驗課程資料（還原 Canva 原站豐富細節）
+const workshops = [
+  {
+    id: 'meihua',
+    code: '課程-H',
+    title: '塏易學 梅花易數',
+    subtitle: '最適合現代人的決策工具',
+    teacher: '仲塏老師',
+    duration: '12小時精華',
+    fee: 'NT$15,000元 / 人',
+    description: '採用客觀系統與模型，運用邏輯思維，清晰分析人生選項中的優劣勢。擺脫模糊猜測，以易理象數為指引，在重大人生節點做出精準決策。',
+    image: imgWorkshopMeihua,
+    badge: '專業研修',
+    icon: 'bazi',
+  },
+  {
+    id: 'unicorn',
+    code: '課程-I',
+    title: '畫出你的獨角獸',
+    subtitle: '獨角獸流體畫療癒體驗',
+    teacher: '星靈織語客座講師',
+    duration: '9/12（六）13:00 - 18:00',
+    fee: 'NT$3,380元 / 人',
+    description: '探索色彩，也遇見自己。以直覺流動畫勾勒專屬於你的獨角獸能量，在色彩流動中釋放壓力與緊繃，親手創作獨一無二的身心靈療癒作品。',
+    image: imgWorkshopUnicorn,
+    badge: '熱門手作',
+    icon: 'art',
+  },
+  {
+    id: 'zentangle',
+    code: '課程-J',
+    title: '禪繞畫體驗・禪繞羽毛',
+    subtitle: '線條裡的專注與呼吸',
+    teacher: '星靈織語客座講師',
+    duration: '9/13（日）14:00 - 16:00',
+    fee: 'NT$980元 / 人',
+    feeNote: '包含一張 Zentangle 官方紙磚、筆材現場出借',
+    description: '以羽毛為主題，透過禪繞畫感受重複線條帶來的極致專注與平靜。不用擔心畫得像不像，沒有對錯、無須橡皮擦，只要放鬆享受每一筆創作的當下。',
+    image: imgWorkshopZentangle,
+    badge: '療癒靜心',
+    icon: 'feather',
+  },
+  {
+    id: 'aroma',
+    code: '課程-K',
+    title: '牌卡調香體驗',
+    subtitle: '直覺香氣與心靈訊息的共振',
+    teacher: '星靈織語客座講師',
+    duration: '10/4（日）14:00 - 16:00',
+    fee: 'NT$999元 / 人',
+    description: '抽一張牌，聽見此刻心靈最需要的溫暖訊息。依照牌卡給予的能量指引，親自挑選天然精油，調製一瓶專屬於你、能隨身安撫身心的療癒香氣。',
+    image: imgWorkshopAroma,
+    badge: '感官調頻',
+    icon: 'aroma',
+  },
+];
 ---
 
 <Layout
   title="活動與課程 — 星靈織語 Starwoven"
-  description="一起學習，一起交流，一起成長。只要你對身心靈命理有熱忱，歡迎加入星靈織語的固定循環班、命理交流會與特色手作工作坊。"
+  description="一起學習，一起交流，一起成長。只要你對身心靈命理有熱忱，歡迎加入星靈織語的固定循環班、命理交流會與特色主題體驗工作坊。"
   theme="auto"
 >
-  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <!-- Header -->
-    <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] dark:text-white tracking-wider transition-colors">活動與課程</h1>
-      <p class="text-lg text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed transition-colors">
-        一起學習，一起交流，一起成長。<br />
-        只要你對身心靈命理有熱忱，歡迎加入星靈織語的學習旅程。
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+    
+    <!-- 頁頭 Header：還原 Canva 原始手繪溫暖意象 -->
+    <header class="text-center max-w-3xl mx-auto mb-16 sm:mb-24 space-y-4">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium tracking-wider bg-[#80A9D4]/15 text-[#2E2A4F] dark:bg-white/10 dark:text-[#8FB8E8] transition-colors">
+        ✦ 星靈織語共學空間 ✦
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+        課程與活動
+      </h1>
+      <p class="text-lg sm:text-xl text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+        一起學習，一起交流，一起成長。<br class="hidden sm:inline" />
+        只要你對身心靈命理有熱忱，歡迎加入星靈織語的共學旅程。
       </p>
-      <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
+      <div class="w-20 h-1.5 bg-[#80A9D4] mx-auto rounded-full mt-3 opacity-80"></div>
     </header>
 
-    <!-- Content Preview: Fixed Courses -->
-    <div class="space-y-12">
-      <section>
-        <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-6 flex items-center gap-2 transition-colors">
-          <span class="w-2.5 h-6 bg-[#80A9D4] rounded-full inline-block"></span>
-          固定循環課程
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            { title: '生命靈數循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '包月四堂2000元（以月為單位報名）' },
-            { title: '光與阿卡西紀錄', teacher: '古古老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
-            { title: '占星循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '包月四堂2000元（以月為單位報名）' },
-            { title: '偉特塔羅課程', teacher: '以恩老師', time: '20:00-22:00', price: '包月四堂1200元（每週三）' },
-            { title: '偉特塔羅團練', teacher: '以恩老師', time: '20:00-21:30', price: '包月四堂1000元（單堂團練250元）' },
-            { title: '七脈輪與靈氣', teacher: '曉宇老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
-            { title: '托特塔羅循環班', teacher: '曉宇老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
-          ].map((course) => (
+    <!-- ======================================================== -->
+    <!-- 【專區 1】：固定課程 (Recurring Classes)                 -->
+    <!-- ======================================================== -->
+    <section class="mb-20 sm:mb-28">
+      
+      <!-- 專區標題列 -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-7 bg-[#80A9D4] rounded-full inline-block"></span>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+              固定循環課程
+            </h2>
+          </div>
+          <p class="text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 mt-2 font-light tracking-wide transition-colors">
+            每週一至週六常態循環開課・包月制深度陪伴・可單獨報名團練
+          </p>
+        </div>
 
-            <div class="bg-white/80 dark:bg-white/10 backdrop-blur-xs p-6 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs transition-all">
-              <h3 class="text-lg font-bold text-[#2E2A4F] dark:text-white transition-colors">{course.title}</h3>
-              <p class="text-sm text-[#80A9D4] dark:text-[#8FB8E8] font-medium mt-1 transition-colors">講師：{course.teacher}</p>
-              <p class="text-xs text-[#3A3A3A]/70 dark:text-white/70 mt-1 transition-colors">時段：{course.time}</p>
-              <div class="mt-4 pt-3 border-t border-gray-100 dark:border-white/10 text-sm font-semibold text-[#2E2A4F] dark:text-[#FCE794] transition-colors">
-                {course.price}
+        <div class="text-xs sm:text-sm text-[#80A9D4] dark:text-[#8FB8E8] font-semibold bg-[#80A9D4]/10 dark:bg-white/10 px-4 py-2 rounded-full self-start sm:self-auto">
+          每期 4 堂 2,000 元（平均 500 元 / 堂）
+        </div>
+      </div>
+
+      <!-- 6 大固定課程卡片 Grid (3 欄直式大卡片，含留圖空間) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-7 sm:gap-8">
+        {recurringCourses.map((c) => (
+          <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-6 sm:p-7 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
+            
+            <div>
+              <!-- 卡片頂部：星期膠囊標籤 + 課程照片插槽 -->
+              <div class="relative w-full aspect-16/10 rounded-2xl overflow-hidden mb-5 bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10">
+                
+                <!-- 星期色彩標籤（左上角浮動膠囊） -->
+                <span class:list={['absolute top-3 left-3 z-10 text-xs font-bold px-3 py-1 rounded-full shadow-md tracking-wider', c.dayColor]}>
+                  {c.day}
+                </span>
+
+                <!-- 留圖空間（Photo / Illustration Placeholder） -->
+                {c.image ? (
+                  <img
+                    src={c.image}
+                    alt={`${c.title} 現場照片`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="w-full h-full border-2 border-dashed border-[#80A9D4]/40 dark:border-white/20 flex flex-col items-center justify-center p-4 text-center group-hover:border-[#2E2A4F]/40 dark:group-hover:border-white/40 transition-colors">
+                    
+                    {/* 課程主題 SVG 符號 */}
+                    {c.icon === 'akashic' && (
+                      <svg class="w-10 h-10 text-[#80A9D4] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                      </svg>
+                    )}
+                    {c.icon === 'astrology' && (
+                      <svg class="w-10 h-10 text-[#9880B8] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="9" />
+                        <ellipse cx="12" cy="12" rx="9" ry="4" transform="rotate(-30 12 12)" />
+                      </svg>
+                    )}
+                    {c.icon === 'tarot' && (
+                      <svg class="w-10 h-10 text-[#5B8EA6] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="5" y="3" width="14" height="18" rx="2" />
+                        <circle cx="12" cy="12" r="2" />
+                      </svg>
+                    )}
+                    {c.icon === 'reiki' && (
+                      <svg class="w-10 h-10 text-[#58A497] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M7 11c0-2.5 2-4.5 5-4.5s5 2 5 4.5" />
+                        <path d="M5 14c0 3 3.5 6 7 6s7-3 7-6" />
+                      </svg>
+                    )}
+                    {c.icon === 'thoth' && (
+                      <svg class="w-10 h-10 text-[#C27BA0] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12,2 22,8.5 22,15.5 12,22 2,15.5 2,8.5" />
+                      </svg>
+                    )}
+                    {c.icon === 'numerology' && (
+                      <svg class="w-10 h-10 text-[#E08D5B] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <polygon points="12,2 22,19 2,19" />
+                        <circle cx="12" cy="12" r="2" />
+                      </svg>
+                    )}
+
+                    <span class="text-[11px] font-semibold text-[#2E2A4F]/70 dark:text-white/70 tracking-wider">
+                      {c.code}・活動現場照片
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <!-- 課程標題 -->
+              <h3 class="text-xl sm:text-2xl font-bold font-huninn text-[#2E2A4F] dark:text-white mb-2 tracking-wide transition-colors">
+                {c.title}
+              </h3>
+
+              <!-- 講師與時段資訊 -->
+              <div class="flex items-center gap-3 text-sm text-[#3A3A3A]/80 dark:text-white/80 mb-4 font-medium transition-colors">
+                <span class="inline-flex items-center gap-1 text-[#80A9D4] dark:text-[#8FB8E8] font-semibold">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                    <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
+                  </svg>
+                  {c.teacher}
+                </span>
+                <span>•</span>
+                <span>{c.time}</span>
+              </div>
+
+              <!-- 費用與特色說明 -->
+              <div class="p-3.5 rounded-xl bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/15 dark:border-white/10 mb-4 transition-colors">
+                <div class="flex items-center justify-between font-bold text-sm sm:text-base text-[#2E2A4F] dark:text-white">
+                  <span>{c.price}</span>
+                  <span class="text-xs font-normal text-[#80A9D4] dark:text-[#8FB8E8]">{c.priceNote}</span>
+                </div>
+                {c.extraNote && (
+                  <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60 mt-1.5 pt-1.5 border-t border-current/10 leading-relaxed">
+                    ✦ {c.extraNote}
+                  </p>
+                )}
               </div>
             </div>
-          ))}
-        </div>
-      </section>
 
-      <!-- Workshops & Events -->
-      <section>
-        <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-6 flex items-center gap-2 transition-colors">
-          <span class="w-2.5 h-6 bg-[#8FB8E8] rounded-full inline-block"></span>
-          主題體驗與交流會
+            <!-- 底部報名諮詢小按鈕 -->
+            <div class="pt-3 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
+              <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">採包月小班制</span>
+              <a
+                href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-xs font-semibold text-[#80A9D4] hover:text-[#2E2A4F] dark:text-[#8FB8E8] dark:hover:text-white flex items-center gap-1 transition-colors"
+              >
+                私訊詢問檔期
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 【專區 2】：交流會 (Meetups)                             -->
+    <!-- ======================================================== -->
+    <section class="mb-20 sm:mb-28">
+      
+      <!-- 專區標題列 -->
+      <div class="flex items-center gap-2.5 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
+        <span class="w-3 h-7 bg-[#8FB8E8] rounded-full inline-block"></span>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+          實體交流會
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-white/80 dark:bg-white/10 p-6 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs transition-all">
-            <h3 class="text-lg font-bold text-[#2E2A4F] dark:text-white transition-colors">命理交流會（占星、八字、紫微斗數）</h3>
-            <p class="text-sm text-[#3A3A3A]/75 dark:text-white/75 mt-2 transition-colors">費用：300元 / 人。歡迎所有身心靈系統夥伴互相研討、交流練習。</p>
+      </div>
+
+      <!-- 交流會特色大卡片（左右寬幅雙欄設計） -->
+      <div class="bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-10 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl transition-all duration-300">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <!-- 左側：交流會照片插槽 (佔 5 欄) -->
+          <div class="lg:col-span-5 w-full aspect-4/3 sm:aspect-16/10 lg:aspect-square rounded-2xl overflow-hidden bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10">
+            {meetupInfo.image ? (
+              <img
+                src={meetupInfo.image}
+                alt="命理交流會現場"
+                class="w-full h-full object-cover"
+              />
+            ) : (
+              <div class="w-full h-full border-2 border-dashed border-[#80A9D4]/40 dark:border-white/20 flex flex-col items-center justify-center p-6 text-center">
+                <svg class="w-14 h-14 text-[#8FB8E8] mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                </svg>
+                <p class="text-sm font-semibold text-[#2E2A4F] dark:text-white">
+                  {meetupInfo.code}・命理交流會活動照
+                </p>
+                <p class="text-xs text-[#3A3A3A]/60 dark:text-white/60 mt-1">
+                  現場學員互動交流・實體聚會合影
+                </p>
+              </div>
+            )}
           </div>
-          <div class="bg-white/80 dark:bg-white/10 p-6 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs transition-all">
-            <h3 class="text-lg font-bold text-[#2E2A4F] dark:text-white transition-colors">體驗課程（獨角獸流體畫 / 禪繞畫 / 牌卡調香）</h3>
-            <p class="text-sm text-[#3A3A3A]/75 dark:text-white/75 mt-2 transition-colors">不定期舉辦的直覺創作與能量調頻體驗，帶領大家沉澱心靈。</p>
+
+          <!-- 右側：交流會詳細內容與場次 (佔 7 欄) -->
+          <div class="lg:col-span-7 flex flex-col justify-between space-y-6">
+            <div>
+              <div class="flex flex-wrap items-center gap-3 mb-3">
+                <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider">
+                  {meetupInfo.title}
+                </h3>
+                <span class="px-3.5 py-1 rounded-full text-sm font-bold bg-[#80A9D4] text-white shadow-xs">
+                  參加費用：{meetupInfo.fee}
+                </span>
+              </div>
+
+              <!-- 研討系統標籤 -->
+              <div class="flex flex-wrap gap-2 mb-4">
+                {meetupInfo.topics.map((t) => (
+                  <span class="text-xs bg-[#EAF3F8] dark:bg-white/10 text-[#2E2A4F] dark:text-white px-2.5 py-1 rounded-md font-medium">
+                    ✦ {t}
+                  </span>
+                ))}
+              </div>
+
+              <p class="text-base text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed mb-6">
+                {meetupInfo.description}
+              </p>
+
+              <!-- 開課場次清單 -->
+              <div class="p-4 sm:p-5 rounded-2xl bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10">
+                <p class="text-xs font-semibold uppercase tracking-wider text-[#80A9D4] dark:text-[#8FB8E8] mb-3">
+                  近期交流會場次（原站規劃）
+                </p>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {meetupInfo.sessions.map((s) => (
+                    <div class="p-2.5 rounded-xl bg-white/80 dark:bg-white/10 text-center border border-[#80A9D4]/15 dark:border-white/10 shadow-2xs">
+                      <p class="text-sm font-bold text-[#2E2A4F] dark:text-white">{s.date}</p>
+                      <p class="text-xs text-[#3A3A3A]/70 dark:text-white/70 mt-0.5">{s.time}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <CTAButton variant="primary" text="報名交流會" class="w-full sm:w-auto" />
+            </div>
+
           </div>
+
         </div>
-      </section>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 【專區 3】：體驗課程 (Workshops & Experiences)          -->
+    <!-- ======================================================== -->
+    <section class="mb-20 sm:mb-28">
+      
+      <!-- 專區標題列 -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-7 bg-[#F7971E] rounded-full inline-block"></span>
+            <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+              主題體驗課程
+            </h2>
+          </div>
+          <p class="text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 mt-2 font-light tracking-wide transition-colors">
+            不定期主題工作坊・直覺創作・牌卡香氛・易學哲思
+          </p>
+        </div>
+        <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">採單場預約報名制</span>
+      </div>
+
+      <!-- 4 大體驗課程卡片 Grid (2 欄海報式寬幅大卡片) -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+        {workshops.map((w) => (
+          <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
+            
+            <div>
+              <!-- 卡片頂部照片插槽 (大面積海報留圖區) -->
+              <div class="relative w-full aspect-16/9 rounded-2xl overflow-hidden mb-6 bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10">
+                
+                <!-- 標籤 Badge -->
+                <span class="absolute top-3 left-3 z-10 text-xs font-bold px-3 py-1 rounded-full bg-[#2E2A4F] text-white dark:bg-white dark:text-[#2E2A4F] shadow-md tracking-wider">
+                  {w.badge}
+                </span>
+
+                <!-- 價格標籤（右下角） -->
+                <span class="absolute bottom-3 right-3 z-10 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#1E1B3A]/95 text-[#2E2A4F] dark:text-[#FCE794] shadow-md border border-[#80A9D4]/20">
+                  {w.fee}
+                </span>
+
+                <!-- 留圖空間（Workshop Photo Placeholder） -->
+                {w.image ? (
+                  <img
+                    src={w.image}
+                    alt={`${w.title} 海報`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="w-full h-full border-2 border-dashed border-[#80A9D4]/40 dark:border-white/20 flex flex-col items-center justify-center p-6 text-center group-hover:border-[#2E2A4F]/40 dark:group-hover:border-white/40 transition-colors">
+                    
+                    {/* 工作坊特色圖示 */}
+                    {w.icon === 'bazi' && (
+                      <svg class="w-12 h-12 text-[#80A9D4] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M12 3a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9" />
+                        <circle cx="12" cy="7.5" r="1" fill="currentColor" />
+                        <circle cx="12" cy="16.5" r="1" />
+                      </svg>
+                    )}
+                    {w.icon === 'art' && (
+                      <svg class="w-12 h-12 text-[#C27BA0] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+                        <circle cx="12" cy="12" r="4" />
+                      </svg>
+                    )}
+                    {w.icon === 'feather' && (
+                      <svg class="w-12 h-12 text-[#58A497] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
+                        <line x1="16" y1="8" x2="2" y2="22" />
+                        <line x1="17.5" y1="15" x2="9" y2="15" />
+                      </svg>
+                    )}
+                    {w.icon === 'aroma' && (
+                      <svg class="w-12 h-12 text-[#E08D5B] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <path d="M10 2v4M14 2v4M8 6h8M6 10h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10z" />
+                        <circle cx="12" cy="15" r="2" />
+                      </svg>
+                    )}
+
+                    <span class="text-xs font-semibold text-[#2E2A4F]/70 dark:text-white/70 tracking-wider">
+                      {w.code}・工作坊情境海報
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <!-- 課程標題與副標 -->
+              <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide mb-1 transition-colors">
+                {w.title}
+              </h3>
+              <p class="text-sm font-medium text-[#80A9D4] dark:text-[#8FB8E8] mb-4">
+                {w.subtitle}
+              </p>
+
+              <!-- 時段與講師標籤 -->
+              <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-medium text-[#3A3A3A]/80 dark:text-white/80 mb-4">
+                <span class="inline-flex items-center gap-1 bg-[#EAF3F8] dark:bg-white/10 px-2.5 py-1 rounded-md">
+                  <svg class="w-3.5 h-3.5 text-[#80A9D4] dark:text-[#8FB8E8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 6v6l4 2" />
+                  </svg>
+                  {w.duration}
+                </span>
+                <span class="inline-flex items-center gap-1 bg-[#EAF3F8] dark:bg-white/10 px-2.5 py-1 rounded-md">
+                  <svg class="w-3.5 h-3.5 text-[#80A9D4] dark:text-[#8FB8E8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                    <circle cx="8.5" cy="7" r="4" />
+                  </svg>
+                  {w.teacher}
+                </span>
+              </div>
+
+              <!-- 溫暖介紹文案 -->
+              <p class="text-sm sm:text-base text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed mb-4">
+                {w.description}
+              </p>
+
+              {w.feeNote && (
+                <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60 bg-[#EAF3F8]/50 dark:bg-white/5 p-2 rounded-lg mb-4">
+                  ＊ {w.feeNote}
+                </p>
+              )}
+            </div>
+
+            <!-- 卡片底部報名按鈕 -->
+            <div class="pt-5 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
+              <div>
+                <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50 block">報名費用</span>
+                <span class="text-lg font-bold font-huninn text-[#2E2A4F] dark:text-[#FCE794]">{w.fee}</span>
+              </div>
+              <a
+                href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-[#80A9D4] hover:bg-[#6b97c4] px-4 py-2 rounded-full shadow-xs hover:shadow transition-all active:scale-95"
+              >
+                <span>私訊報名</span>
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
+            </div>
+
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- 頁底 CTA 諮詢報名區塊                                   -->
+    <!-- ======================================================== -->
+    <div class="text-center bg-white/75 dark:bg-white/10 backdrop-blur-md p-8 sm:p-14 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 max-w-2xl mx-auto space-y-4 shadow-sm transition-colors">
+      <h2 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+        想了解更多課程或報名交流？
+      </h2>
+      <p class="text-base text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed font-light transition-colors">
+        歡迎點選下方按鈕加入官方 LINE，私訊詢問最新開班檔期與詳細報名資訊。
+      </p>
+      <div class="pt-2">
+        <CTAButton variant="hero" text="點選報名詢問" />
+      </div>
     </div>
 
-    <!-- CTA Section -->
-    <div class="mt-16 text-center bg-white/60 dark:bg-white/10 p-8 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 max-w-xl mx-auto space-y-4 transition-colors">
-      <h2 class="text-xl font-bold text-[#2E2A4F] dark:text-white transition-colors">想了解更多課程或報名交流？</h2>
-      <p class="text-sm text-[#3A3A3A]/80 dark:text-white/80 transition-colors">歡迎點選下方按鈕加入官方 LINE，私訊詢問詳細報名資訊。</p>
-      <CTAButton variant="primary" text="點選報名詢問" />
-    </div>
   </div>
 </Layout>
