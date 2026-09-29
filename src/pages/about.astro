@@ -2,28 +2,149 @@
 import Layout from '../layouts/Layout.astro';
 import CTAButton from '../components/CTAButton.astro';
 
-const founders = [
+// ==========================================
+// 關於我們圖片素材路徑配置（ComfyUI 生圖或取得真圖後填入）
+// 例如：const imgFounderYien = '/assets/team_yien_v1.png';
+// 若為空字串，將自動呈現精美靈性星空 SVG 佔位符與代碼標籤
+// ==========================================
+
+// 【1. 品牌故事氛圍插圖】
+const imgAboutBrand = '';       // 關於-A：品牌故事氛圍插圖（星空下織光網絡，Canva 原版 w=447, h=517）
+
+// 【2. 創辦人形象照（2位）】
+const imgFounderYien = '';      // 關於-B：創辦人以恩形象照（Canva 原版 269×269 圓形頭像）
+const imgFounderPipi = '';      // 關於-C：創辦人皮皮形象照（Canva 原版 269×269 圓形頭像）
+
+// 【3. 星靈織語夥伴形象照（8位，2欄 × 4排）】
+const imgMemberDaxin = '';      // 關於-D：達心形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberXiaoyu = '';     // 關於-E：曉宇形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberYouyou = '';     // 關於-F：悠悠形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberMumu = '';       // 關於-G：姆姆形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberLinyue = '';     // 關於-H：凜月形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberBaibai = '';     // 關於-I：白白形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberMigo = '';       // 關於-J：Migo 形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberGugu = '';       // 關於-K：古古形象照（Canva 原版 269×269 圓形頭像）
+
+interface Person {
+  name: string;
+  code: string;
+  role?: string;
+  image: string;
+  skills: string[];
+}
+
+const founders: Person[] = [
   {
     name: '以恩',
+    code: '關於-B',
     role: '星靈織語創辦人',
-    skills: ['塔羅占卜', '星盤解析', '臼井靈氣', '光的傳遞', '寵物溝通', '阿卡西紀錄解讀', '偉特塔羅占卜培訓'],
+    image: imgFounderYien,
+    skills: [
+      '塔羅占卜',
+      '星盤解析',
+      '臼井靈氣',
+      '光的傳遞',
+      '寵物溝通',
+      '阿卡西紀錄解讀',
+      '偉特塔羅占卜培訓',
+    ],
   },
   {
     name: '皮皮',
+    code: '關於-C',
     role: '星靈織語創辦人',
-    skills: ['占星教學', '師資培訓', '占星課程循環班導師', '占星解盤', '生命靈數', '阿卡西解讀', '臼井靈氣', '光的傳遞'],
+    image: imgFounderPipi,
+    skills: [
+      '占星教學',
+      '師資培訓',
+      '占星課程循環班導師',
+      '占星解盤',
+      '生命靈數',
+      '阿卡西解讀',
+      '臼井靈氣',
+      '光的傳遞',
+    ],
   },
 ];
 
-const members = [
-  { name: '達心', skills: ['八字命理', '塔羅占卜', '八字基礎教學', '臼井靈氣'] },
-  { name: '悠悠', skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
-  { name: '曉宇', skills: ['星盤解析', '塔羅占卜', '占星教學', '托特塔羅教學', '臼井靈氣', '阿育吠陀靈氣', '亢達里尼靈氣', '靈氣引導教學'] },
-  { name: '姆姆', skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
-  { name: 'Migo', skills: ['水晶手串設計', '七脈輪練習生', '臼井靈氣', '阿卡西紀錄解讀'] },
-  { name: '凜月', skills: ['偉特塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
-  { name: '白白', skills: ['文字療癒', '脈輪檢測', '光的能量', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'] },
-  { name: '古古', skills: ['水晶飾品設計', '礦訊解讀', '火漆章占卜', '阿卡西紀錄解讀', '光的能量傳遞', 'Henna圖騰繪製'] },
+// 嚴格對應 Canva 原始排版：2 欄 × 4 排 (2*4 行)
+const members: Person[] = [
+  // 第 1 排 (Row 1)
+  {
+    name: '達心',
+    code: '關於-D',
+    image: imgMemberDaxin,
+    skills: ['八字命理', '塔羅占卜', '八字基礎教學', '臼井靈氣'],
+  },
+  {
+    name: '曉宇',
+    code: '關於-E',
+    image: imgMemberXiaoyu,
+    skills: [
+      '星盤解析',
+      '塔羅占卜',
+      '占星教學',
+      '托特塔羅教學',
+      '臼井靈氣',
+      '阿育吠陀靈氣',
+      '亢達里尼靈氣',
+      '靈氣引導教學',
+    ],
+  },
+  // 第 2 排 (Row 2)
+  {
+    name: '悠悠',
+    code: '關於-F',
+    image: imgMemberYouyou,
+    skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
+  },
+  {
+    name: '姆姆',
+    code: '關於-G',
+    image: imgMemberMumu,
+    skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
+  },
+  // 第 3 排 (Row 3)
+  {
+    name: '凜月',
+    code: '關於-H',
+    image: imgMemberLinyue,
+    skills: ['偉特塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
+  },
+  {
+    name: '白白',
+    code: '關於-I',
+    image: imgMemberBaibai,
+    skills: [
+      '文字療癒',
+      '脈輪檢測',
+      '光的能量',
+      '占星練習生',
+      '臼井靈氣',
+      '光的傳遞',
+      '阿卡西紀錄解讀',
+    ],
+  },
+  // 第 4 排 (Row 4)
+  {
+    name: 'Migo',
+    code: '關於-J',
+    image: imgMemberMigo,
+    skills: ['水晶手串設計', '七脈輪練習生', '臼井靈氣', '阿卡西紀錄解讀'],
+  },
+  {
+    name: '古古',
+    code: '關於-K',
+    image: imgMemberGugu,
+    skills: [
+      '水晶飾品設計',
+      '礦訊解讀',
+      '火漆章占卜',
+      '阿卡西紀錄解讀',
+      '光的能量傳遞',
+      'Henna圖騰繪製',
+    ],
+  },
 ];
 ---
 
@@ -35,79 +156,261 @@ const members = [
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] dark:text-white tracking-wider transition-colors">關於我們</h1>
-      <p class="text-lg text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed transition-colors">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-[#80A9D4]/15 text-[#2E2A4F] dark:text-[#8FB8E8] border border-[#80A9D4]/25 dark:border-white/10">
+        <span>✦</span>
+        <span>ABOUT STARWOVEN</span>
+        <span>✦</span>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+        關於我們
+      </h1>
+      <p class="text-lg text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed transition-colors font-serif">
         陪你一起在星光下，織出屬於自己的生命故事。
       </p>
       <div class="w-16 h-1 bg-[#80A9D4] mx-auto rounded-full"></div>
     </header>
 
-    <!-- Brand Story Section -->
-    <section class="bg-white/80 dark:bg-white/10 backdrop-blur-xs p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs mb-16 transition-all">
-      <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-6 transition-colors">我們從抱團取暖開始，現在我們想要傳承。</h2>
-      <div class="space-y-4 text-base text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed transition-colors">
-        <p>
-          專業不該只是個人的累積，更應該透過交流、分享與陪伴，持續傳承下去。
-        </p>
-        <p>
-          這裡匯聚塔羅、占星、八字、紫微、靈氣及各種不同領域的夥伴，從學習、交流到實際服務，讓有經驗的人願意分享，讓正在學習的人找到方向。
-        </p>
-        <p>
-          我們希望讓每一份知識與經驗不被埋沒，而是在一次次相遇中延續、傳承。星靈織語，織起人與人的連結，也讓每一道光持續傳下去。
-        </p>
+    <!-- Section 1: 品牌故事 Section (左右雙欄格局，完美呼應 Canva 視覺與留圖槽) -->
+    <section class="bg-white/85 dark:bg-white/10 backdrop-blur-xs p-6 sm:p-10 lg:p-12 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 shadow-sm mb-20 transition-all">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+        <!-- 左側：品牌文字 -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-[#EAF3F8] dark:bg-white/10 text-[#2E2A4F] dark:text-[#B3C8E8] border border-[#80A9D4]/20">
+            星靈緣起
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] dark:text-white leading-snug transition-colors">
+            我們從抱團取暖開始，<br class="hidden sm:inline" />現在我們想要傳承。
+          </h2>
+          <div class="space-y-4 text-base sm:text-lg text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed transition-colors">
+            <p>
+              專業不該只是個人的累積，更應該透過交流、分享與陪伴，持續傳承下去。
+            </p>
+            <p>
+              這裡匯聚塔羅、占星、八字、紫微、靈氣及各種不同領域的夥伴，從學習、交流到實際服務，讓有經驗的人願意分享，讓正在學習的人找到方向。
+            </p>
+            <p>
+              我們希望讓每一份知識與經驗不被埋沒，而是在一次次相遇中延續、傳承。
+            </p>
+            <p class="font-medium text-[#2E2A4F] dark:text-[#8FB8E8] pt-2 border-t border-[#80A9D4]/20 dark:border-white/10">
+              星靈織語，織起人與人的連結，也讓每一道光持續傳下去。
+            </p>
+          </div>
+        </div>
+
+        <!-- 右側：品牌故事氛圍插圖（留圖槽 關於-A，Canva 原版 w=447, h=517） -->
+        <div class="lg:col-span-5">
+          <div class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md bg-gradient-to-br from-[#80A9D4]/15 via-[#B3C8E8]/10 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex flex-col items-center justify-center p-6 text-center group">
+            {imgAboutBrand ? (
+              <img
+                src={imgAboutBrand}
+                alt="星靈織語品牌故事插圖"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            ) : (
+              <div class="flex flex-col items-center justify-center space-y-4">
+                <!-- 精美靈性編織光芒 SVG -->
+                <div class="relative w-28 h-28 flex items-center justify-center">
+                  <div class="absolute inset-0 rounded-full bg-[#80A9D4]/20 dark:bg-white/10 animate-pulse"></div>
+                  <svg class="w-16 h-16 text-[#80A9D4] dark:text-[#B3C8E8] transform group-hover:rotate-12 transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
+                    <path d="M2 12h20"></path>
+                    <path d="m4.93 4.93 4.24 4.24"></path>
+                    <path d="m14.83 14.83 4.24 4.24"></path>
+                    <path d="m14.83 9.17 4.24-4.24"></path>
+                    <path d="m4.93 19.07 4.24-4.24"></path>
+                  </svg>
+                  <span class="absolute -top-1 -right-1 text-amber-400 text-lg">✦</span>
+                  <span class="absolute -bottom-1 -left-1 text-[#80A9D4] text-sm">✧</span>
+                </div>
+                <div class="space-y-1">
+                  <span class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-[#2E2A4F] text-[#EAF3F8] dark:bg-black/60 dark:text-[#8FB8E8] border border-white/20">
+                    [關於]-[圖片 A]
+                  </span>
+                  <p class="text-sm font-bold text-[#2E2A4F] dark:text-white pt-1">
+                    品牌故事插圖展示槽
+                  </p>
+                  <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60">
+                    Canva 規格 447 × 517 · 星空下編織的光芒網絡
+                  </p>
+                </div>
+              </div>
+            )}
+            <div class="absolute bottom-3 right-3 text-[10px] text-[#3A3A3A]/40 dark:text-white/40 font-mono">
+              w=447 · h=517
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Founders Section -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-8 text-center transition-colors">星靈織語創辦人</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    <!-- Section 2: 認識星靈夥伴（Canva 原版第 2 區塊過渡段落） -->
+    <section class="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <div class="flex items-center justify-center gap-3">
+        <span class="text-amber-400 text-base">✦</span>
+        <div class="w-12 h-px bg-[#80A9D4]/40"></div>
+        <h2 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] dark:text-white tracking-wide transition-colors">
+          認識星靈夥伴
+        </h2>
+        <div class="w-12 h-px bg-[#80A9D4]/40"></div>
+        <span class="text-amber-400 text-base">✦</span>
+      </div>
+      <p class="text-base sm:text-lg text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed transition-colors font-serif px-4">
+        每位夥伴都有不同的專長與風格，願用自己的專業與經驗，<br class="hidden sm:inline" />
+        陪伴你看見更多可能，找到最適合自己的答案。
+      </p>
+      <div class="flex justify-center gap-2 text-xs text-[#80A9D4] pt-1">
+        <span>✧</span>
+        <span>✧</span>
+        <span>✧</span>
+      </div>
+    </section>
+
+    <!-- Section 3: 星靈織語創辦人 (2 欄 × 1 排 橫式名片) -->
+    <section class="mb-20">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-2 h-6 rounded-full bg-[#80A9D4]"></div>
+        <h3 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] dark:text-white transition-colors">
+          星靈織語創辦人
+        </h3>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-200 border border-amber-500/30 font-medium">
+          Founders
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {founders.map((founder) => (
-          <div class="bg-white/85 dark:bg-white/10 p-8 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 shadow-sm text-center transition-all">
-            <div class="w-24 h-24 mx-auto rounded-full bg-[#80A9D4]/15 dark:bg-white/10 flex items-center justify-center text-3xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] mb-4 transition-colors">
-              {founder.name[0]}
+          <div class="group relative bg-white/85 dark:bg-white/10 backdrop-blur-xs p-6 sm:p-7 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-md hover:border-[#80A9D4]/45 dark:hover:border-white/30 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
+            <!-- 左側：269×269 規格大圓形頭像留圖槽 -->
+            <div class="relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#80A9D4]/40 dark:border-white/25 shadow-md bg-gradient-to-br from-[#80A9D4]/25 via-[#B3C8E8]/15 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex items-center justify-center">
+              {founder.image ? (
+                <img
+                  src={founder.image}
+                  alt={`${founder.name} 創辦人形象照`}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                  <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                    {founder.name[0]}
+                  </div>
+                  <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/85 text-white dark:bg-black/75 dark:text-[#8FB8E8] border border-white/20">
+                    {founder.code}
+                  </span>
+                </div>
+              )}
+              <!-- 狀態小光點 -->
+              <span class="absolute top-1 right-2 text-amber-400 text-xs">✦</span>
             </div>
-            <h3 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-1 transition-colors">{founder.name}</h3>
-            <p class="text-sm font-medium text-[#80A9D4] dark:text-[#8FB8E8] mb-4 transition-colors">{founder.role}</p>
-            <div class="flex flex-wrap justify-center gap-1.5 pt-2 border-t border-gray-100 dark:border-white/10">
-              {founder.skills.map((skill) => (
-                <span class="text-xs bg-[#EAF3F8] dark:bg-white/10 text-[#2E2A4F] dark:text-white/90 px-2.5 py-1 rounded-full transition-colors">
-                  {skill}
+
+            <!-- 右側：創辦人名稱、身分與技能 -->
+            <div class="flex-1 text-center sm:text-left min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5 mb-2">
+                <h4 class="text-2xl font-bold text-[#2E2A4F] dark:text-white tracking-wide transition-colors">
+                  {founder.name}
+                </h4>
+                <span class="inline-block self-center sm:self-auto text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-200 border border-amber-500/30 font-semibold">
+                  {founder.role}
                 </span>
-              ))}
+              </div>
+
+              <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60 mb-3">
+                專業領域與傳承項目
+              </p>
+
+              <!-- 專長項目標籤（呼應 Canva 排版內容） -->
+              <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start">
+                {founder.skills.map((skill) => (
+                  <span class="text-xs bg-[#EAF3F8] dark:bg-white/10 text-[#2E2A4F] dark:text-white/90 px-2.5 py-1 rounded-lg border border-[#80A9D4]/20 dark:border-white/5 transition-colors">
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
       </div>
     </section>
 
-    <!-- Team Members Wall -->
-    <section class="mb-16">
-      <h2 class="text-2xl font-bold text-[#2E2A4F] dark:text-white mb-8 text-center transition-colors">星靈織語夥伴</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Section 4 & 5: 星靈織語成員 (嚴格 2 欄 × 4 排 = 8 位 橫式名片) -->
+    <section class="mb-20">
+      <div class="flex items-center gap-3 mb-8">
+        <div class="w-2 h-6 rounded-full bg-[#80A9D4]"></div>
+        <h3 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] dark:text-white transition-colors">
+          星靈織語夥伴
+        </h3>
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#80A9D4]/15 text-[#2E2A4F] dark:text-[#8FB8E8] border border-[#80A9D4]/25 dark:border-white/10 font-medium">
+          8 位專業夥伴 · 2 × 4
+        </span>
+      </div>
+
+      <!-- 2 欄 × 4 排 網格佈局 (嚴格對應 Canva Section 4 & 5) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {members.map((member) => (
-          <div class="bg-white/80 dark:bg-white/10 p-6 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs text-center flex flex-col transition-all">
-            <div class="w-16 h-16 mx-auto rounded-full bg-[#80A9D4]/10 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] mb-3 transition-colors">
-              {member.name[0]}
+          <div class="group relative bg-white/80 dark:bg-white/10 backdrop-blur-xs p-5 sm:p-6 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs hover:shadow-md hover:border-[#80A9D4]/40 dark:hover:border-white/25 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
+            <!-- 左側：269×269 規格大圓形頭像留圖槽 -->
+            <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-[#80A9D4]/20 via-[#B3C8E8]/10 to-[#2E2A4F]/15 dark:from-[#2E2A4F]/50 dark:to-[#1F1938]/70 flex items-center justify-center">
+              {member.image ? (
+                <img
+                  src={member.image}
+                  alt={`${member.name} 形象照`}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              ) : (
+                <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                  <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                    {member.name[0]}
+                  </div>
+                  <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/80 text-white dark:bg-black/70 dark:text-[#8FB8E8] border border-white/20">
+                    {member.code}
+                  </span>
+                </div>
+              )}
+              <span class="absolute top-1 right-1 text-[#80A9D4] text-[10px]">✧</span>
             </div>
-            <h3 class="text-lg font-bold text-[#2E2A4F] dark:text-white mb-3 transition-colors">{member.name}</h3>
-            <div class="flex flex-wrap justify-center gap-1 mt-auto">
-              {member.skills.map((skill) => (
-                <span class="text-[11px] bg-[#EAF3F8] dark:bg-white/10 text-[#3A3A3A] dark:text-white/80 px-2 py-0.5 rounded-md transition-colors">
-                  {skill}
+
+            <!-- 右側：夥伴名稱與專長清單 -->
+            <div class="flex-1 text-center sm:text-left min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
+                <h4 class="text-xl font-bold text-[#2E2A4F] dark:text-white tracking-wide transition-colors">
+                  {member.name}
+                </h4>
+                <span class="inline-block self-center sm:self-auto text-[11px] px-2 py-0.5 rounded-full bg-[#80A9D4]/10 dark:bg-white/10 text-[#3A3A3A] dark:text-white/80 border border-[#80A9D4]/20">
+                  星靈夥伴
                 </span>
-              ))}
+              </div>
+
+              <!-- 專長標籤（對應 Canva 各成員專長條列） -->
+              <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1">
+                {member.skills.map((skill) => (
+                  <span class="text-[11px] sm:text-xs bg-[#EAF3F8]/90 dark:bg-white/10 text-[#3A3A3A] dark:text-white/85 px-2.5 py-0.5 rounded-md border border-[#80A9D4]/15 dark:border-white/5 transition-colors">
+                    {skill}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
         ))}
       </div>
     </section>
 
-    <!-- CTA Section -->
-    <div class="text-center bg-white/60 dark:bg-white/10 p-8 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 max-w-xl mx-auto space-y-4 transition-colors">
-      <h2 class="text-xl font-bold text-[#2E2A4F] dark:text-white transition-colors">想與星靈夥伴們相遇嗎？</h2>
-      <p class="text-sm text-[#3A3A3A]/80 dark:text-white/80 transition-colors">歡迎加入我們的 LINE 官方帳號或參與交流會。</p>
-      <CTAButton variant="primary" text="預約諮詢與交流" />
+    <!-- Bottom CTA Section -->
+    <div class="text-center bg-white/70 dark:bg-white/10 backdrop-blur-xs p-8 sm:p-12 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 max-w-2xl mx-auto space-y-5 transition-colors shadow-sm">
+      <div class="inline-flex items-center gap-1.5 text-xs text-[#80A9D4] font-medium">
+        <span>✦</span>
+        <span>CONNECT WITH US</span>
+        <span>✦</span>
+      </div>
+      <h2 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] dark:text-white transition-colors">
+        想與星靈夥伴們相遇嗎？
+      </h2>
+      <p class="text-sm sm:text-base text-[#3A3A3A]/80 dark:text-white/80 transition-colors leading-relaxed">
+        無論是渴望深度對話的個別諮詢、還是想要一起學習交流的團練活動，<br class="hidden sm:inline" />
+        歡迎加入我們的 LINE 官方帳號，開啟你的星靈對話。
+      </p>
+      <div class="pt-2">
+        <CTAButton variant="primary" text="預約諮詢與交流" />
+      </div>
     </div>
   </div>
 </Layout>

@@ -213,7 +213,45 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-## 四、【共用與內頁預留】
+## 四、【關於我們】(About / starwovenpeople)
+
+### [關於]-[圖片 A]：品牌故事氛圍插圖（1張）
+
+- **版位用途**：關於我們頁面（`/about`）「我們從抱團取暖開始，現在我們想要傳承」區塊右側主視覺
+- **規格建議**：直式比例（約 4:5 或 3:4，Canva 原始規格為寬 447 × 高 517 px）。
+- **視覺重點**：雙手於深邃星空與星塵之中，輕柔托起或交織出發光的絲線與星辰網絡，象徵將知識、經驗與每一道光持續傳承。
+- **ComfyUI / SDXL 提示詞**：
+  ```text
+  spiritual cosmic illustration, glowing ethereal hands weaving threads of light across the night sky, intricate constellation patterns, stardust particles, soft pastel nebulae, sacred connection, gentle warm aura, magical celestial loom, artistic fantasy concept art, high resolution, soft cinematic lighting, deep indigo and golden starlight
+  ```
+- **對應檔案**：`about_a_brand_story.png`
+
+---
+
+### [關於]-[圖片 B~C]：創辦人圓框形象照（2張，待業主提供真圖）
+
+- **版位用途**：關於我們頁面「星靈織語創辦人」2 欄大名片圓框頭像（Canva 原始規格 269 × 269 px 正圓）
+- **規格建議**：正方形（1:1），解析度至少 600×600 px，清晰個人肖像或靈性工作照。
+- **對應編號與檔案**：
+  - `[關於]-[圖片 B]`：以恩 創辦人形象照 (`about_b_founder_yien.jpg`)
+  - `[關於]-[圖片 C]`：皮皮 創辦人形象照 (`about_c_founder_pipi.jpg`)
+- **備註**：前端封裝 `rounded-full` 與 `object-cover`，任何比例照片置入皆自動居中裁切成正圓。未上傳前自動呈現專屬創辦人靈性符號與代碼標籤。
+
+---
+
+### [關於]-[圖片 D~K]：星靈織語夥伴形象照（8張，2欄 × 4排，待業主提供真圖）
+
+- **版位用途**：關於我們頁面「星靈織語夥伴」8 位成員橫式名片圓框頭像（Canva 原始規格 269 × 269 px）
+- **排列順序（嚴格對應 Canva 原始 2*4 行）**：
+  - 第 1 排：`[關於]-[圖片 D]` 達心 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 曉宇 (`about_e_member_xiaoyu.jpg`)
+  - 第 2 排：`[關於]-[圖片 F]` 悠悠 (`about_f_member_youyou.jpg`) · `[關於]-[圖片 G]` 姆姆 (`about_g_member_mumu.jpg`)
+  - 第 3 排：`[關於]-[圖片 H]` 凜月 (`about_h_member_linyue.jpg`) · `[關於]-[圖片 I]` 白白 (`about_i_member_baibai.jpg`)
+  - 第 4 排：`[關於]-[圖片 J]` Migo (`about_j_member_migo.jpg`) · `[關於]-[圖片 K]` 古古 (`about_k_member_gugu.jpg`)
+- **備註**：取得照片後置於 `public/assets/` 即可立即自動上線。
+
+---
+
+## 五、【共用與內頁預留】
 
 ### [共用]-[圖片 A]：內頁淺藍水彩雲朵底圖（Watercolor Wash）
 
@@ -238,7 +276,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-## 三、生成紀錄（Generation Log）
+## 六、生成紀錄（Generation Log）
 
 | 編號 | 素材名稱 | 日期 | 平台 / 模型 | 提示詞（摘要） | 種子碼 (Seed) | 評選結果 | 後製方式 | 存放檔名 |
 |---|---|---|---|---|---|---|---|---|
@@ -257,6 +295,17 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `首頁-M` | 以恩 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_m_reader_yien.jpg` |
 | `首頁-N` | 皮皮 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_n_reader_pipi.jpg` |
 | `首頁-O` | 達心 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_o_reader_daxin.jpg` |
+| `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
+| `關於-B` | 以恩 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_b_founder_yien.jpg` |
+| `關於-C` | 皮皮 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_c_founder_pipi.jpg` |
+| `關於-D` | 達心 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_d_member_daxin.jpg` |
+| `關於-E` | 曉宇 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_e_member_xiaoyu.jpg` |
+| `關於-F` | 悠悠 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_f_member_youyou.jpg` |
+| `關於-G` | 姆姆 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_g_member_mumu.jpg` |
+| `關於-H` | 凜月 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_h_member_linyue.jpg` |
+| `關於-I` | 白白 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_i_member_baibai.jpg` |
+| `關於-J` | Migo 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_j_member_migo.jpg` |
+| `關於-K` | 古古 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_k_member_gugu.jpg` |
 | `共用-A` | 內頁淺藍水彩底圖 | 2026-09-22 | ComfyUI | 淡天藍水彩暈染雲朵 | | 待生成 | 裁切調色 | `common_a_watercolor_bg_v1.png` |
 | `頁尾-A` | Line ID 條碼 | 2026-09-22 | 實體擷圖 | 官方 LINE 條碼 | - | 採用 | 安全留白 | `footer_qr_line.png` |
 | `頁尾-B` | Instagram 條碼 | 2026-09-22 | 實體擷圖 | 官方 IG 條碼 | - | 採用 | 安全留白 | `footer_qr_instagram.png` |
