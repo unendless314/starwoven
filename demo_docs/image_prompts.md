@@ -132,7 +132,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 - **對應編號與檔案**：
   - `[首頁]-[圖片 G]`：每週一 阿卡西紀錄與光的課程 (`home_g_course_akashic.jpg`)
   - `[首頁]-[圖片 H]`：每週二 占星循環班 (`home_h_course_astrology.jpg`)
-  - `[首頁]-[圖片 M]`：每週三 偉特塔羅課程 (`home_m_course_waite.jpg`)
+  - `[首頁]-[圖片 M]`：每週三 偉特塔羅團練 (`home_m_course_waite.jpg`)
   - `[首頁]-[圖片 I]`：每週四 七脈輪與靈氣團練 (`home_i_course_reiki.jpg`)
   - `[首頁]-[圖片 J]`：每週五 托特塔羅循環班 (`home_j_course_thoth.jpg`)
   - `[首頁]-[圖片 K]`：每週六 生命靈數 (`home_k_course_numerology.jpg`)
