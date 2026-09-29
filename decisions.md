@@ -37,3 +37,71 @@
   2. `src/layouts/Layout.astro` 內 Canonical URL 與 Open Graph 絕對網址基準更新為 `https://starwoven.xyz`。
   3. VPS Nginx vhost 配置檔使用 `server_name starwoven.xyz www.starwoven.xyz;`。
   4. DNS A Record 指向 `<YOUR_VPS_IP>`，並透過 Certbot 簽署 `starwoven.xyz` 與 `www.starwoven.xyz` 之 Let's Encrypt SSL 憑證。
+
+---
+
+## 2026-09-29 — DEC-004：移除 /shop 商城展示頁，首頁「星靈選物」卡片替換為「靈氣調頻」
+
+- **背景**：
+  - 在前次 DEC-002 中，為貼近原站導航曾暫設 `/shop` 頁面連至外部 7-11 賣場。
+  - 經討論確認，現階段靜態 Demo 應聚焦於命理諮詢、身心靈課程與靈氣療癒之品牌核心展示，不另外建置 `/shop` 頁面，使全站嚴格回歸原始 `spec.md` 與 `AGENTS.md` 所規劃之 6 大頂層路由。
+  - 同時首頁四大核心服務卡片中的「星靈選物」同步刪除，調整為核心療癒主題「靈氣調頻」。
+- **決策**：
+  1. **移除 `/shop` 路由**：刪除 `src/pages/shop.astro`，全站頂層路由回歸標準 6 頁（`/`、`/about`、`/services`、`/courses`、`/reiki`、`/akashic`）。
+  2. **導航列同步更新**：`Navbar.astro` 移除「星靈選物」項目，桌面版與行動版選單回歸 5 個核心導航項目＋1 個預約諮詢按鈕。
+  3. **首頁卡片 4 改為「靈氣調頻」**：
+     - 首頁四大服務卡片之第四張卡片替換為「靈氣調頻」，展示項目為「臼井靈氣、脈輪平衡、能量淨化、身心調頻」。
+     - 卡片連結改為導向 `/reiki`（靈氣與脈輪）。
+     - 素材規劃由原先的水晶草本更換為靈氣手勢與能量光芒意象。
+  4. **實體商品導購承接**：二手牌卡、礦石水晶等周邊商品之購買連結，維持由全站頁尾（Footer）之 7-11 iOpen Mall 連結及 QR Code 承接，不影響既有外部販售管道。
+
+---
+
+## 2026-09-29 — DEC-005：固定循環課程收費規則定案（包月 4 堂 2000 元，不開放單堂）
+
+- **背景**：
+  - 原站文案於首頁註明「包 4 堂優惠 1800 元」，但課程頁部分班級註明「包月四堂 2000 元」，且對於是否能單堂上課存在歧異，列於 `known_issues/README.md`（問題 1）待業主確認。
+- **決策**：
+  1. **價格統一為包月 2000 元**：所有常態固定循環課程（阿卡西與光的課程、占星循環班、七脈輪與靈氣、托特塔羅、生命靈數等），定價統一為每期 **4 堂 2000 元**（平均每堂 500 元），取消 1800 元舊版折價文案。
+  2. **必須以月為單位報名**：統一採**月費制／包月報名**，學員必須以月為單位報名一期（4 堂），**恕不開放單堂散客上課**，以維持班級研討與進度之一致性。
+  3. **團練獨立性**：阿卡西、靈氣等系統若有單獨團練活動，可另行單獨報名（單次團練），但正式常態課程嚴格執行包月制。
+  4. **問題結案**：同步修正 `content_inventory.md`、首頁收費說明卡片及活動課程頁面標示，關閉 `known_issues/README.md` 之第 1 項已知問題。
+
+---
+
+## 2026-09-29 — DEC-006：首頁課程收費說明與報名按鈕區塊替換為「學員評價／心得輪播」
+
+- **背景**：
+  - 首頁原固定循環課程卡片下方包含一組左右雙欄區塊（左欄為收費與 LINE 預約白底卡片，右欄為 4 顆大報名按鈕）。
+  - 經業主與團隊評估討論，該區塊顯得重複且佔位過多，決定全數移除，並改建為展示社群口碑的「學員心聲／評價輪播卡片（Testimonials Carousel）」。
+- **決策**：
+  1. **移除舊版按鈕與重複說明**：移除首頁下方原左右雙欄之收費白底卡片與 4 顆直排報名按鈕。
+  2. **新增學員評價輪播卡片**：
+     - 卡片規格包含：1. 頭像小圖（頭像縮圖／首字漸層圖標）、2. 學員 ID / 稱號、3. 真實溫暖評語（涵蓋塔羅、阿卡西、脈輪靈氣、占星等課程）。
+     - 效果採平滑無縫無限循環滾動（Smooth Infinite Carousel / Marquee），支援滑鼠懸停暫停（Hover Pause）與觸控滑動。
+  3. **資料驅動維護**：在首頁建立 `studentReviews` 資料結構，方便業主後續隨時增補或替換真實學員回饋文字與頭像。
+
+---
+
+## 2026-09-29 — DEC-007：頁尾聯絡我們改版，移除 QR Code 卡片改為社群 Favicon，地址整合 Google Map 導航連結
+
+- **背景**：
+  - 原全站頁尾（Footer）配置了 4 張大型 QR Code 卡片（Line ID、Instagram、Line 社群、iOpen Mall 星靈選物），視覺佔比較重，且 LINE 社群邀請網址待補。
+  - 經業主指示，期望頁尾排版輕巧現代化，要求移除全部 4 張大型 QR Code 卡片，僅保留 5 個主要社群小圖標（Favicon：Instagram、Facebook、Threads、LINE、YouTube），並將原獨立之「點我連結Google map」膠囊按鈕整合進左側實體地址，使地址直接作為可點擊之導航按鈕。
+- **決策**：
+  1. **移除 4 大 QR Code 卡片**：刪除原 Line ID、Instagram、Line 社群、iOpen Mall 之大型 QR Code 卡片 Grid。
+  2. **新增 5 大社群 Favicon 圖標按鈕列**：
+     - 圖標項目包含：**Instagram**、**Facebook**、**Threads**、**LINE**、**YouTube**。
+     - **真實社群帳號連結**：
+       - Instagram：導向官方帳號 `https://www.instagram.com/starwoven2026`。
+       - LINE：導向官方 LINE `https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url`（ID: `@347fucvj`）。
+     - **平台首頁預留佔位（Placeholder）**：
+       - Facebook（`https://www.facebook.com`）
+       - Threads（`https://www.threads.net`）
+       - YouTube（`https://www.youtube.com`）
+       （未來開通專頁或頻道時可直接替換實際 URL）。
+     - 樣式採圓形微互動按鈕，預設配合深/淺主題，滑鼠懸停時微放大並切換各平台品牌識別色（IG 品紅、FB 藍、Threads 黑/白、LINE 綠、YT 紅）。
+  3. **實體地址按鈕化與 Google Map 導航整合**：
+     - 將左側「高雄市前金區河南二路140號2樓（近捷運前金站一號出口）」轉為互動卡片按鈕。
+     - 點擊後以新分頁開啟 Google Maps 導航（`https://maps.app.goo.gl/ZZuc8QC1tHn13GxE6`），附帶向外導覽指示圖示與懸停漣漪回饋。
+  4. **問題結案**：同步關閉 `known_issues/README.md` 之第 2 項已知問題（LINE 社群卡片連結待補）。

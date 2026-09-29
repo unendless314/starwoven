@@ -107,30 +107,32 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-### [首頁]-[圖片 F]：星靈選物・水晶原礦與草本葉片（Crystals & Botanical）
+### [首頁]-[圖片 F]：靈氣調頻・雙手療癒與能量光芒（Reiki Healing Hands & Chakra Energy）
 
-- **版位用途**：首頁四大服務卡片 4「星靈選物」頂部插圖
-- **視覺重點**：一簇多面切割的直立水晶柱（天然礦石晶體），周圍環繞優雅的草本植物葉片與微小星芒。
-- **色彩規格**：**深色手繪細線條（深靛藍/深灰）**，去背透明。
+- **版位用途**：首頁四大服務卡片 4「靈氣調頻」頂部插圖
+- **視覺重點**：一對溫柔托起或施作手勢的雙手，掌心散發出柔和的能量光芒、微小光暈與星點，象徵靈氣傳遞、脈輪療癒與身心平靜。
+- **色彩規格**：**深色手繪細線條（深靛藍/深灰 `#2E2A4F`）**，去背透明。
 - **ComfyUI 提示詞（CLIP Text Encode）**：
   ```text
-  minimalist hand-drawn doodle illustration of a cluster of faceted quartz crystal prisms, surrounded by delicate botanical leafy branches and tiny twinkling star sparkles, ethereal crystal aesthetic, clean thin dark outline drawing, isolated on plain solid white background, no fill, no shading, vector line art, witchy celestial aesthetic
+  minimalist hand-drawn doodle illustration of gentle open cupped hands channeling healing energy, soft glowing energy light rays and tiny twinkling stars radiating from palms, reiki healing hands symbol, clean thin dark outline drawing, peaceful zen celestial aesthetic, isolated on plain solid white background, no fill, no shading, vector line art, flat 2d
   ```
 - **Negative Prompt**：
   ```text
-  low quality, colored, realistic photo, dirty texture, heavy shadows, blurry, messy scribble, text
+  low quality, deformed fingers, extra fingers, realistic photo, dirty texture, heavy shadows, blurry, messy scribble, text
   ```
 - **建議參數**：解析度 1024×1024 / Steps 25-30 / CFG 6.5-7.5。
 
+
 ---
 
-### [首頁]-[圖片 G~K]：固定循環課程活動現場照片（5張，待業主提供真實圖檔）
+### [首頁]-[圖片 G~K, M]：固定循環課程活動現場照片（6張，待業主提供真實圖檔）
 
-- **版位用途**：首頁「固定循環課程」區塊 5 門課程之活動現場照片插槽
+- **版位用途**：首頁「固定循環課程」區塊 6 門課程之活動現場照片插槽
 - **規格建議**：直式比例（4:5 或 3:4），真實上課/團練/練習現場照片，需清晰、採光溫和自然。
 - **對應編號與檔案**：
   - `[首頁]-[圖片 G]`：每週一 阿卡西紀錄與光的課程 (`home_g_course_akashic.jpg`)
   - `[首頁]-[圖片 H]`：每週二 占星循環班 (`home_h_course_astrology.jpg`)
+  - `[首頁]-[圖片 M]`：每週三 偉特塔羅課程 (`home_m_course_waite.jpg`)
   - `[首頁]-[圖片 I]`：每週四 七脈輪與靈氣團練 (`home_i_course_reiki.jpg`)
   - `[首頁]-[圖片 J]`：每週五 托特塔羅循環班 (`home_j_course_thoth.jpg`)
   - `[首頁]-[圖片 K]`：每週六 生命靈數 (`home_k_course_numerology.jpg`)

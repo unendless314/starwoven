@@ -17,23 +17,83 @@ const imgHeroBg = '';           // 首頁-L：底層星空圖（選填，留空�
 const imgServiceAstrology = ''; // 首頁-C：命理諮詢「行星與星環」
 const imgCourseBook = '';       // 首頁-D：課程學習「筆記本與筆」
 const imgEventCommunity = '';   // 首頁-E：實體活動「三人社群夥伴剪影」
-const imgShopCrystals = '';     // 首頁-F：星靈選物「水晶原礦與植物葉片」
+const imgReikiTune = '';        // 首頁-F：靈氣調頻「雙手療癒與能量光芒」
 
 // 【3. 固定循環課程現場照片（待業主提供真圖）】
 const imgCourseMon = '';        // 首頁-G：每週一 阿卡西紀錄與光的課程活動照
 const imgCourseTue = '';        // 首頁-H：每週二 占星循環班活動照
+const imgCourseWed = '';        // 首頁-M：每週三 偉特塔羅課程活動照
 const imgCourseThu = '';        // 首頁-I：每週四 七脈輪與靈氣團練活動照
 const imgCourseFri = '';        // 首頁-J：每週五 托特塔羅循環班活動照
 const imgCourseSat = '';        // 首頁-K：每週六 生命靈數活動照
 
-// 【4. 課程優惠與報名連結（預設統一導向 Google 報名表單，各課程有獨立連結時可各別填入）】
-const defaultFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfRh7extf1LEiufBMWnV3cbecbuU8IfwqieEt1NT89rZi_h3w/viewform';
-const urlCourseAkashic = defaultFormUrl; // 1. 阿卡西紀錄與光的課程 連結
-const urlCourseReiki   = defaultFormUrl; // 2. 七脈輪與靈氣 連結
-const urlCourseThoth   = defaultFormUrl; // 3. 托特塔羅循環班 連結
-const urlCourseSignup  = defaultFormUrl; // 4. 點我進入報名連結
+// 【4. 學員與 Google 評價輪播資料（tag 為選填，Google 評論可直接從缺）】
+interface ReviewItem {
+  id: string;
+  comment: string;
+  tag?: string;             // 選填：課程標籤（如：偉特塔羅循環班，若為 Google 評論可留空或從缺）
+  source?: string;          // 選填：來源標示（例如：'Google 商家評論' 或 '課堂學員'）
+  avatarBg?: string;        // 選填：頭像背景色（若未填則自動分配預設柔和漸層）
+  avatarText?: string;      // 選填：頭像首字（若未填則自動取 ID 第一個字元）
+  rating?: number;          // 選填：星等（預設 5 星）
+}
+
+const studentReviews: ReviewItem[] = [
+  {
+    id: '林熙玲',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#11998E] to-[#38EF7D]',
+    avatarText: '林',
+    rating: 5,
+    comment: '很溫馨的命理身心靈教室！！課程很喜歡~大家也都很溫暖~空間很舒適！有一種讓人不想回家的吸引力~每次上完課還能聊個好幾小時捨不得回家🤣🤣',
+  },
+  {
+    id: 'ZhongKai',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#4A90E2] to-[#144A75]',
+    avatarText: 'Z',
+    rating: 5,
+    comment: '非常棒的命理身心靈空間，授課設備完善、店家溝通無礙，不論是交流或者開班授課，都是高雄地區的好選擇。',
+  },
+  {
+    id: '夏瞳（嶽燁嵐）',
+    tag: '塔羅團練',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#8A2387] to-[#E94057]',
+    avatarText: '夏',
+    rating: 5,
+    comment: '有特別的塔羅團練！很活的學習與互相成長方式，很讚，很喜歡~',
+  },
+  {
+    id: 'Yuyu Chen',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#E94E77] to-[#C02942]',
+    avatarText: 'Y',
+    rating: 5,
+    comment: '總類豐富，想要東西方命理都有，環境優良，成員好相處💯❤️',
+  },
+  {
+    id: '洣白',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#00B4DB] to-[#0083B0]',
+    avatarText: '洣',
+    rating: 5,
+    comment: '很舒適的空間，內部人員相處也很不錯👍🏻',
+  },
+  {
+    id: '黃憶雯',
+    source: 'Google 商家好評',
+    avatarBg: 'bg-gradient-to-br from-[#F7971E] to-[#FFD200]',
+    avatarText: '黃',
+    rating: 5,
+    comment: '身心靈聚會的好地方！✨',
+  },
+];
+
+
 
 // 課程資料陣列（資料驅動，方便未來隨時擴充與修改課表）
+
 const recurringCourses = [
   {
     id: 'mon',
@@ -41,7 +101,7 @@ const recurringCourses = [
     title: '阿卡西紀錄\n與光的課程',
     teacher: '古古老師',
     time: '20:00-23:00',
-    price: '每堂500元',
+    price: '包月四堂2000元',
     image: imgCourseMon,
     code: '首頁-G',
   },
@@ -51,9 +111,19 @@ const recurringCourses = [
     title: '占星循環班',
     teacher: '皮皮老師',
     time: '20:00-23:00',
-    price: '每堂500元',
+    price: '包月四堂2000元',
     image: imgCourseTue,
     code: '首頁-H',
+  },
+  {
+    id: 'wed',
+    day: '每週三',
+    title: '偉特塔羅\n課程',
+    teacher: '以恩老師',
+    time: '20:00-22:00',
+    price: '包月四堂1200元',
+    image: imgCourseWed,
+    code: '首頁-M',
   },
   {
     id: 'thu',
@@ -61,7 +131,7 @@ const recurringCourses = [
     title: '七脈輪與\n靈氣團練',
     teacher: '曉宇老師',
     time: '20:00-23:00',
-    price: '每堂500元',
+    price: '包月四堂2000元',
     image: imgCourseThu,
     code: '首頁-I',
   },
@@ -71,7 +141,7 @@ const recurringCourses = [
     title: '托特塔羅\n循環班',
     teacher: '曉宇老師',
     time: '20:00-23:00',
-    price: '每堂500元',
+    price: '包月四堂2000元',
     image: imgCourseFri,
     code: '首頁-J',
   },
@@ -81,7 +151,7 @@ const recurringCourses = [
     title: '生命靈數',
     teacher: '皮皮老師',
     time: '20:00-23:00',
-    price: '每堂500元',
+    price: '包月四堂2000元',
     image: imgCourseSat,
     code: '首頁-K',
   },
@@ -402,41 +472,40 @@ const featuredReaders = [
           </ul>
         </a>
 
-        <!-- 卡片 4: 星靈選物 (首頁-F：水晶與植物) -->
+        <!-- 卡片 4: 靈氣調頻 (首頁-F：靈氣調頻 雙手能量與光芒) -->
         <a
-          href="/shop"
+          href="/reiki"
           class="group block bg-[#EAF0F6] rounded-[2.5rem] p-8 sm:p-10 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 text-center border border-white/60"
         >
           <div class="h-28 flex items-center justify-center mb-6">
-            {imgShopCrystals ? (
+            {imgReikiTune ? (
               <img
-                src={imgShopCrystals}
-                alt="星靈選物 水晶原礦與植物葉片"
+                src={imgReikiTune}
+                alt="靈氣調頻 雙手療癒與能量光芒"
                 class="max-h-24 w-auto object-contain mx-auto transition-transform duration-300 group-hover:scale-105"
               />
             ) : (
               <div class="w-full h-full rounded-2xl border-2 border-dashed border-[#8FB8E8]/60 bg-white/60 flex flex-col items-center justify-center p-2 group-hover:border-[#2E2A4F]/50 transition-colors">
                 <svg class="w-10 h-10 text-[#2E2A4F]/70 mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M6 3h12l4 6-10 12L2 9l4-6z" />
-                  <path d="M12 21L8 9h8l-4 12z" />
-                  <path d="M2 9h20" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
+                  <circle cx="12" cy="12" r="3" />
                 </svg>
                 <span class="text-[11px] font-semibold text-[#2E2A4F]/80 tracking-wider">
-                  首頁-F：水晶與植物
+                  首頁-F：靈氣調頻 雙手能量與光芒
                 </span>
               </div>
             )}
           </div>
 
           <h3 class="text-2xl sm:text-3xl font-bold text-[#2E2A4F] mb-6 font-huninn tracking-wider">
-            星靈選物
+            靈氣調頻
           </h3>
 
           <ul class="space-y-3.5 text-lg sm:text-xl text-[#3A3A3A] font-huninn tracking-widest leading-relaxed">
-            <li>二手牌卡</li>
-            <li>礦石水晶</li>
-            <li>手作品</li>
-            <li>寄售商品</li>
+            <li>臼井靈氣</li>
+            <li>脈輪平衡</li>
+            <li>能量淨化</li>
+            <li>身心調頻</li>
           </ul>
         </a>
 
@@ -473,16 +542,16 @@ const featuredReaders = [
         </a>
       </div>
 
-      <!-- 五門課程卡片 Grid（桌機 5 欄、平板 3 欄、手機 1~2 欄） -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 sm:gap-6">
+      <!-- 六門課程卡片 Grid：電腦版 6x1、平板 3x2、手機 2x3 動態響應式排版 -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5 sm:gap-4 md:gap-5 lg:gap-3.5 xl:gap-5">
         {recurringCourses.map((course) => (
-          <div class="group relative flex flex-col bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100">
+          <div class="group relative flex flex-col bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-gray-100">
             
             <!-- 1. 照片插槽（含左上角懸掛日期書籤緞帶） -->
             <div class="relative w-full aspect-[4/5] bg-[#E2E8F0] overflow-hidden flex items-center justify-center">
               
               <!-- 懸掛日期書籤緞帶 (Ribbon Badge) -->
-              <div class="absolute top-0 left-3 sm:left-4 z-10 bg-[#383359] text-white px-3 sm:px-3.5 pt-3 pb-3.5 rounded-b-2xl shadow-md text-sm sm:text-base font-huninn font-bold tracking-wider text-center">
+              <div class="absolute top-0 left-2.5 sm:left-3.5 z-10 bg-[#383359] text-white px-2.5 sm:px-3 pt-2.5 pb-3 rounded-b-xl sm:rounded-b-2xl shadow-md text-xs sm:text-sm font-huninn font-bold tracking-wider text-center">
                 {course.day}
               </div>
 
@@ -494,44 +563,44 @@ const featuredReaders = [
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
               ) : (
-                <div class="w-full h-full p-4 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 bg-gray-50/80 group-hover:bg-gray-100/80 transition-colors">
-                  <svg class="w-10 h-10 text-gray-400 mb-2 mt-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <div class="w-full h-full p-2.5 sm:p-4 flex flex-col items-center justify-center text-center border-2 border-dashed border-gray-300 bg-gray-50/80 group-hover:bg-gray-100/80 transition-colors">
+                  <svg class="w-8 h-8 sm:w-10 sm:h-10 text-gray-400 mb-1.5 sm:mb-2 mt-3 sm:mt-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                     <circle cx="8.5" cy="8.5" r="1.5" />
                     <polyline points="21 15 16 10 5 21" />
                   </svg>
-                  <span class="text-xs font-semibold text-[#2E2A4F] bg-white px-2 py-0.5 rounded-full border border-gray-200 shadow-xs mb-1">
+                  <span class="text-[10px] sm:text-xs font-semibold text-[#2E2A4F] bg-white px-1.5 sm:px-2 py-0.5 rounded-full border border-gray-200 shadow-xs mb-1">
                     {course.code}
                   </span>
-                  <p class="text-[11px] text-gray-500 leading-tight">
+                  <p class="text-[10px] sm:text-[11px] text-gray-500 leading-tight">
                     活動現場照片<br />
-                    <span class="text-[10px] text-gray-400">(待提供真實圖檔)</span>
+                    <span class="text-[9px] sm:text-[10px] text-gray-400">(待提供真實圖檔)</span>
                   </p>
                 </div>
               )}
             </div>
 
             <!-- 2. 下半部資訊卡片區 -->
-            <div class="p-5 sm:p-6 flex-1 flex flex-col justify-between text-center space-y-3 bg-white">
+            <div class="p-3.5 sm:p-4 md:p-5 lg:p-3 xl:p-4 flex-1 flex flex-col justify-between text-center space-y-2 sm:space-y-2.5 bg-white">
               
               <!-- 課程名稱 -->
-              <h3 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] font-huninn tracking-wider min-h-[3.5rem] flex items-center justify-center whitespace-pre-line leading-snug">
+              <h3 class="text-base sm:text-lg md:text-xl lg:text-base xl:text-lg font-bold text-[#2E2A4F] font-huninn tracking-wide min-h-[2.8rem] sm:min-h-[3.2rem] flex items-center justify-center whitespace-pre-line leading-tight sm:leading-snug">
                 {course.title}
               </h3>
 
               <!-- 講師名稱 -->
-              <p class="text-base sm:text-lg text-[#3A3A3A]/85 font-huninn tracking-wider">
+              <p class="text-xs sm:text-sm md:text-base lg:text-xs xl:text-sm text-[#3A3A3A]/85 font-huninn tracking-wider">
                 {course.teacher}
               </p>
 
               <!-- 上課時間 -->
-              <p class="text-sm sm:text-base text-[#3A3A3A]/70 font-medium tracking-wide">
+              <p class="text-[11px] sm:text-xs md:text-sm lg:text-[11px] xl:text-xs text-[#3A3A3A]/70 font-medium tracking-tight sm:tracking-wide">
                 {course.time}
               </p>
 
               <!-- 費用 -->
-              <div class="pt-3 border-t border-gray-100">
-                <span class="text-base sm:text-lg font-bold text-[#2E2A4F] font-huninn tracking-wider">
+              <div class="pt-2 sm:pt-2.5 border-t border-gray-100">
+                <span class="text-xs sm:text-sm md:text-base lg:text-xs xl:text-sm font-bold text-[#2E2A4F] font-huninn tracking-wider">
                   {course.price}
                 </span>
               </div>
@@ -543,81 +612,88 @@ const featuredReaders = [
       </div>
 
       <!-- ======================================================== -->
-      <!-- 課程優惠說明與報名連結區 (左右雙欄，還原截圖)            -->
+      <!-- 學員心聲與評價輪播區 (Testimonials Carousel)            -->
       <!-- ======================================================== -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch pt-10 sm:pt-14">
+      <div class="pt-14 sm:pt-20 space-y-8">
         
-        <!-- 左欄：課程收費與優惠說明白底卡片 -->
-        <div class="lg:col-span-5 bg-white rounded-3xl p-8 sm:p-10 shadow-xl border border-gray-100 flex flex-col justify-between space-y-8">
-          
-          <!-- 上部優惠文字 -->
-          <div class="space-y-2.5 font-huninn text-[#2E2A4F] text-lg sm:text-xl font-medium tracking-wider leading-relaxed">
-            <p>每堂課程完整 3 小時均價 500 元</p>
-            <p>同一系列課程包 4 堂優惠 1800 元</p>
-            <p class="text-[#3A3A3A]/80 text-base sm:text-lg">詳情可私訊官方 LINE 詢問</p>
+        <!-- 區塊標題 -->
+        <div class="text-center space-y-3">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-[#8FB8E8] text-xs sm:text-sm font-huninn tracking-widest">
+            <span>✦</span>
+            <span>學員真實回饋</span>
+            <span>✦</span>
           </div>
-
-          <!-- 下部團練說明 + 官方 LINE 向量按鈕 -->
-          <div class="flex items-center justify-between gap-4 pt-6 border-t border-gray-100">
-            <div class="font-huninn text-[#2E2A4F] text-base sm:text-lg tracking-wider leading-relaxed">
-              <p>可單獨報名參加團練，</p>
-              <p>惟不適用包堂優惠。</p>
-            </div>
-
-            <!-- LINE 官方綠色向量按鈕（高畫質 SVG，點擊直達官方 LINE） -->
-            <a
-              href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="前往官方 LINE 預約諮詢"
-              title="前往官方 LINE 諮詢"
-              class="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-[#06C755] hover:bg-[#05b04c] p-3.5 flex items-center justify-center text-white shadow-md hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 group"
-            >
-              <svg class="w-full h-full fill-current group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-                <path d="M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.627-.63.349 0 .631.285.631.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314" />
-              </svg>
-            </a>
-          </div>
-
+          <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white font-huninn tracking-wider">
+            每一次的心靈相遇，都是溫暖共鳴
+          </h3>
+          <p class="text-sm sm:text-base text-white/75 font-huninn max-w-xl mx-auto">
+            陪伴你從理解走向實踐，傾聽每一位在星靈織語探索生命的真實感受。
+          </p>
         </div>
 
-        <!-- 右欄：4 顆報名與介紹連結按鈕（暫時統一連至 Google 表單） -->
-        <div class="lg:col-span-7 flex flex-col justify-between space-y-4">
-          <a
-            href={urlCourseAkashic}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
-          >
-            阿卡西紀錄與光的課程
-          </a>
+        <!-- 輪播容器（平滑無限循環，懸停暫停） -->
+        <div class="relative w-full overflow-hidden py-4 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8">
+          <!-- 左右兩側柔和漸層遮罩 -->
+          <div class="pointer-events-none absolute inset-y-0 left-0 w-12 sm:w-28 bg-gradient-to-r from-[#1f1b38] to-transparent z-10"></div>
+          <div class="pointer-events-none absolute inset-y-0 right-0 w-12 sm:w-28 bg-gradient-to-l from-[#1f1b38] to-transparent z-10"></div>
 
-          <a
-            href={urlCourseReiki}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
-          >
-            七脈輪與靈氣
-          </a>
+          <!-- 輪播軌道（雙倍列表無縫對接） -->
+          <div class="testimonial-marquee flex gap-5 sm:gap-6">
+            {[...studentReviews, ...studentReviews].map((review) => (
+              <div class="w-[290px] sm:w-[350px] min-h-[220px] sm:min-h-[250px] shrink-0 bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-7 shadow-xl border border-white/60 flex flex-col justify-between hover:scale-[1.02] hover:shadow-2xl transition-all duration-300">
+                <div>
+                  <!-- 頂部：頭像小圖 + ID + 課程標籤/Google來源 + 星等 -->
+                  <div class="flex items-center gap-3.5 mb-4">
+                    <div class:list={[
+                      'w-12 h-12 rounded-full flex items-center justify-center font-bold text-white text-lg shadow-sm ring-2 ring-white/80 shrink-0',
+                      review.avatarBg || 'bg-gradient-to-br from-[#8FB8E8] to-[#4A6FA5]'
+                    ]}>
+                      {review.avatarText || review.id.replace(/^@/, '').charAt(0).toUpperCase()}
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center justify-between">
+                        <span class="font-huninn font-bold text-[#2E2A4F] text-base truncate">
+                          {review.id}
+                        </span>
+                        <!-- 5 星等 -->
+                        <div class="flex text-[#F5A623] text-xs shrink-0 ml-1">
+                          {'★'.repeat(review.rating ?? 5)}
+                        </div>
+                      </div>
+                      
+                      <!-- 標籤區：有 tag 顯示課程；無 tag 但有 source 顯示 Google 評價；兩者皆無則乾淨隱藏 -->
+                      {review.tag ? (
+                        <span class="inline-block text-xs text-[#80A9D4] font-medium tracking-wider mt-0.5">
+                          {review.tag}
+                        </span>
+                      ) : review.source ? (
+                        <span class="inline-flex items-center gap-1 text-[11px] text-[#4285F4] font-medium tracking-wide mt-0.5">
+                          <svg class="w-3 h-3 text-[#4285F4] shrink-0" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                          </svg>
+                          <span>{review.source}</span>
+                        </span>
+                      ) : null}
+                    </div>
+                  </div>
 
-          <a
-            href={urlCourseThoth}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
-          >
-            托特塔羅循環班
-          </a>
+                  <!-- 評語內容 -->
+                  <p class="text-sm sm:text-base text-[#3A3A3A] font-huninn tracking-wide leading-relaxed">
+                    「{review.comment}」
+                  </p>
+                </div>
 
-          <a
-            href={urlCourseSignup}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="group block w-full py-4 sm:py-5 px-6 rounded-2xl border-2 border-white/90 bg-white/5 hover:bg-white text-white hover:text-[#2E2A4F] text-center font-huninn font-bold text-lg sm:text-2xl tracking-widest shadow-md hover:shadow-xl transition-all duration-300 hover:scale-[1.01]"
-          >
-            點我進入報名連結
-          </a>
+                <div class="mt-5 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400 font-huninn">
+                  <span>{review.source || (review.tag ? '課堂真實回饋' : '真實好評推薦')}</span>
+                  <span class="text-[#80A9D4] font-medium">心靈成長見證</span>
+                </div>
+
+              </div>
+            ))}
+          </div>
         </div>
 
       </div>
@@ -704,3 +780,25 @@ const featuredReaders = [
     </div>
   </section>
 </Layout>
+
+<style>
+  @keyframes marquee-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  .testimonial-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee-scroll 42s linear infinite;
+  }
+
+  .testimonial-marquee:hover {
+    animation-play-state: paused;
+  }
+</style>
+

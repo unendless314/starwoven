@@ -28,13 +28,15 @@ import CTAButton from '../components/CTAButton.astro';
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
-            { title: '生命靈數循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '每堂500元 / 包月四堂2000元' },
-            { title: '光與阿卡西紀錄', teacher: '古古老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
-            { title: '占星循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '每堂500元 / 包月四堂2000元' },
-            { title: '偉特塔羅團練', teacher: '以恩老師', time: '20:00-21:30', price: '每堂250元 / 包月四堂1000元' },
-            { title: '七脈輪與靈氣', teacher: '曉宇老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
-            { title: '托特塔羅循環班', teacher: '曉宇老師', time: '20:00-23:00', price: '每堂500元（可單報團練250元）' },
+            { title: '生命靈數循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '包月四堂2000元（以月為單位報名）' },
+            { title: '光與阿卡西紀錄', teacher: '古古老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
+            { title: '占星循環班', teacher: '皮皮老師', time: '20:00-23:00', price: '包月四堂2000元（以月為單位報名）' },
+            { title: '偉特塔羅課程', teacher: '以恩老師', time: '20:00-22:00', price: '包月四堂1200元（每週三）' },
+            { title: '偉特塔羅團練', teacher: '以恩老師', time: '20:00-21:30', price: '包月四堂1000元（單堂團練250元）' },
+            { title: '七脈輪與靈氣', teacher: '曉宇老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
+            { title: '托特塔羅循環班', teacher: '曉宇老師', time: '20:00-23:00', price: '包月四堂2000元（可單報團練250元）' },
           ].map((course) => (
+
             <div class="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-[#80A9D4]/20 shadow-xs">
               <h3 class="text-lg font-bold text-[#2E2A4F]">{course.title}</h3>
               <p class="text-sm text-[#80A9D4] font-medium mt-1">講師：{course.teacher}</p>
