@@ -1,0 +1,25 @@
+---
+import type { BlogCategory } from '../content.config';
+
+interface Props {
+  category: BlogCategory | string;
+  class?: string;
+}
+
+const { category, class: className = 'w-7 h-7 text-[#80A9D4] dark:text-[#8FB8E8]' } = Astro.props;
+---
+
+{category === '光與阿卡西' ? (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+  </svg>
+) : category === '靈氣與脈輪' ? (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <circle cx="12" cy="12" r="3" />
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v3m0 14v3M2 12h3m14 0h3m-3.05-6.95l-2.12 2.12m-9.66 9.66l-2.12 2.12m0-13.9l2.12 2.12m9.66 9.66l2.12 2.12" />
+  </svg>
+) : (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+    <polygon points="12,2 15,9 22,12 15,15 12,22 9,15 2,12 9,9" />
+  </svg>
+)}

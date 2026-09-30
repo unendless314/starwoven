@@ -1,0 +1,292 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import CTAButton from '../../components/CTAButton.astro';
+import CategoryIcon from '../../components/CategoryIcon.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const allPosts = await getCollection('blog');
+const otherPosts = allPosts
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 2);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('zh-TW', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+};
+---
+
+<Layout
+  title={`${post.data.title} — 星靈專欄 | 星靈織語`}
+  description={post.data.description}
+  theme="auto"
+>
+  <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+    <!-- 麵包屑導航 (Breadcrumbs) -->
+    <nav class="flex items-center gap-2 text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/60 mb-8 sm:mb-10 overflow-x-auto whitespace-nowrap pb-1">
+      <a href="/" class="hover:text-[#2E2A4F] dark:hover:text-white transition-colors">首頁</a>
+      <span>/</span>
+      <a href="/blog" class="hover:text-[#2E2A4F] dark:hover:text-white transition-colors">星靈專欄</a>
+      <span>/</span>
+      <span class="text-[#80A9D4] dark:text-[#8FB8E8] font-medium">{post.data.category}</span>
+    </nav>
+
+    <!-- 文章標頭區塊 -->
+    <header class="mb-10 sm:mb-12 space-y-5">
+      <div class="flex items-center gap-3 flex-wrap">
+        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-[#80A9D4]/20 text-[#2E2A4F] dark:bg-white/15 dark:text-[#8FB8E8] shadow-xs">
+          {post.data.category}
+        </span>
+        <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">
+          發布日期：{formatDate(post.data.pubDate)}
+        </span>
+        <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">
+          預估閱讀：{post.data.readTime}
+        </span>
+      </div>
+
+      <h1 class="text-2xl sm:text-4xl font-bold text-[#2E2A4F] dark:text-white tracking-wide leading-tight transition-colors">
+        {post.data.title}
+      </h1>
+
+      <p class="text-base sm:text-lg text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed bg-[#80A9D4]/10 dark:bg-white/5 p-4 sm:p-5 rounded-2xl border-l-4 border-[#80A9D4] dark:border-[#8FB8E8]">
+        {post.data.description}
+      </p>
+
+      <!-- 作者介紹名片 -->
+      <div class="pt-4 flex items-center justify-between border-t border-[#80A9D4]/20 dark:border-white/10 flex-wrap gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-[#80A9D4]/20 dark:bg-white/15 flex items-center justify-center font-bold text-sm text-[#2E2A4F] dark:text-white shadow-xs">
+            {post.data.author.charAt(0)}
+          </div>
+          <div>
+            <div class="text-base font-bold text-[#2E2A4F] dark:text-white">
+              {post.data.author}
+            </div>
+            {post.data.authorRole && (
+              <div class="text-xs text-[#80A9D4] dark:text-[#8FB8E8]">
+                {post.data.authorRole}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <a
+          href="/blog"
+          class="text-xs sm:text-sm font-semibold text-[#80A9D4] dark:text-[#8FB8E8] hover:underline inline-flex items-center gap-1"
+        >
+          <span>← 返回專欄列表</span>
+        </a>
+      </div>
+    </header>
+
+    <!-- 文章專屬封面橫幅 (Cover Banner) -->
+    <div class="relative w-full aspect-16/9 sm:aspect-21/9 rounded-3xl overflow-hidden mb-12 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm bg-gradient-to-br from-[#80A9D4]/20 via-[#EAF3F8] to-[#2E2A4F]/10 dark:from-[#3D3A63] dark:via-[#2E2A4F] dark:to-[#1E1B3A]">
+      {post.data.coverImage ? (
+        <img
+          src={post.data.coverImage}
+          alt={post.data.title}
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <div class="w-full h-full flex flex-col justify-between p-6 sm:p-10 relative overflow-hidden">
+          <!-- 裝飾光芒 -->
+          <div class="absolute -right-12 -bottom-12 w-64 h-64 rounded-full bg-[#8FB8E8]/20 dark:bg-white/5 blur-3xl pointer-events-none"></div>
+          <div class="absolute left-8 top-8 w-32 h-32 rounded-full bg-[#FCE794]/15 dark:bg-[#FCE794]/5 blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center justify-between z-10">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-semibold bg-[#2E2A4F] text-[#FCE794] dark:bg-white/20 dark:text-[#FCE794] shadow-xs">
+              <span>✦</span>
+              <span>{post.data.category}</span>
+            </span>
+            <span class="text-xs text-[#80A9D4] dark:text-[#8FB8E8] tracking-widest font-medium uppercase">
+              Starwoven Editorial
+            </span>
+          </div>
+
+          <div class="my-auto py-4 flex flex-col items-center justify-center text-center z-10 space-y-3">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full border border-[#80A9D4]/40 dark:border-white/20 flex items-center justify-center bg-white/50 dark:bg-white/10 shadow-inner backdrop-blur-xs">
+              <CategoryIcon category={post.data.category} class="w-8 h-8 sm:w-10 sm:h-10 text-[#80A9D4] dark:text-[#8FB8E8]" />
+            </div>
+            <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/60 tracking-wider">
+              {post.data.title}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-[#3A3A3A]/60 dark:text-white/50 z-10">
+            <span>{formatDate(post.data.pubDate)}</span>
+            <span>預估閱讀 {post.data.readTime}</span>
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- 文章主體內容 (Markdown Render) -->
+    <div class="bg-white/85 dark:bg-white/10 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 p-6 sm:p-10 shadow-xs mb-12">
+      <div class="article-content space-y-6 text-[#3A3A3A] dark:text-[#F5F5F5] leading-relaxed text-base sm:text-lg">
+        <Content />
+      </div>
+
+      <!-- 文章標籤列表 -->
+      {post.data.tags.length > 0 && (
+        <div class="mt-10 pt-6 border-t border-[#80A9D4]/20 dark:border-white/10">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-semibold text-[#3A3A3A]/70 dark:text-white/60">相關標籤：</span>
+            {post.data.tags.map((tag) => (
+              <span class="text-xs px-2.5 py-1 rounded-lg bg-[#80A9D4]/15 text-[#2E2A4F] dark:bg-white/10 dark:text-white/80">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <!-- 延伸閱讀推薦 -->
+    {otherPosts.length > 0 && (
+      <section class="mb-14">
+        <h2 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] dark:text-white mb-6 flex items-center gap-2">
+          <span>✦</span>
+          <span>延伸閱讀推薦</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {otherPosts.map((other) => (
+            <a
+              href={`/blog/${other.id}`}
+              class="bg-white/80 dark:bg-white/10 p-5 rounded-2xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs hover:border-[#80A9D4]/40 dark:hover:border-white/30 transition-all group flex flex-col justify-between"
+            >
+              <div>
+                <!-- 迷你封面圖槽 -->
+                <div class="aspect-16/10 rounded-xl overflow-hidden mb-3.5 bg-gradient-to-br from-[#80A9D4]/20 via-[#EAF3F8] to-[#2E2A4F]/10 dark:from-[#3D3A63] dark:via-[#2E2A4F] dark:to-[#1E1B3A] border border-[#80A9D4]/20 dark:border-white/10 flex items-center justify-center relative">
+                  {other.data.coverImage ? (
+                    <img
+                      src={other.data.coverImage}
+                      alt={other.data.title}
+                      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div class="w-full h-full flex items-center justify-center p-3 relative overflow-hidden">
+                      <div class="w-10 h-10 rounded-full border border-[#80A9D4]/30 dark:border-white/20 flex items-center justify-center bg-white/50 dark:bg-white/5 shadow-xs transition-transform duration-300 group-hover:scale-110">
+                        <CategoryIcon category={other.data.category} class="w-5 h-5 text-[#80A9D4] dark:text-[#8FB8E8]" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div class="text-xs text-[#80A9D4] dark:text-[#8FB8E8] font-medium mb-1.5">
+                  {other.data.category}
+                </div>
+                <h3 class="text-base font-bold text-[#2E2A4F] dark:text-white group-hover:text-[#80A9D4] dark:group-hover:text-[#8FB8E8] transition-colors line-clamp-2">
+                  {other.data.title}
+                </h3>
+                <p class="mt-2 text-xs text-[#3A3A3A]/70 dark:text-white/60 line-clamp-2">
+                  {other.data.description}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- 底部諮詢預約橫幅 -->
+    <section class="text-center bg-white/75 dark:bg-white/10 p-8 sm:p-10 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 space-y-4 shadow-xs">
+      <h2 class="text-xl sm:text-2xl font-bold text-[#2E2A4F] dark:text-white transition-colors">
+        想更深入探討您的生命課題嗎？
+      </h2>
+      <p class="text-xs sm:text-sm text-[#3A3A3A]/80 dark:text-white/80 leading-relaxed max-w-lg mx-auto">
+        每一位來到星靈織語的人，都能在這裡找到真誠傾聽的夥伴。歡迎加入 LINE 官方帳號，預約屬於您的諮詢或實體課程。
+      </p>
+      <div class="pt-2">
+        <CTAButton variant="primary" text="私訊預約諮詢" />
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<style is:global>
+  /* Markdown 渲染專屬排版優化 */
+  .article-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: #2E2A4F;
+    letter-spacing: 0.025em;
+  }
+  :global(.dark) .article-content h2 {
+    color: #FFFFFF;
+  }
+
+  .article-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #2E2A4F;
+  }
+  :global(.dark) .article-content h3 {
+    color: #FFFFFF;
+  }
+
+  .article-content p {
+    margin-bottom: 1.25rem;
+    line-height: 1.85;
+  }
+
+  .article-content ul,
+  .article-content ol {
+    margin-top: 0.5rem;
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+    space-y: 0.5rem;
+  }
+
+  .article-content ul {
+    list-style-type: disc;
+  }
+
+  .article-content ol {
+    list-style-type: decimal;
+  }
+
+  .article-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.75;
+  }
+
+  .article-content blockquote {
+    border-left: 4px solid #80A9D4;
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    background: rgba(128, 169, 212, 0.1);
+    border-radius: 0.5rem;
+    font-style: italic;
+  }
+  :global(.dark) .article-content blockquote {
+    border-left-color: #8FB8E8;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .article-content strong {
+    font-weight: 700;
+    color: #2E2A4F;
+  }
+  :global(.dark) .article-content strong {
+    color: #FCE794;
+  }
+</style>

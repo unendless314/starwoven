@@ -320,6 +320,122 @@
      - `demo_docs/content_inventory.md` 同步修正週三偉特團練時間（20:00-21:30）與團練包月四堂 1000 元。
      - 清理所有檔案多餘的行尾空白與結尾多餘空行。
 
+---
+
+## 2026-09-30 — DEC-019：導入 Astro Content Collections 建立「星靈專欄」（Blog）與全站導航整合
+
+- **背景**：
+  - 業主期望為網站新增部落格（Blog）專欄功能，以發布身心靈、命理、阿卡西紀錄、靈氣調頻與塔羅學習等專業文章，增強內容行銷、SEO 觸及與學員互動。
+  - 原 Spec 與 `AGENTS.md` 僅規劃 6 大核心頁面，新增部落格為架構範疇擴充，依規範記錄於此。
+- **決策**：
+  1. **導入 Astro 5 Content Collections（方案 A）**：
+     - 配置 `src/content.config.ts`，採用 Astro 5 Content Layer API（`glob` loader 監聽 `src/content/blog/`）。
+     - 定義嚴謹之 TypeScript Zod Schema（包含 `title`、`description`、`pubDate`、`author`、`authorRole`、`category`、`tags`、`readTime`、`featured` 等欄位）。
+  2. **建立專欄列表頁 (`src/pages/blog/index.astro`)**：
+     - 包含頂部星空氛圍標題、分類標籤切換過濾器（全部、光與阿卡西、靈氣與脈輪、命理與占卜）。
+     - 置頂精選專文（Featured Post）寬幅大卡片。
+     - 響應式文章網格（Grid），提供標籤、日期、作者微名片與閱讀時間。
+     - 完美融入既有深淺色主題（Dark / Light Mode）切換機制。
+     - 底部整合「預約諮詢」LINE 官方引導橫幅。
+  3. **建立動態文章內頁 (`src/pages/blog/[...slug].astro`)**：
+     - 透過 `getStaticPaths()` 靜態預先渲染純 HTML。
+     - 內建層級麵包屑導航（首頁 / 星靈專欄 / 分類）。
+     - 專屬 Markdown 樣式適配（支援各級標題、引言金句框、有序/無序清單、深淺色自適應高亮）。
+     - 內建「延伸閱讀推薦」雙卡片與作者身分徽章。
+  4. **導航列（Navbar）整合與斷點微調**：
+     - `src/components/Navbar.astro` 中的 `navLinks` 加入 `{ name: '星靈專欄', href: '/blog' }`，自動同步桌面導航與行動版漢堡選單。
+     - 桌面導航間距由 `gap-6 xl:gap-8` 微調為 `gap-3.5 xl:gap-7`，文字字級調整為 `text-sm xl:text-base`，確保在 1024px ~ 1280px 中型螢幕寬度下 6 個導航項目、主題切換鈕與預約按鈕均維持優雅單行佈局，無任何折行。
+  5. **建立 3 篇品牌高質感範例專文**：
+     - `akashic-records-intro.md`（解鎖靈魂的藍圖：初探光與阿卡西紀錄）
+     - `reiki-daily-healing.md`（日常能量急救包：如何運用脈輪與靈氣自我調頻）
+     - `tarot-mindful-dialogue.md`（不只是預測未來：塔羅牌是一面映照心靈的鏡子）
+
+---
+
+## 2026-09-30 — DEC-020：精簡主導航列（移除「靈氣與脈輪」、「光與阿卡西紀錄」頁籤），內容深度移植至「星靈專欄」
+
+- **背景**：
+  - 經業主與團隊共識，為了使全站主導航更俐落聚焦，決定將導航列上的「靈氣與脈輪」與「光與阿卡西紀錄」獨立頁籤移除。
+  - 兩頁原有的豐富教學與 FAQ 內容，全數深度移植至「星靈專欄」作為長青精選專文。
+- **決策**：
+  1. **主導航列（Navbar）精簡**：
+     - `src/components/Navbar.astro` 移除「靈氣與脈輪」與「光與阿卡西紀錄」項目。
+     - 導航項目聚焦為 4 大核心：**關於我們**（`/about`）、**命理服務**（`/services`）、**活動與課程**（`/courses`）、**星靈專欄**（`/blog`）。
+     - 桌面版排版間距恢復為舒適的 `gap-6 xl:gap-8` 與 `text-base`，整體視覺更為大氣與平衡。
+  2. **深度內容移植至星靈專欄（Content Collections）**：
+     - **光與阿卡西紀錄**：移植為 `src/content/blog/light-and-akashic-records.md`（《治癒別人，我們就獲得治癒：光與阿卡西紀錄的探索指引與常見問答》），完整保留核心精神、身心調頻作用與四大常見 FAQ。
+     - **靈氣與脈輪**：移植為 `src/content/blog/reiki-and-chakras.md`（《建立你的身心自我檢測系統：認識臼井靈氣與七脈輪日常調頻》），完整收錄臼井靈氣源流、自我檢測哲學，以及六大脈輪對現代上班族舒緩焦慮與提升職場自信的精闢指引。
+  3. **頁面轉址與內部連結更新**：
+     - `src/pages/index.astro` 首頁四大核心卡片之「靈氣調頻」點擊連結更新為 `/blog/reiki-and-chakras`。
+     - `src/pages/reiki.astro` 與 `src/pages/akashic.astro` 設定標準 301 靜態跳轉至對應專欄文章，確保既有外部連結與書籤不失效。
+
+---
+
+## 2026-09-30 — DEC-021：統一「星靈專欄」全站封面圖規格與靈性佔位視覺系統
+
+- **背景**：
+  - 在前次版本中，專欄頂部的「置頂精選專文」具備專屬視覺圖槽，而下方網格的「一般文章卡片」為純文字名片版型，造成訪客視覺上產生「部分文章有封面圖、部分文章沒有封面圖」的感受差異。
+  - 經業主指示確認，全站專欄文章應當統一封面圖配置，呈現和諧標準之媒體雜誌感。
+- **決策**：
+  1. **專欄列表頁 (`src/pages/blog/index.astro`) 統一封面圖槽**：
+     - 一般文章網格中的每一張卡片頂部，統一加入標準 16:10 寬幅封面圖容器。
+     - **智慧佔位（Smart Placeholder）機制**：
+       - 若文章 Frontmatter 填寫 `coverImage`，自動載入真實圖片並支援微縮放懸停特效。
+       - 若尚未上傳自訂圖片，自動依文章分類（「光與阿卡西」、「靈氣與脈輪」、「命理與占卜」等）渲染專屬的靈性幾何符號（阿卡西之書、脈輪能量光暈、星芒塔羅盤）與星空水彩漸層光斑，確保全站所有卡片皆具備完整而精緻的視覺焦點。
+  2. **文章詳情內頁 (`src/pages/blog/[...slug].astro`) 導入專屬封面橫幅**：
+     - 在標頭與正文之間配置 21:9 / 16:9 大氣編輯部橫幅（Editorial Cover Banner），具備分類光芒膠囊、星光漸層、靈性圖示與閱讀時間。
+     - 底部「延伸閱讀推薦」雙卡片同步加入迷你封面圖槽，確保全站閱讀體驗一致連貫。
+
+---
+
+## 2026-09-30 — DEC-022：代碼審查修復（Schema coverImage 補齊、專欄列表重複卡片消除、Nginx 301 規則定案、單一精選限制與空狀態優化）
+
+- **背景**：
+  - 經由外部 AI 代碼審查提出 6 項關於可維護性與潛在 Bug 的改進報告，經評估後全數採納實施。
+- **決策與修復項目**：
+  1. **補齊 Zod Schema `coverImage` 欄位與 `z.enum` 分類防呆**：
+     - 在 `src/content.config.ts` 中補齊 `coverImage: z.string().optional()`，解決 Zod 自動剔除未宣告欄位導致封面圖失效之隱患。
+     - 定義 `BLOG_CATEGORIES = ['光與阿卡西', '靈氣與脈輪', '命理與占卜', '心靈隨筆'] as const`，並透過 `z.enum(BLOG_CATEGORIES)` 強型別驗證，防止小編手民之誤產生無效分類標籤。
+  2. **消除文章列表重複顯示（改用 `regularPosts`）**：
+     - `src/pages/blog/index.astro` 網格渲染改為 `regularPosts.map(...)`，徹底解決置頂精選文章在下方網格再度重複出現的問題。
+  3. **定案 Nginx 伺服器層級 301 重定向規範**：
+     - 針對 `/reiki` 與 `/akashic` 舊路徑，保留 Astro 靜態 HTML 作為本地端預覽與客戶端 Fallback，同時在 VPS Nginx vhost 配置中追加伺服器層級之絕對跳轉：
+       ```nginx
+       location = /reiki { return 301 /blog/reiki-and-chakras; }
+       location = /reiki/ { return 301 /blog/reiki-and-chakras; }
+       location = /akashic { return 301 /blog/light-and-akashic-records; }
+       location = /akashic/ { return 301 /blog/light-and-akashic-records; }
+       ```
+       確保搜尋引擎爬蟲（SEO）能接收到標準的 HTTP 301 Moved Permanently 狀態碼。
+  4. **嚴格限制單一精選文章（Single Featured Article）**：
+     - 將 `src/content/blog/akashic-records-intro.md` 的 `featured` 修正為 `false`，全站僅保留 `light-and-akashic-records.md` 為單一精選文章，避免多篇置頂爭搶版面。
+  5. **首頁與分類空狀態（Empty State）顯示防禦**：
+     - 當專欄文章數為 0 篇時，`index.astro` 預設顯示「目前專欄籌備中，敬請期待全新靈性文章上線」，修復無文章時畫面空白的缺陷。
+  6. **清除生產環境死代碼（Dead Code）**：
+     - 移除客戶端腳本中未使用的 `featuredCard` DOM 查詢變數。
+
+---
+
+## 2026-09-30 — DEC-023：Nginx 專屬 vhost 配置檔落地、徹底移除靜態過渡檔案與 CategoryIcon 重構
+
+- **背景**：
+  - 外部代碼審查 Follow-up 指出：純靜態模式下的 `reiki.astro` 與 `akashic.astro` 依然會在建置時輸出 200 OK 的 HTML，無法在伺服器端真正回應 HTTP 301。
+  - 同時指出專欄多個頁面中存在重複的 SVG 分類圖示條件分支。
+- **決策與執行**：
+  1. **落地專屬 Nginx 配置檔案 (`nginx/starwoven.conf`)**：
+     - 在版控中直接建立專屬 server block 設定檔，明確配置伺服器層級之絕對跳轉：
+       ```nginx
+       location = /reiki { return 301 /blog/reiki-and-chakras; }
+       location = /reiki/ { return 301 /blog/reiki-and-chakras; }
+       location = /akashic { return 301 /blog/light-and-akashic-records; }
+       location = /akashic/ { return 301 /blog/light-and-akashic-records; }
+       ```
+     - 整合靜態快取策略（30天 Cache-Control）、Gzip 壓縮與標準安全防護標頭，部屬時直接軟連結至 `/etc/nginx/sites-enabled/starwoven`。
+  2. **徹底刪除靜態轉址假檔案**：
+     - 刪除 `src/pages/reiki.astro` 與 `src/pages/akashic.astro`，杜絕產出 200 OK 偽轉址檔案，全站純靜態頁面嚴格維持 10 個核心有效頁面。
+  3. **重構分類圖示元件 (`src/components/CategoryIcon.astro`)**：
+     - 將散落在列表頁、置頂卡片、文章內頁橫幅與推薦閱讀中的 4 處重複 SVG 判斷式，全數收斂至單一共用元件 `CategoryIcon.astro`，大幅提升 DRY 度與未來的可擴充性。
+
 
 
 
