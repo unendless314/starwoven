@@ -52,7 +52,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   ```text
   (white line art:1.3), 3d perspective tilted celestial zodiac wheel, astrological horoscope chart, ellipse in perspective view, radiant central sunburst star, concentric dashed rings, precise twelve zodiac glyph symbols in outer segments, sacred geometry, minimal astrology diagram, (isolated on solid black background:1.4), vector illustration style, ultra clean lines
   ```
-- **建議參數**：解析度 1024×768（寬幅橢圓）/ Steps 30 / CFG 7.0。
+- **建議參數**：解析度 1024×1024（1:1 正方形）/ Steps 8 (Turbo) 或 30 / CFG 1.0~7.0。
 
 ---
 
@@ -165,18 +165,18 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ## 二、【命理服務】(Services / starwovenwrite)
 
-### [服務]-[圖片 A~F]：六大服務項目手繪插圖（6張）
+### [服務]-[圖片 A~F]：六大服務項目全彩手繪水彩插圖（6張，已採用上線）
 
-- **版位用途**：命理服務頁面（`/services`）6 大雙欄卡片頂部專屬插圖位置
-- **視覺重點**：靈性、溫暖的手繪線條或水彩插畫（Doodle 插畫風），底色透明 PNG。
+- **版位用途**：命理服務頁面（`/services`）6 大雙欄卡片頂部專屬插圖位置（`w-24 h-24 sm:w-28 sm:h-28` 容器，居中 `object-contain`）
+- **視覺重點**：溫暖靈性的全彩水彩插畫（Full Color Watercolor Illustration），完美呼應 Canva 原站視覺調性，去背透明 WebP 支援深淺色雙主題自適應。
 - **對應編號與檔案**：
-  - `[服務]-[圖片 A]`：塔羅占卜插圖（拱門卡牌、星月與神聖光芒）(`services_a_tarot_v1.png`)
-  - `[服務]-[圖片 B]`：星盤解析插圖（十二星座符號與同心天體星盤）(`services_b_astrology_v1.png`)
-  - `[服務]-[圖片 C]`：生命靈數插圖（神聖幾何圖形、三角星與靈數之光）(`services_c_numerology_v1.png`)
-  - `[服務]-[圖片 D]`：八字命理插圖（東方太極兩儀、五行流轉與易經卦象）(`services_d_bazi_v1.png`)
-  - `[服務]-[圖片 E]`：靈氣調頻插圖（雙手溫柔托舉、能量微光與七脈輪能量中心）(`services_e_reiki_v1.png`)
-  - `[服務]-[圖片 F]`：阿卡西紀錄插圖（開啟的光芒之書、智慧之眼與無垠星辰）(`services_f_akashic_v1.png`)
-- **備註**：前端採用等比響應式容器；取得真圖前自動呈現各主題專屬之精緻 SVG 幾何圖示與素材代碼。
+  - `[服務]-[圖片 A]`：塔羅占卜插圖（神秘深紫金邊雙牌、星月與粉晶光芒）(`services_a_tarot_v1.webp`)
+  - `[服務]-[圖片 B]`：星盤解析插圖（金色同心星盤輪盤、水彩星雲與星座符號）(`services_b_astrology_v1.webp`)
+  - `[服務]-[圖片 C]`：生命靈數插圖（神聖幾何九芒星、金光與水彩靈數圓圈）(`services_c_numerology_v1.webp`)
+  - `[服務]-[圖片 D]`：八字命理插圖（東方水墨水彩太極陰陽兩儀、五行流轉氣韻）(`services_d_bazi_v1.webp`)
+  - `[服務]-[圖片 E]`：靈氣調頻插圖（雙手溫柔托舉、七脈輪彩虹能量光球升騰）(`services_e_reiki_v1.webp`)
+  - `[服務]-[圖片 F]`：阿卡西紀錄插圖（茂盛生命之樹、金葉星塵與靈魂源頭水彩）(`services_f_akashic_v1.webp`)
+- **備註**：已全部完成 ComfyUI 生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
 
 ---
 
@@ -277,16 +277,32 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
+### [專欄]-[圖片 A~E]：星靈專欄 5 大深度專文情境水彩插圖（5張，已採用上線）
+
+- **版位用途**：星靈專欄列表頁（`/blog`，16:10 寬幅卡片）與文章詳情內頁（`/blog/[slug]`，16:9 / 21:9 頂部編輯部橫幅）
+- **規格規格**：1344 × 768（SDXL 標準寬幅，比例 1.75:1，滿版手繪水彩風格無須去背）
+- **對應編號與檔案**：
+  - `[專欄]-[圖片 A]`：光與阿卡西紀錄精選專文插圖（生命之書、天國金色光柱與命運星塵）(`blog_a_akashic_light_v1.webp`)
+  - `[專欄]-[圖片 B]`：初探阿卡西紀錄專文插圖（靈魂藍圖神聖幾何、星辰之門與以太圖書館）(`blog_b_akashic_intro_v1.webp`)
+  - `[專欄]-[圖片 C]`：臼井靈氣與七脈輪專文插圖（冥想人體光影輪廓、七脈輪彩虹能量光球升騰）(`blog_c_reiki_chakras_v1.webp`)
+  - `[專欄]-[圖片 D]`：日常能量急救包專文插圖（雙手捧托翡翠綠與粉金能量光、晨光與居家靜心）(`blog_d_reiki_healing_v1.webp`)
+  - `[專欄]-[圖片 E]`：塔羅牌心靈之鏡專文插圖（古典靈性鏡面、水彩倒映星盤與星星牌光暈）(`blog_e_tarot_mirror_v1.webp`)
+- **備註**：全部採用 ComfyUI Z-Image-Turbo / SDXL 生成，經專案標準流程壓縮為高品質 WebP（品質 85，跳過去背保留滿版水彩 wash），正式部署於 `public/assets/` 與文章 Markdown frontmatter。
+
+---
+
 ## 六、生成紀錄（Generation Log）
 
 | 編號 | 素材名稱 | 日期 | 平台 / 模型 | 提示詞（摘要） | 種子碼 (Seed) | 評選結果 | 後製方式 | 存放檔名 |
 |---|---|---|---|---|---|---|---|---|
-| `首頁-A` | 塔羅牌・世界牌 | 2026-09-22 | ComfyUI | 舞者花環四大神獸白線 | | 待生成 | 待去背 | `home_a_tarot_world_v1.png` |
-| `首頁-B` | 十二星座星盤輪盤 | 2026-09-22 | ComfyUI | 傾斜透視橢圓星盤白線 | | 待生成 | 待去背 | `home_b_zodiac_wheel_v1.png` |
-| `首頁-C` | 命理諮詢・行星星環 | 2026-09-22 | ComfyUI | 土星造型手繪細線條 | | 待生成 | 白底去背 | `home_c_planet_stars_v1.png` |
-| `首頁-D` | 課程學習・筆記本筆 | 2026-09-22 | ComfyUI | 翻開手帳筆記本與筆 | | 待生成 | 白底去背 | `home_d_open_book_v1.png` |
-| `首頁-E` | 實體活動・三人剪影 | 2026-09-22 | ComfyUI | 三人聚會扁平剪影圖標 | | 待生成 | 剪影轉透明 | `home_e_community_trio_v1.png` |
-| `首頁-F` | 星靈選物・水晶植物 | 2026-09-22 | ComfyUI | 晶簇礦石與草本葉片 | | 待生成 | 白底去背 | `home_f_crystals_botanical_v1.png` |
+| `首頁-A` | 塔羅牌・世界牌 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 舞者花環四大神獸白線 | 756252877462802 | 淘汰 (備查) | 移至 rejected | `home_a_tarot_world_v1.webp` |
+| `首頁-A` | 塔羅牌・世界牌 (v2) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 彩虹漸層舞者花環四大神獸 | 115754867374705 | 淘汰 (備查) | 移至 rejected | `home_a_tarot_world_v2.webp` |
+| `首頁-A` | 塔羅牌・世界牌 (v3) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 飽和彩虹光暈舞者花環神獸 | 1055348331508342 | 採用上架 | 轉 WebP Q85 | `home_a_tarot_world_v3.webp` |
+| `首頁-B` | 十二星座星盤輪盤 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 3D透視十二星座星盤彩虹光 | 885617653962545 | 採用上架 | 轉 WebP Q85 (1:1) | `home_b_zodiac_wheel_v1.webp` |
+| `首頁-C` | 命理諮詢・行星星環 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 土星造型手繪細線條星芒 | 992106538623070 | 採用上架 | 去背 + 轉 WebP | `home_c_planet_stars_v1.webp` |
+| `首頁-D` | 課程學習・筆記本筆 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 翻開手帳筆記本與筆星芒 | 808022016837652 | 採用上架 | 去背 + 轉 WebP | `home_d_open_book_v1.webp` |
+| `首頁-E` | 實體活動・三人社群 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈性夥伴圍坐聚會手繪星芒 | 1004066584927966 | 採用上架 | 去背 + 轉 WebP | `home_e_community_trio_v1.webp` |
+| `首頁-F` | 靈氣調頻・雙手能量 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手托起能量光芒手繪 | 244399405058717 | 採用上架 | 去背 + 轉 WebP | `home_f_reiki_hands_v1.webp` |
 | `首頁-G` | 週一 阿卡西課照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_g_course_akashic.jpg` |
 | `首頁-H` | 週二 占星班照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_h_course_astrology.jpg` |
 | `首頁-I` | 週三 偉特團練照 | 2026-09-30 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_i_course_waite.jpg` |
@@ -297,6 +313,12 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `首頁-N` | 皮皮 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_n_reader_pipi.jpg` |
 | `首頁-O` | 達心 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_o_reader_daxin.jpg` |
 | `首頁-P` | 深靛藍星空背景 | 2026-09-22 | ComfyUI | 深靛藍暗紫星塵留白底圖 | | 待生成 | 壓至1MB內 | `home_p_bg_stars_v1.png` |
+| `服務-A` | 塔羅占卜 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 神秘紫金雙塔羅牌粉晶光芒 | 588777160954832 | 採用上架 | 去背 + 轉 WebP | `services_a_tarot_v1.webp` |
+| `服務-B` | 星盤解析 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 金色天體同心星盤水彩星雲 | 283886040671793 | 採用上架 | 精密圓形抗鋸齒去背 + WebP Q85 | `services_b_astrology_v1.webp` |
+| `服務-C` | 生命靈數 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 神聖幾何九芒星靈數水彩光芒 | 229167127995660 | 採用上架 | 去背 + 轉 WebP | `services_c_numerology_v1.webp` |
+| `服務-D` | 八字命理 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 東方水墨水彩太極陰陽五行流轉 | 753048023136719 | 採用上架 | 去背 + 轉 WebP | `services_d_bazi_v1.webp` |
+| `服務-E` | 靈氣調頻 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托七脈輪彩虹能量光暈 | 950154034724132 | 採用上架 | 去背 + 轉 WebP | `services_e_reiki_v1.webp` |
+| `服務-F` | 阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂生命之樹金葉星塵水彩 | 877470136253271 | 採用上架 | 去背 + 轉 WebP | `services_f_akashic_v1.webp` |
 | `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_b_founder_yien.jpg` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_c_founder_pipi.jpg` |
@@ -313,3 +335,48 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `頁尾-B` | Instagram 條碼 | 2026-09-22 | 實體擷圖 | 官方 IG 條碼 | - | 採用 | 安全留白 | `footer_qr_instagram.png` |
 | `頁尾-C` | Line 社群 條碼 | 2026-09-22 | 實體擷圖 | 官方社群條碼 | - | 採用 | 安全留白 | `footer_qr_community.png` |
 | `頁尾-D` | iOpen Mall 條碼 | 2026-09-22 | 實體擷圖 | 7-11 賣場條碼 | - | 採用 | 安全留白 | `footer_qr_iopenmall.png` |
+| `專欄-A` | 光與阿卡西精選 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 生命之書天國光柱命運絲線水彩 | 6131051543551 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_a_akashic_light_v1.webp` |
+| `專欄-B` | 初探阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂藍圖神聖幾何星辰之門水彩 | 266276422365168 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_b_akashic_intro_v1.webp` |
+| `專欄-C` | 靈氣與七脈輪 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 冥想人體光影七脈輪彩虹能量 | 423006888875148 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_c_reiki_chakras_v1.webp` |
+| `專欄-D` | 日常能量急救包 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托翡翠綠粉金能量光晨光 | 965541644548421 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_d_reiki_healing_v1.webp` |
+| `專欄-E` | 塔羅心靈之鏡 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 古典靈性鏡面倒映塔羅牌星盤 | 188810271202554 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_e_tarot_mirror_v1.webp` |
+
+---
+
+## 七、素材去背與 WebP 轉換標準作業流程（AI / 開發者 SOP）
+
+為確保後續接手的 AI 或開發者不會誤將大容量未去背的 Raw PNG 提交進 Git 或錯誤掛載，請嚴格遵守以下標準處理程序：
+
+### 1. 工具與環境需求
+
+專案使用 Python 與 `rembg`、`onnxruntime` 及 `Pillow` 進行自動化去背與 WebP 壓縮：
+
+```bash
+pip install rembg onnxruntime pillow
+```
+
+### 2. 專案一鍵自動化腳本 (`scripts/process_asset.py`)
+
+專案提供標準後製工具，自動執行：
+1. **去背檢查**：若為純白底 RGB 圖，自動透過 U2Net 模型高精度去背轉為透明 RGBA；若已含透明通道則智慧跳過。
+2. **WebP 最佳化**：統一以 `quality=85, method=6` 進行高品質兼小體積壓縮（每張控制在 50~150 KB 內）。
+3. **自動雙重歸檔**：
+   - 封存存檔 $\rightarrow$ `demo_docs/sd-assets/[檔名].webp`
+   - 上架存檔 $\rightarrow$ `public/assets/[檔名].webp`
+4. **自動解析生成履歷**：自動從 ComfyUI PNG 中讀取 Seed 與 Prompt，並印出可直接複製至「六、生成紀錄」的 Markdown 表格行。
+
+#### 指令範例：
+
+```bash
+# 單張素材後製處理
+python scripts/process_asset.py --input demo_docs/sd-assets/z-image-turbo_00014_.png --output services_a_tarot_v1.webp --code 服務-A --name "塔羅占卜 (v1)"
+
+# 若外部已完成手工去背（跳過去背直接轉 WebP）：
+python scripts/process_asset.py --input demo_docs/sd-assets/custom_image.png --output home_a_tarot_world_v3.webp --skip-rembg
+```
+
+### 3. Git 版控安全守則
+
+- **禁止提交 Raw PNG**：未經壓縮的原始 PNG（通常 > 1MB）禁止進入 Git 版本庫，`.gitignore` 已設定 `demo_docs/sd-assets/*.png` 自動排除。
+- **僅提交 WebP**：Git 僅追蹤 `*.webp` 檔案，確保 Repository 體積輕巧、頁面載入秒開。
+- **前端引用規範**：Astro 頁面統一由 `/assets/[檔名].webp` 引用（對應 `public/assets/` 目錄）。

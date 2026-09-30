@@ -31,3 +31,6 @@ pnpm-debug.log*
 # Local reference screenshots
 demo_docs/reference-screenshots/
 
+# Raw uncompressed generation PNGs (WebP versions are tracked instead)
+demo_docs/sd-assets/**/*.png
+

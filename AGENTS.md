@@ -51,18 +51,29 @@ Shared components expected: `Layout.astro` (head/meta/footer),
 - Always `target="_blank"` with `rel="noopener"`
 - Rendered as a button in the nav (see `Navbar.astro`), reused as `CTAButton.astro`
 
-## AI image generation — human-led, not agent-led
+## AI image generation & asset management (Human-led, WebP mandatory)
 
-Agents **do not** generate images. Humans operate OpenAI (cloud) or local SD
-(AMD R9700 backup) and select/edit/remove-background the outputs.
+Agents **do not** generate images. Humans operate OpenAI (cloud) or local ComfyUI/SD
+and select/edit/remove-background the outputs.
 
-- Adopted assets → `demo_docs/sd-assets/` (file naming: `name_vN.png`)
-- Rejected assets → `demo_docs/sd-assets/rejected/` (do **not** delete — keep for reference)
-- Every adopted image gets a row in `image_prompts.md` "生成紀錄" table:
-  date / model / prompt / seed / 採用|淘汰 / post-processing / file
+- **File naming standard**: `[分頁代碼]_[圖片代碼]_[素材名稱]_v[版本號].webp` (e.g. `home_a_tarot_world_v1.webp`).
+- **Adopted assets**:
+  - Archive copy → `demo_docs/sd-assets/`
+  - Production web asset → `public/assets/`
+- **Rejected assets** → `demo_docs/sd-assets/rejected/` (do **not** delete — keep for reference).
+- **WebP conversion mandatory before commit**:
+  - **Never commit uncompressed raw PNGs (>500KB - 1MB+) directly into Git.**
+  - Always convert images to `.webp` (recommended Quality 80–85, `method=6`) prior to `git commit`. This achieves ~90% size reduction, avoids permanent Git blob bloat, and optimizes LCP / mobile page load speed.
+  - Remove original uncompressed PNGs from git tracking once converted.
+- **Log every generation**: Every adopted image gets a row in `image_prompts.md` "生成紀錄" table:
+  date / model / prompt / seed / 採用|淘汰 / post-processing / file.
 - `image_prompts.md` templates are written SD tag-style; for OpenAI calls they
-  need to be rewritten as natural language before use
-- No image goes on the live site without a human having eyeballed it
+  need to be rewritten as natural language before use.
+- No image goes on the live site without a human having eyeballed it.
+- **Automated SOP Script for Agents / Developers**:
+  - A turnkey helper script is available at `scripts/process_asset.py`.
+  - Usage: `python scripts/process_asset.py -i <raw_png> -o <name.webp> -c <代號> -n <名稱>`
+  - Automatically performs background removal via `rembg`, compresses to WebP Q85, syncs to both `demo_docs/sd-assets/` and `public/assets/`, and prints the markdown log table row.
 
 ## Deployment (Hetzner NBG1, Ubuntu arm64, nginx)
 

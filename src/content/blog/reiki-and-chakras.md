@@ -8,6 +8,7 @@ category: '靈氣與脈輪'
 tags: ['臼井靈氣', '七脈輪', '上班族解壓', '身心調頻', '日常靜心', '自我覺察']
 readTime: '7 分鐘'
 featured: false
+coverImage: '/assets/blog_c_reiki_chakras_v1.webp'
 ---
 
 > 「建立一套專屬於你的『身心自我檢測系統』，從忙碌與緊繃中重新歸零。」

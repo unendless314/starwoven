@@ -8,6 +8,7 @@ category: '光與阿卡西'
 tags: ['阿卡西紀錄', '光的課程', '身心調頻', '靈魂藍圖', '內在覺察']
 readTime: '6 分鐘'
 featured: false
+coverImage: '/assets/blog_b_akashic_intro_v1.webp'
 ---
 
 在人生的某些時刻，你是否曾感到困惑：為什麼相同的關係課題總是一再上演？為什麼某種情緒或恐懼，似乎根深蒂固在潛意識深處，怎麼也揮之不去？

@@ -8,6 +8,7 @@ category: '命理與占卜'
 tags: ['偉特塔羅', '托特塔羅', '心靈占卜', '潛意識', '人生選擇']
 readTime: '5 分鐘'
 featured: false
+coverImage: '/assets/blog_e_tarot_mirror_v1.webp'
 ---
 
 「老師，我和他到底有沒有緣分？」  

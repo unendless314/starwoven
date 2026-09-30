@@ -8,6 +8,7 @@ category: '光與阿卡西'
 tags: ['阿卡西紀錄', '光的課程', '能量解讀', '內在小孩', '常見問題', '自我治癒']
 readTime: '8 分鐘'
 featured: true
+coverImage: '/assets/blog_a_akashic_light_v1.webp'
 ---
 
 > 「治癒別人，我們就獲得治癒。光會推動人生中的轉變，阿卡西可以主動連結自己的狀態並獲得指引。」

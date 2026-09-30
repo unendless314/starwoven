@@ -8,6 +8,7 @@ category: '靈氣與脈輪'
 tags: ['臼井靈氣', '脈輪平衡', '日常淨化', '能量調頻', '放鬆練習']
 readTime: '5 分鐘'
 featured: false
+coverImage: '/assets/blog_d_reiki_healing_v1.webp'
 ---
 
 在繁忙的現代步調中，我們常常習慣了「用力」生活：用力工作、用力處理情緒、用力維繫人際關係。久而久之，身體各個能量中心（脈輪）就容易出現停滯、耗損或過度緊繃的現象。

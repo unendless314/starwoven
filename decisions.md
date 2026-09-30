@@ -436,7 +436,20 @@
   3. **重構分類圖示元件 (`src/components/CategoryIcon.astro`)**：
      - 將散落在列表頁、置頂卡片、文章內頁橫幅與推薦閱讀中的 4 處重複 SVG 判斷式，全數收斂至單一共用元件 `CategoryIcon.astro`，大幅提升 DRY 度與未來的可擴充性。
 
+---
 
+## 2026-09-30 — DEC-024：星靈專欄 5 大深度文章 ComfyUI 配圖落地與 WebP 最佳化部署
 
-
-
+- **背景**：
+  - 星靈專欄（/blog）已建立完善的版面與智慧佔位機制，全站 5 篇深度專文尚待真實專屬情境插圖。
+- **決策與執行**：
+  1. **ComfyUI 規格定案（1344 × 768 / 1.75:1）**：
+     - 採用 SDXL / Z-Image-Turbo 原生 100 萬像素標準橫向解析度 1344 × 768，完美相容列表頁卡片（16:10）與文章內頁寬幅橫幅（16:9 / 21:9）之裁切。
+     - 風格統一為靈性水彩手繪、星塵粒子與柔和光暈（Pastel Watercolor & Celestial Glow）。
+  2. **自動化後製與 WebP 最佳化（--skip-rembg）**：
+     - 使用專案腳本 scripts/process_asset.py 處理，因屬滿版氛圍圖，加入 --skip-rembg 保留完整背景。
+     - 統一轉為 WebP（Quality 85, method=6），5 張圖檔總大小僅 ~577 KB（平均每張約 115 KB），兼顧高解析度與 LCP 秒開體驗。
+  3. **雙重歸檔與 Markdown 掛載**：
+     - 同步歸檔於 demo_docs/sd-assets/ 與生產環境 public/assets/。
+     - 更新 5 篇專欄文章之 Frontmatter coverImage 欄位（log_a_akashic_light_v1.webp ~ log_e_tarot_mirror_v1.webp）。
+     - 更新 demo_docs/image_prompts.md 之素材手冊與生成紀錄表。

@@ -9,15 +9,15 @@ import CTAButton from '../components/CTAButton.astro';
 // ==========================================
 
 // 【1. Hero 視覺區】
-const imgTarotWorld = '';       // 首頁-A：右側直式「塔羅世界牌」
-const imgZodiacWheel = '';      // 首頁-B：左下透視「十二星座星盤輪盤」
+const imgTarotWorld = '/assets/home_a_tarot_world_v3.webp'; // 首頁-A：右側直式「塔羅世界牌」
+const imgZodiacWheel = '/assets/home_b_zodiac_wheel_v1.webp'; // 首頁-B：左下「十二星座星盤輪盤」
 const imgHeroBg = '';           // 首頁-P：底層星空圖（選填，留空時由 CSS 漸層與光斑渲染）
 
 // 【2. 四大核心服務卡片區】
-const imgServiceAstrology = ''; // 首頁-C：命理諮詢「行星與星環」
-const imgCourseBook = '';       // 首頁-D：課程學習「筆記本與筆」
-const imgEventCommunity = '';   // 首頁-E：實體活動「三人社群夥伴剪影」
-const imgReikiTune = '';        // 首頁-F：靈氣調頻「雙手療癒與能量光芒」
+const imgServiceAstrology = '/assets/home_c_planet_stars_v1.webp'; // 首頁-C：命理諮詢「行星與星環」
+const imgCourseBook = '/assets/home_d_open_book_v1.webp'; // 首頁-D：課程學習「筆記本與筆」
+const imgEventCommunity = '/assets/home_e_community_trio_v1.webp'; // 首頁-E：實體活動「三人社群夥伴」
+const imgReikiTune = '/assets/home_f_reiki_hands_v1.webp'; // 首頁-F：靈氣調頻「雙手療癒與能量光芒」
 
 // 【3. 固定循環課程現場照片（待業主提供真圖）】
 const imgCourseMon = '';        // 首頁-G：每週一 阿卡西紀錄與光的課程活動照
@@ -259,15 +259,15 @@ const featuredReaders = [
         <!-- 圖片位置 B：十二星座透視星盤輪盤 -->
         <div class="pt-4 sm:pt-6">
           {imgZodiacWheel ? (
-            <div class="relative max-w-[420px] transition-transform hover:scale-105 duration-500">
+            <div class="relative w-full max-w-[320px] sm:max-w-[360px] aspect-square rounded-3xl overflow-hidden transition-transform hover:scale-102 duration-500 shadow-[0_20px_50px_rgba(0,0,0,0.4)]">
               <img
                 src={imgZodiacWheel}
                 alt="十二星座星盤輪盤"
-                class="w-full h-auto object-contain drop-shadow-[0_10px_35px_rgba(0,0,0,0.5)] -rotate-12"
+                class="w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div class="relative w-full max-w-[380px] sm:max-w-[420px] aspect-[16/10] rounded-3xl border-2 border-dashed border-[#8FB8E8]/40 bg-white/5 backdrop-blur-xs p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all hover:border-[#8FB8E8]/70 group">
+            <div class="relative w-full max-w-[320px] sm:max-w-[360px] aspect-square rounded-3xl border-2 border-dashed border-[#8FB8E8]/40 bg-white/5 backdrop-blur-xs p-6 flex flex-col items-center justify-center text-center shadow-lg transition-all hover:border-[#8FB8E8]/70 group">
               <div class="w-20 h-20 rounded-full border border-[#8FB8E8]/30 flex items-center justify-center mb-3 group-hover:rotate-45 transition-transform duration-700">
                 <svg class="w-10 h-10 text-[#8FB8E8]/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                   <circle cx="12" cy="12" r="10" />
@@ -282,7 +282,7 @@ const featuredReaders = [
                 十二星座透視星盤輪盤
               </h3>
               <p class="text-xs text-white/60 mt-1">
-                建議規格：白線向量去背 PNG / SVG（微透視角度）
+                規格：1:1 正方形（1024×1024）
               </p>
             </div>
           )}
