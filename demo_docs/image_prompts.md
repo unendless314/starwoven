@@ -125,28 +125,18 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-### [首頁]-[圖片 G~K, M]：固定循環課程活動現場照片（6張，待業主提供真實圖檔）
+### [首頁]-[圖片 G~L]：固定循環課程活動現場照片（6張，待業主提供真實圖檔）
 
 - **版位用途**：首頁「固定循環課程」區塊 6 門課程之活動現場照片插槽
 - **規格建議**：直式比例（4:5 或 3:4），真實上課/團練/練習現場照片，需清晰、採光溫和自然。
 - **對應編號與檔案**：
   - `[首頁]-[圖片 G]`：每週一 阿卡西紀錄與光的課程 (`home_g_course_akashic.jpg`)
   - `[首頁]-[圖片 H]`：每週二 占星循環班 (`home_h_course_astrology.jpg`)
-  - `[首頁]-[圖片 M]`：每週三 偉特塔羅團練 (`home_m_course_waite.jpg`)
-  - `[首頁]-[圖片 I]`：每週四 七脈輪與靈氣團練 (`home_i_course_reiki.jpg`)
-  - `[首頁]-[圖片 J]`：每週五 托特塔羅循環班 (`home_j_course_thoth.jpg`)
-  - `[首頁]-[圖片 K]`：每週六 生命靈數 (`home_k_course_numerology.jpg`)
+  - `[首頁]-[圖片 I]`：每週三 偉特塔羅團練 (`home_i_course_waite.jpg`)
+  - `[首頁]-[圖片 J]`：每週四 七脈輪與靈氣團練 (`home_j_course_reiki.jpg`)
+  - `[首頁]-[圖片 K]`：每週五 托特塔羅循環班 (`home_k_course_thoth.jpg`)
+  - `[首頁]-[圖片 L]`：每週六 生命靈數 (`home_l_course_numerology.jpg`)
 - **備註**：目前前端維持精美線框佔位符（Placeholder），取得正式照片後直接放入 `public/assets/` 即可。
-
----
-
-### [首頁]-[圖片 L]（選填）：深靛藍星空背景底圖
-
-- **版位用途**：首頁全幅底圖（目前已由 CSS 漸層與光斑代打，若有高解析實圖可套入替換）
-- **ComfyUI 提示詞**：
-  ```text
-  deep indigo and dark purple night sky background, subtle nebula gradient, scattered soft glowing star dust particles and gentle bokeh light spots, calm, mystical, dreamy spiritual atmosphere, empty center for text overlay, wide angle wallpaper composition, high resolution, smooth gradients, no moon, no horizon, no landscape, no text, no figures
-  ```
 
 ---
 
@@ -159,6 +149,17 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   - `[首頁]-[圖片 N]`：皮皮 現場照片 (`home_n_reader_pipi.jpg`)
   - `[首頁]-[圖片 O]`：達心 現場照片 (`home_o_reader_daxin.jpg`)
 - **備註**：前端採用 CSS `rounded-full` 與 `object-cover`，任何比例之照片丟入後皆會自動等比居中裁切成完美正圓，無須手動預先裁圓。
+
+---
+
+### [首頁]-[圖片 P]（選填）：深靛藍星空背景底圖
+
+- **版位用途**：首頁全幅底圖（目前已由 CSS 漸層與光斑代打，若有高解析實圖可套入替換）
+- **ComfyUI 提示詞**：
+  ```text
+  deep indigo and dark purple night sky background, subtle nebula gradient, scattered soft glowing star dust particles and gentle bokeh light spots, calm, mystical, dreamy spiritual atmosphere, empty center for text overlay, wide angle wallpaper composition, high resolution, smooth gradients, no moon, no horizon, no landscape, no text, no figures
+  ```
+- **存放檔名**：`home_p_bg_stars_v1.png`
 
 ---
 
@@ -288,13 +289,14 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `首頁-F` | 星靈選物・水晶植物 | 2026-09-22 | ComfyUI | 晶簇礦石與草本葉片 | | 待生成 | 白底去背 | `home_f_crystals_botanical_v1.png` |
 | `首頁-G` | 週一 阿卡西課照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_g_course_akashic.jpg` |
 | `首頁-H` | 週二 占星班照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_h_course_astrology.jpg` |
-| `首頁-I` | 週四 靈氣團練照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_i_course_reiki.jpg` |
-| `首頁-J` | 週五 托特塔羅照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_j_course_thoth.jpg` |
-| `首頁-K` | 週六 生命靈數照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_k_course_numerology.jpg` |
-| `首頁-L` | 深靛藍星空背景 | 2026-09-22 | ComfyUI | 深靛藍暗紫星塵留白底圖 | | 待生成 | 壓至1MB內 | `home_l_bg_stars_v1.png` |
+| `首頁-I` | 週三 偉特團練照 | 2026-09-30 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_i_course_waite.jpg` |
+| `首頁-J` | 週四 靈氣團練照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_j_course_reiki.jpg` |
+| `首頁-K` | 週五 托特塔羅照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_k_course_thoth.jpg` |
+| `首頁-L` | 週六 生命靈數照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_l_course_numerology.jpg` |
 | `首頁-M` | 以恩 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_m_reader_yien.jpg` |
 | `首頁-N` | 皮皮 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_n_reader_pipi.jpg` |
 | `首頁-O` | 達心 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_o_reader_daxin.jpg` |
+| `首頁-P` | 深靛藍星空背景 | 2026-09-22 | ComfyUI | 深靛藍暗紫星塵留白底圖 | | 待生成 | 壓至1MB內 | `home_p_bg_stars_v1.png` |
 | `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_b_founder_yien.jpg` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_c_founder_pipi.jpg` |
