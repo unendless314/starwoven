@@ -203,14 +203,13 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-### [課程]-[圖片 H~K]：四大主題體驗課程情境海報（4張）
+### [課程]-[圖片 H~J]：主題體驗課程情境海報（3張）
 
-- **版位用途**：活動課程頁面「主題體驗課程」4 大海報式大卡片頂部 16:9 留圖區
+- **版位用途**：活動課程頁面「主題體驗課程」海報式大卡片頂部 16:9 留圖區
 - **對應編號與檔案**：
   - `[課程]-[圖片 H]`：塏易學 梅花易數情境海報 (`courses_h_meihua.jpg` / `.png`)
-  - `[課程]-[圖片 I]`：畫出你的獨角獸 流體畫情境海報 (`courses_i_unicorn.jpg` / `.png`)
-  - `[課程]-[圖片 J]`：禪繞畫體驗 禪繞羽毛情境海報 (`courses_j_zentangle.jpg` / `.png`)
-  - `[課程]-[圖片 K]`：牌卡調香體驗 精油牌卡情境海報 (`courses_k_aroma.jpg` / `.png`)
+  - `[課程]-[圖片 I]`：八字體驗情境海報 (`courses_i_bazi.jpg` / `.png`)
+  - `[課程]-[圖片 J]`：紫微斗數工作坊情境海報 (`courses_j_ziwei.jpg` / `.png`)
 
 ---
 
@@ -244,7 +243,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 - **版位用途**：關於我們頁面「星靈織語夥伴」8 位成員橫式名片圓框頭像（Canva 原始規格 269 × 269 px）
 - **排列順序（嚴格對應 Canva 原始 2*4 行）**：
-  - 第 1 排：`[關於]-[圖片 D]` 達心 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 曉宇 (`about_e_member_xiaoyu.jpg`)
+  - 第 1 排：`[關於]-[圖片 D]` 達心 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 學長 (`about_e_member_xiaoyu.jpg`)
   - 第 2 排：`[關於]-[圖片 F]` 悠悠 (`about_f_member_youyou.jpg`) · `[關於]-[圖片 G]` 姆姆 (`about_g_member_mumu.jpg`)
   - 第 3 排：`[關於]-[圖片 H]` 凜月 (`about_h_member_linyue.jpg`) · `[關於]-[圖片 I]` 白白 (`about_i_member_baibai.jpg`)
   - 第 4 排：`[關於]-[圖片 J]` Migo (`about_j_member_migo.jpg`) · `[關於]-[圖片 K]` 古古 (`about_k_member_gugu.jpg`)
@@ -323,7 +322,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `關於-B` | 以恩 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_b_founder_yien.jpg` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_c_founder_pipi.jpg` |
 | `關於-D` | 達心 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_d_member_daxin.jpg` |
-| `關於-E` | 曉宇 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_e_member_xiaoyu.jpg` |
+| `關於-E` | 學長 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_e_member_xiaoyu.jpg` |
 | `關於-F` | 悠悠 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_f_member_youyou.jpg` |
 | `關於-G` | 姆姆 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_g_member_mumu.jpg` |
 | `關於-H` | 凜月 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_h_member_linyue.jpg` |

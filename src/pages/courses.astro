@@ -18,11 +18,10 @@ const imgCourseNumerology = ''; // 課程-F：生命靈數循環班現場照片
 // 【2. 交流會現場照片】
 const imgMeetup = '';           // 課程-G：命理交流會現場照片
 
-// 【3. 四大主題體驗課程情境海報（4張）】
+// 【3. 精選主題體驗課程情境海報（3張）】
 const imgWorkshopMeihua = '';   // 課程-H：塏易學 梅花易數情境海報
-const imgWorkshopUnicorn = '';  // 課程-I：獨角獸流體畫情境海報
-const imgWorkshopZentangle = '';// 課程-J：禪繞畫體驗 禪繞羽毛情境海報
-const imgWorkshopAroma = '';    // 課程-K：牌卡調香體驗情境海報
+const imgWorkshopBazi = '';     // 課程-I：八字體驗情境海報
+const imgWorkshopZiwei = '';    // 課程-J：紫微斗數工作坊情境海報
 
 // 固定循環課程資料
 const recurringCourses = [
@@ -82,7 +81,7 @@ const recurringCourses = [
     day: '每週四',
     dayColor: 'bg-[#58A497] text-white',
     title: '七脈輪與靈氣',
-    teacher: '曉宇老師',
+    teacher: '學長老師',
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
@@ -99,12 +98,12 @@ const recurringCourses = [
     day: '每週五',
     dayColor: 'bg-[#C27BA0] text-white',
     title: '托特塔羅循環班',
-    teacher: '曉宇老師',
+    teacher: '學長老師',
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
     extraNote: '可單報托特塔羅團練（20:00-21:00 包月四堂1000元）',
-    description: '由曉宇老師帶領深入托特塔羅的象徵體系，解密色彩心理、埃及神話、占星學與卡巴拉符號在牌面上的深層隱喻，培養直覺穿透力與高維度的洞察解讀視角。',
+    description: '由學長老師帶領深入托特塔羅的象徵體系，解密色彩心理、埃及神話、占星學與卡巴拉符號在牌面上的深層隱喻，培養直覺穿透力與高維度的洞察解讀視角。',
     highlights: ['托特牌獨特色彩心理與幾何構圖解讀', '大阿卡納與卡巴拉生命之樹的符號對應', '高層次直覺連結與直指核心的牌義探討'],
     suitableFor: '喜愛深層神祕學符號、欲挑戰高階塔羅系統或想拓寬解讀廣度的占卜愛好者。',
     image: imgCourseThoth,
@@ -144,8 +143,29 @@ const meetupInfo = {
   image: imgMeetup,
 };
 
-// 四大主題體驗課程資料（還原 Canva 原站豐富細節）
-const workshops = [
+interface WorkshopSchedule {
+  day: string;
+  topic: string;
+}
+
+interface Workshop {
+  id: string;
+  code: string;
+  title: string;
+  subtitle: string;
+  teacher: string;
+  duration: string;
+  fee: string;
+  feeNote?: string;
+  description: string;
+  schedule?: WorkshopSchedule[];
+  image: string;
+  badge: string;
+  icon: string;
+}
+
+// 主題體驗課程資料
+const workshops: Workshop[] = [
   {
     id: 'meihua',
     code: '課程-H',
@@ -157,47 +177,45 @@ const workshops = [
     description: '採用客觀系統與模型，運用邏輯思維，清晰分析人生選項中的優劣勢。擺脫模糊猜測，以易理象數為指引，在重大人生節點做出精準決策。',
     image: imgWorkshopMeihua,
     badge: '專業研修',
+    icon: 'meihua',
+  },
+  {
+    id: 'bazi',
+    code: '課程-I',
+    title: '八字體驗',
+    subtitle: '讀懂本命五行密碼・開啟自我生命覺察',
+    teacher: '高楷博老師',
+    duration: '10/24（六）14:00 - 18:00',
+    fee: 'NT$1,000元 / 人',
+    feeNote: '4 小時扎實精華體驗與個人盤面初探',
+    description: '透過生辰八字的天干地支與五行能量，帶領學員初步認識個人先天命盤結構、五行喜忌與性格特質，從古老東方命理智慧中找到安頓身心與自我理解的清晰視角。',
+    image: imgWorkshopBazi,
+    badge: '命理體驗',
     icon: 'bazi',
   },
   {
-    id: 'unicorn',
-    code: '課程-I',
-    title: '畫出你的獨角獸',
-    subtitle: '獨角獸流體畫療癒體驗',
-    teacher: '星靈織語客座講師',
-    duration: '9/12（六）13:00 - 18:00',
-    fee: 'NT$3,380元 / 人',
-    description: '探索色彩，也遇見自己。以直覺流動畫勾勒專屬於你的獨角獸能量，在色彩流動中釋放壓力與緊繃，親手創作獨一無二的身心靈療癒作品。',
-    image: imgWorkshopUnicorn,
-    badge: '熱門手作',
-    icon: 'art',
-  },
-  {
-    id: 'zentangle',
+    id: 'ziwei',
     code: '課程-J',
-    title: '禪繞畫體驗・禪繞羽毛',
-    subtitle: '線條裡的專注與呼吸',
-    teacher: '星靈織語客座講師',
-    duration: '9/13（日）14:00 - 16:00',
-    fee: 'NT$980元 / 人',
-    feeNote: '包含一張 Zentangle 官方紙磚、筆材現場出借',
-    description: '以羽毛為主題，透過禪繞畫感受重複線條帶來的極致專注與平靜。不用擔心畫得像不像，沒有對錯、無須橡皮擦，只要放鬆享受每一筆創作的當下。',
-    image: imgWorkshopZentangle,
-    badge: '療癒靜心',
-    icon: 'feather',
-  },
-  {
-    id: 'aroma',
-    code: '課程-K',
-    title: '牌卡調香體驗',
-    subtitle: '直覺香氣與心靈訊息的共振',
-    teacher: '星靈織語客座講師',
-    duration: '10/4（日）14:00 - 16:00',
-    fee: 'NT$999元 / 人',
-    description: '抽一張牌，聽見此刻心靈最需要的溫暖訊息。依照牌卡給予的能量指引，親自挑選天然精油，調製一瓶專屬於你、能隨身安撫身心的療癒香氣。',
-    image: imgWorkshopAroma,
-    badge: '感官調頻',
-    icon: 'aroma',
+    title: '紫微斗數工作坊',
+    subtitle: '兩日深度研修・解碼命盤十四主星',
+    teacher: '阿福老師',
+    duration: '11/8（日）、11/15（日）14:00 - 17:00',
+    fee: '一堂 600元 · 兩堂 1,200元 / 人',
+    feeNote: '兩天具備不同主題，可自由選擇單堂報名（600元）或兩堂合報（1,200元）',
+    description: '深入淺出解讀紫微斗數命盤，探索十二宮位與星曜互動玄機。兩日分別規劃不同深度主題，從認識本命格局到洞察人際互動與吉凶契機，全面掌握東方帝王之學的解析邏輯。',
+    schedule: [
+      {
+        day: '11/08（日）Day 1',
+        topic: '第一天主題（主題即將公佈）',
+      },
+      {
+        day: '11/15（日）Day 2',
+        topic: '第二天主題（主題即將公佈）',
+      },
+    ],
+    image: imgWorkshopZiwei,
+    badge: '兩日專修',
+    icon: 'ziwei',
   },
 ];
 ---
@@ -550,13 +568,13 @@ const workshops = [
             </h2>
           </div>
           <p class="text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 mt-2 font-light tracking-wide transition-colors">
-            不定期主題工作坊・直覺創作・牌卡香氛・易學哲思
+            不定期主題工作坊・八字命理・紫微斗數・易學哲思
           </p>
         </div>
         <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">採單場預約報名制</span>
       </div>
 
-      <!-- 4 大體驗課程卡片 Grid (2 欄海報式寬幅大卡片) -->
+      <!-- 主題體驗課程卡片 Grid (2 欄海報式寬幅大卡片) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
         {workshops.map((w) => (
           <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
@@ -594,23 +612,17 @@ const workshops = [
                         <circle cx="12" cy="16.5" r="1" />
                       </svg>
                     )}
-                    {w.icon === 'art' && (
-                      <svg class="w-12 h-12 text-[#C27BA0] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
-                        <circle cx="12" cy="12" r="4" />
+                    {w.icon === 'ziwei' && (
+                      <svg class="w-12 h-12 text-[#9880B8] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z" />
+                        <circle cx="12" cy="12" r="2" fill="currentColor" />
                       </svg>
                     )}
-                    {w.icon === 'feather' && (
+                    {w.icon === 'meihua' && (
                       <svg class="w-12 h-12 text-[#58A497] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5z" />
-                        <line x1="16" y1="8" x2="2" y2="22" />
-                        <line x1="17.5" y1="15" x2="9" y2="15" />
-                      </svg>
-                    )}
-                    {w.icon === 'aroma' && (
-                      <svg class="w-12 h-12 text-[#E08D5B] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M10 2v4M14 2v4M8 6h8M6 10h12v10a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V10z" />
-                        <circle cx="12" cy="15" r="2" />
+                        <circle cx="12" cy="12" r="9" />
+                        <path d="M7 8h10M7 11h10M7 14h4m2 0h4M7 17h10" stroke-linecap="round" />
                       </svg>
                     )}
 
@@ -651,6 +663,25 @@ const workshops = [
               <p class="text-sm sm:text-base text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed mb-4">
                 {w.description}
               </p>
+
+              {/* 兩日課綱區塊（若有兩日獨立主題） */}
+              {w.schedule && (
+                <div class="mt-2 mb-4 p-3.5 rounded-2xl bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10 space-y-2">
+                  <div class="text-xs font-semibold text-[#80A9D4] dark:text-[#8FB8E8] flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#80A9D4] dark:bg-[#8FB8E8]"></span>
+                    兩日課綱主題規劃（雙主題）
+                  </div>
+                  <div class="space-y-1.5 text-xs">
+                    {w.schedule.map((s) => (
+                      <div class="flex items-start gap-2 bg-white/70 dark:bg-white/5 p-2 rounded-xl border border-[#80A9D4]/15 dark:border-white/5">
+                        <span class="font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shrink-0">{s.day}</span>
+                        <span class="text-[#3A3A3A]/40 dark:text-white/40">｜</span>
+                        <span class="text-[#3A3A3A]/85 dark:text-white/85">{s.topic}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {w.feeNote && (
                 <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60 bg-[#EAF3F8]/50 dark:bg-white/5 p-2 rounded-lg mb-4">
