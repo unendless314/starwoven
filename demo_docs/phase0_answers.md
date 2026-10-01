@@ -49,6 +49,6 @@
 ## 問題 6：其他／補充
 
 - **專案期限**：**2026-09-23（後天）**。策略：同時開多個 agent 平行作業；業主自評瓶頸在 review 速度與多 agent 溝通效率，開發本身（靜態網頁）不是瓶頸
-- **GA（Google Analytics）**：需要支援，但**非首要目標**。留銜接點：Layout.astro 預留 `<head>` 註解區塊（`<!-- GA_MEASUREMENT_ID -->`）， measurement ID 待提供後填入
-- **LINE 嵌入按鈕**：需要，但**非首要目標**。留銜接點：全站右下角浮動 LINE 按鈕元件位置（連結用問題 1 的 `@347fucvj`），外觀與浮動時機待正式版決定
+- **GA（Google Analytics）**：✅ **已完成正式啟用**。Measurement ID 確認為 `G-27D79HXXF5`，透過獨立元件 `GoogleAnalytics.astro` 與環境變數 `PUBLIC_GA_ID` 整合至 Layout.astro `<head>`，並自動監聽 LINE 預約與外連轉換事件。
+- **LINE 嵌入按鈕**：✅ **已完成實作**。全站右下角已掛載固定懸浮 LINE 預約諮詢按鈕（連結用問題 1 的 `@347fucvj`），並支援 GA 轉換點擊追蹤。
 - 結論：Phase 0 確認完成，Spec 與 Roadmap 可依此定稿；問題 2 的關於我們文案仍待人工提供，以佔位版型先行

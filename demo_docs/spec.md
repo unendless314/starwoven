@@ -102,7 +102,7 @@ demo_docs/
 | SEO | 每頁獨立 title / description / OG 圖 |
 | 建置 | `npm run build` 輸出 `dist/` |
 | 部署 | VPS 上以 nginx **vhost（server block）** 服務 `dist/`，路徑 `/var/www/starwoven`；同機其他既有站台不可受影響 |
-| 預留銜接點 | Layout.astro `<head>` 預留 GA 註解區塊（`<!-- GA_MEASUREMENT_ID -->`，ID 待提供）；全站右下角預留 LINE 浮動按鈕元件位置（連結用 LINE ID `@347fucvj`）。兩者皆非 Demo 首要目標，留接口即可 |
+| 預留銜接點 | Google Analytics (GA4) 已完成正式導入（代碼 `G-27D79HXXF5`，由 `GoogleAnalytics.astro` 元件與 `PUBLIC_GA_ID` 環境變數注入 Layout.astro `<head>`，內建 LINE 預約與外連轉換追蹤）；全站右下角已掛載 LINE 浮動按鈕元件（連結用 LINE ID `@347fucvj`）。 |
 
 ## 7. 部署環境
 

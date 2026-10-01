@@ -1,0 +1,47 @@
+---
+interface Props {
+  id?: string;
+}
+
+const { id = import.meta.env.PUBLIC_GA_ID || 'G-27D79HXXF5' } = Astro.props;
+---
+
+{id && (
+  <>
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${id}`}></script>
+    <script is:inline set:html={`
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', '${id}');
+
+      // 全站核心轉換與外連事件自動監聽（LINE 預約、iOpen Mall 賣場、Google Maps 導航）
+      document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('click', function (e) {
+          var link = e.target.closest('a');
+          if (!link) return;
+          var href = link.getAttribute('href') || '';
+          if (href.indexOf('line.me') !== -1) {
+            gtag('event', 'line_consultation_click', {
+              event_category: 'conversion',
+              event_label: (link.innerText || '').trim() || 'LINE 預約諮詢',
+              destination: href
+            });
+          } else if (href.indexOf('iopenmall.tw') !== -1) {
+            gtag('event', 'iopenmall_store_click', {
+              event_category: 'ecommerce_outbound',
+              destination: href
+            });
+          } else if (href.indexOf('maps.app.goo.gl') !== -1) {
+            gtag('event', 'address_map_click', {
+              event_category: 'navigation',
+              destination: href
+            });
+          }
+        });
+      });
+    `} />
+  </>
+)}

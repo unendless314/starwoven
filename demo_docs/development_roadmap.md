@@ -83,6 +83,7 @@
 - [ ] 上傳 `dist/` 至 VPS（rsync / scp）
 - [ ] DNS A record（`@` 與 `www`）指向 `<YOUR_VPS_IP>`，Nginx server block 設定 `server_name starwoven.xyz www.starwoven.xyz`
 - [ ] 以 certbot + Let's Encrypt 啟用 HTTPS（auto-renew）
+- [x] 導入 Google Analytics 4 (GA4: `G-27D79HXXF5`) 與核心轉換事件埋點（LINE 預約、地圖導航、iOpen Mall 賣場）
 - [ ] 手機實機測試一次
 
 **檢查點**：團隊可由外部網址（或 IP）瀏覽完整網站。

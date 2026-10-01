@@ -451,5 +451,48 @@
      - 統一轉為 WebP（Quality 85, method=6），5 張圖檔總大小僅 ~577 KB（平均每張約 115 KB），兼顧高解析度與 LCP 秒開體驗。
   3. **雙重歸檔與 Markdown 掛載**：
      - 同步歸檔於 demo_docs/sd-assets/ 與生產環境 public/assets/。
-     - 更新 5 篇專欄文章之 Frontmatter coverImage 欄位（log_a_akashic_light_v1.webp ~ log_e_tarot_mirror_v1.webp）。
+     - 更新 5 篇專欄文章之 Frontmatter coverImage 欄位（blog_a_akashic_light_v1.webp ~ blog_e_tarot_mirror_v1.webp）。
      - 更新 demo_docs/image_prompts.md 之素材手冊與生成紀錄表。
+
+---
+
+## 2026-10-01 — DEC-025：頁尾社群列表新增 TikTok（國際版抖音）Favicon 圖標按鈕與首頁佔位設定
+
+- **背景**：
+  - 業主與團隊討論期望於全站頁尾（Footer）的社群 Favicon 列表中新增「抖音」圖標，以利後續短影音行銷與社群引流。
+  - 台灣一般大眾與商業行銷皆以**國際版 TikTok** 為主（中國版抖音受限於 +86 手機認證與台灣 App Store 下載門檻），因此選用國際版 TikTok 作為標準配置。
+  - 目前專屬頻道帳號尚在籌備中，暫無直接網址。
+- **決策與執行**：
+  1. **導入國際版 TikTok 圓形微互動 Favicon (`src/layouts/Layout.astro`)**：
+     - 在頁尾右側社群按鈕列表中，於 YouTube 與 iOpen Mall 之間新增第 6 個社群按鈕：**TikTok**。
+     - 採用標準 TikTok 經典音符 SVG 向量圖標，尺寸與既有社群維持 `w-12 h-12 sm:w-14 sm:h-14 rounded-full` 一致規格。
+     - 微互動懸停動效：滑鼠懸停時微放大並切換為 TikTok 經典黑底（`hover:bg-black hover:border-black text-[#2E2A4F] hover:text-white`，暗色模式下為 `dark:hover:bg-white dark:hover:text-black`）。
+  2. **平台首頁預留佔位（Placeholder）**：
+     - 目標連結配置為 `https://www.tiktok.com`（另開新分頁 `target="_blank"`、`rel="noopener noreferrer"`），比照 Facebook、Threads 與 YouTube 採用的佔位策略，後續取得官方帳號 ID 後即可直接置換。
+  3. **社群與電商排序收斂**：
+     - 頁尾按鈕依序為：**Instagram**、**Facebook**、**Threads**、**LINE**、**YouTube**、**TikTok**、**星靈選物（7-11 iOpen Mall）**，保持社群在前、線上商城在後的清晰層級。
+
+---
+
+## 2026-10-01 — DEC-026：Google Analytics 4 (GA4) 追蹤碼正式導入（代碼 G-27D79HXXF5、獨立元件封裝與核心轉換事件自動監聽）
+
+- **背景**：
+  - 業主於 Google 官網完成 GA4 帳戶建立，取得正式評估 ID（Measurement ID）：`G-27D79HXXF5`。
+  - 需要將此追蹤碼注入全站各網頁 `<head>` 中，並針對網站之身心靈諮詢與電商導流特性，建立關鍵轉換事件追蹤。
+- **決策與執行**：
+  1. **獨立元件化封裝 (`src/components/GoogleAnalytics.astro`)**：
+     - 建立專屬 Astro 元件，封裝標準 `gtag.js` 載入腳本與設定邏輯。
+     - 支援彈性設定：預設支援 `PUBLIC_GA_ID` 環境變數（可由 `.env` 動態覆寫），若未設定環境變數則自動採用正式代碼 `G-27D79HXXF5`，保證開發與生產環境均能順暢運作。
+     - 建立 `.env.example` 規範設定項目。
+  2. **注入全站佈局 (`src/layouts/Layout.astro`)**：
+     - 在全站共用模板 `<head>` 區段中掛載 `<GoogleAnalytics />`，取代原先預留之註解佔位標記。
+     - 由於全站採用純靜態多頁面架構（MPA），瀏覽器每次換頁均會自動觸發 GA4 之 `page_view` 事件，無需額外監聽複雜的 SPA 路由生命週期。
+  3. **自動化關鍵轉換事件監聽（Automatic Conversion Tracking）**：
+     - 在元件內注入輕量全域監聽機制，自動捕捉高價值之業務轉換與外連行為：
+       - **`line_consultation_click`**：訪客點擊任一 LINE 預約諮詢按鈕（全站浮動鈕、導航按鈕、課程內預約連結）時自動觸發，帶入按鈕文字與目標連結，利於在 GA4 後台直接設定為重要轉換目標（Key Events）。
+       - **`iopenmall_store_click`**：訪客點擊前往星靈選物（7-11 賣場）時自動觸發。
+       - **`address_map_click`**：訪客點擊實體地址開啟 Google Maps 導航時自動觸發。
+  4. **規格文件同步**：
+     - 同步更新 `demo_docs/spec.md`、`demo_docs/phase0_answers.md`、`demo_docs/development_roadmap.md` 及 `AGENTS.md`，將原 GA 佔位標記結案為正式啟用。
+
+

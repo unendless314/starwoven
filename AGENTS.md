@@ -41,7 +41,7 @@ Shared components expected: `Layout.astro` (head/meta/footer),
 
 ## Reserved hooks (must be wired even if unused)
 
-- `Layout.astro <head>`: placeholder `<!-- GA_MEASUREMENT_ID -->` for Google Analytics
+- `Layout.astro <head>`: Google Analytics GA4 component `<GoogleAnalytics id="G-27D79HXXF5" />` (supports `PUBLIC_GA_ID` env override and custom conversion event tracking)
 - Bottom-right floating LINE button on every page (link = `@347fucvj`)
 - Routes `/courses` and a future `/shop` — leave room in nav/layout, don't add links yet
 
