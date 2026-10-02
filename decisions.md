@@ -688,3 +688,52 @@
   1. **拆分 `success` 與 `already_voted` 回應分支**：`already_voted` 視為「本次未新增票數」，還原投票前快照（`before`）後再鎖定為已許願狀態，消除幻影 +1。
   2. **GA4 事件區分**：`already_voted` 情境之 `course_wish_click` 事件以 `mode: 'already_voted'` 標記，不與真實新增票數混淆。
   3. **不採納後端連動修改**：未採「Apps Script 在 `already_voted` 回應附上總票數」之替代方案——此邊界情境罕見、失真僅顯示層且重整即恢復，相較重新部署後端版本之作業成本，投入產出不成比例；前端快照還原已可正確修復。
+
+---
+
+## 2026-10-02 — DEC-038：課程許願池 v2「全面試算表驅動」前端實作（編號格子制 1~6＋認名字機制）
+
+- **背景**：
+  - v1 許願池（DEC-034 ~ DEC-037）僅票數會進站同步，課程清單、門檻、講師等內容寫死於 `src/pages/index.astro`，業主（不寫程式）異動需委託重新 build 部署。
+  - 依 `demo_docs/course_wishlist_plan_v2.md`（v2.5 定稿，經四輪外部審查全數採納修正）實作前端，Google 試算表成為許願池唯一資料來源（SSOT）：業主改試算表、網頁重整即更新，不需重新部署。
+  - 業主定調：Apps Script 全量重寫、前端**不保留 v1 相容層**（乾淨易維護優先；網站未正式上線，無過渡期問題）；計票定位為開課意向熱度參考，微小誤差可接受。
+- **決策與執行**（`src/components/CourseWishlistCard.astro` ＋ `src/pages/index.astro`）：
+  1. **編號格子制**：SSR 課程 `id` 由英文語意 id 改為 `'1'`~`'6'`，對應試算表 A 欄數字格子；格子可重用（募完換課：改 B 欄課名、D 欄清零）。
+  2. **認名字機制（一票綁定「編號＋課名」）**：localStorage `starwoven_wish_{編號}` 由 `'true'` 改存**課程名稱**；已許願判定 = 儲存值 === 卡片當前課名（根元素新增 `data-course-name` 作為唯一來源）。改名即新課，所有人（含投過舊課者）自動解鎖可重新許願。
+  3. **結構掛勾與動態卡片同構**：元件補上 `wish-title`／`wish-teacher`／`wish-category`／`wish-icon`／`data-wish-hero` 掛勾；`index.astro` Grid 加 `data-wish-grid`，並新增 `<template id="wish-card-template">` 內嵌一份實際渲染的佔位卡片——動態卡片一律 clone 模板，與 SSR 卡片永遠同構，未來改外觀只需改元件檔一處。
+  4. **`syncFromSheet(list)` 全量同步**：`get_all` 回傳陣列依列序處理——既有卡片 `updateCardContent`、新列 `createCard`、不在清單中的卡片隱藏（重新出現可還原）；每張以 `appendChild` 歸位，**DOM 順序 = 試算表列順序**。回應 `data` 非陣列（後端未更新）時整段略過，維持 SSR 顯示（防禦性檢查，非相容層）。
+  5. **綁定投票與「回應先比對、再分支」**：`vote()` 從 `data-course-name` 快照課名隨請求送出 `course_name`；回應抵達先比對回應課名與卡片**當前**課名，不一致（含後端主動回傳 `course_changed`）→ 回滾、清 pending、**不寫記憶、不鎖定**、重新 `get_all` 同步後可對新課許願；一致才走 `success`／`already_voted` 分支，且只以後端確認過的課名寫入 localStorage。
+  6. **配色白名單 `STYLE_MAP`**：六組漸層（pink/blue/teal/purple/gold/orange）以完整 class 字串常駐元件 script（Tailwind v4 內容掃描保證收進 CSS bundle）；替換時先移除白名單全部漸層再加上新值。非法鍵值：既有卡片保留原樣、新卡片預設 `blue`。
+  7. **既有防護原樣保留**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙鎖、`data-voted` 記憶體旗標、8 秒逾時、票數守衛（pending／voted 不覆寫票數）。
+  8. **規格精神內的順序調整**：`updateCardContent` 先更新課名並執行認名字判定（改名即解鎖），再套用票數守衛——改名後的卡片已視為新課，票數正常同步，避免已解鎖的新課卡片殘留顯示舊課票數。
+  9. **GA4**：`course_wish_click` 事件參數改為 `{ course_id, course_name, mode }`，`mode` 新增 `course_changed` 情境值。
+- **後續待辦（業主側，依文件第五節）**：Step 1 試算表 A2:A7 改數字編號、H1:K7 貼上講師／分類／圖示／配色；Step 2 Apps Script 整段取代並部署新版本（網址不變）；完成後依 Step 5 清單驗收。
+
+---
+
+## 2026-10-03 — DEC-039：許願池 v2 前端審查修復（get_all 亂序回應防護、改名期間逾時不回填舊課快照）
+
+- **背景**：
+  - commit 前外部 AI 對 v2 前端實作（DEC-038）做代碼審查，提出 2 項 P1，經逐條驗證判定成立並採納；其餘重點（template clone 同構、textContent 無注入路徑、localStorage 停用降級、樂觀更新／回滾／雙鎖／逾時等既有防護）均確認正常。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. **同步請求序號防亂序（P1）**：初始進站的 `get_all` 與 `course_changed` 觸發的重新同步可能併發，fetch 回應順序不受保證，較舊回應可能覆寫較新的課程名稱、票數與排序。`refreshFromSheet()` 加入遞增序號 `syncSeq`，僅採用「最後一次發出」之回應，過期回應直接忽略（其成本僅為該次同步不套用，下次進站即恢復，與既有「get_all 失敗維持現狀」哲學一致）。
+  2. **改名期間失敗不回填舊課快照（P1）**：投票 pending 中若 `get_all` 已將卡片更新為新課，舊投票請求逾時／失敗時原 `catch` 會把舊課的投票前票數寫回新課卡片且不重新同步，造成新課卡片長時間顯示舊課票數。現於 `catch` 先比對快照課名與卡片當前 `data-course-name`：不一致時僅解除 pending、按鈕回預設、重新 `get_all` 同步，不回填快照、不進入重試態（此路徑不發 GA 事件——逾時下投票是否入帳無從得知，不記為 `course_changed`）。
+
+---
+
+## 2026-10-03 — DEC-040：許願池 v2 前端審查第二輪修復（course_changed 路徑改為條件式回滾）
+
+- **背景**：
+  - 外部 AI 複查確認 DEC-039 兩項修復有效，但發現 1 項殘留 P1：`course_changed` 路徑（含回應課名與卡片當前課名不符之情形）仍**無條件**將舊課的投票前票數快照回填。若投票等待期間 `get_all` 已將卡片換成新課，舊課票數會寫進新課卡片；若隨後的重新同步又失敗，新課將持續顯示舊票數直至重整。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. `course_changed` 分支改為**條件式回滾**：僅當卡片仍顯示快照課名（`get_all` 尚未更新卡片）時才還原樂觀 +1；卡片已是新課則不回填快照，僅解除 pending、按鈕回預設、重新 `get_all` 同步——與 DEC-039 之 `catch` 路徑修法完全一致，三條「課名不符」路徑（後端主動回傳、回應比對不符、逾時失敗）行為自此統一。
+
+---
+
+## 2026-10-03 — DEC-041：許願池 v2 前端審查第三輪修復（改名同步當下即套用新課票數）
+
+- **背景**：
+  - 外部 AI 第三輪複查確認 DEC-039／DEC-040 修復有效、三條課名不符路徑的回滾判定已一致，但發現最後 1 項殘留 P1：投票 pending 中 `get_all` 把卡片換成新課時，票數守衛（DEC-036）因 `data-pending` 存在而不套用新課的 `total_votes`，而三條不符路徑又一律「不回填」——若後續重新同步失敗，新課卡片會停留在「舊課票數 +1」的樂觀數字直至重整。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. `updateCardContent` 票數守衛新增例外：本次同步發生課名變更（`nameChanged`）時視為新課，直接套用 `row.total_votes`——畫面上的 pending 樂觀 +1 屬於舊課，對新課無意義；課名未變時守衛行為完全不變（DEC-036 保護不受影響）。
+  2. 與前兩輪修復的銜接：稍後抵達的舊投票回應走課名不符路徑時本就不回填票數，與此例外不衝突。

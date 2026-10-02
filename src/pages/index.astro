@@ -158,9 +158,10 @@ const recurringCourses = [
   },
 ];
 
-// 【5. 課程許願池資料（Demo 佔位課程，待業主確認欲募集之課程後替換）】
+// 【5. 課程許願池資料（SSR fallback：首屏即時渲染、Demo 模式與 API 失敗降級時使用；
+//      正式模式進站後由 Google 試算表 get_all 全量覆寫，含課程內容與排序）】
 interface WishlistCourse {
-  id: string;           // 對應 Google 試算表 A 欄 course_id
+  id: string;           // 對應 Google 試算表 A 欄「編號」（數字格子 1~6，可重用；改名即新課）
   title: string;
   teacher: string;
   category: string;
@@ -172,7 +173,7 @@ interface WishlistCourse {
 
 const wishlistCourses: WishlistCourse[] = [
   {
-    id: 'thoth_advanced',
+    id: '1',
     title: '托特塔羅・高階解盤專題',
     teacher: '學長老師',
     category: '塔羅進階',
@@ -182,7 +183,7 @@ const wishlistCourses: WishlistCourse[] = [
     gradient: 'from-[#F3D9E4] to-[#E3B7CC]',
   },
   {
-    id: 'akashic_deep',
+    id: '2',
     title: '阿卡西靈魂藍圖深度工作坊',
     teacher: '古古老師',
     category: '阿卡西紀錄',
@@ -192,17 +193,17 @@ const wishlistCourses: WishlistCourse[] = [
     gradient: 'from-[#D9E9F6] to-[#B3D2EA]',
   },
   {
-    id: 'reiki_master',
+    id: '3',
     title: '臼井靈氣三階・大師班',
     teacher: '學長老師',
     category: '靈氣研修',
-    votes: 12,
+    votes: 11,
     threshold: 12,
     icon: '👐',
     gradient: 'from-[#D5EDE7] to-[#A8D8CC]',
   },
   {
-    id: 'astro_synastry',
+    id: '4',
     title: '占星合盤・關係星圖對話',
     teacher: '皮皮老師',
     category: '占星專題',
@@ -212,7 +213,7 @@ const wishlistCourses: WishlistCourse[] = [
     gradient: 'from-[#E4DDF0] to-[#C4B4DC]',
   },
   {
-    id: 'money_reiki',
+    id: '5',
     title: '金錢靈氣・豐盛顯化工作坊',
     teacher: '黎夢老師',
     category: '靈氣專題',
@@ -222,7 +223,7 @@ const wishlistCourses: WishlistCourse[] = [
     gradient: 'from-[#FBEBC8] to-[#F5D98D]',
   },
   {
-    id: 'numerology_year',
+    id: '6',
     title: '生命靈數・流年藍圖專題',
     teacher: '皮皮老師',
     category: '生命靈數',
@@ -680,12 +681,28 @@ const wishlistCourses: WishlistCourse[] = [
           </a>
         </div>
 
-        <!-- 許願課程卡片 Grid（桌機 3 欄、平板 2 欄、手機 1 欄） -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        <!-- 許願課程卡片 Grid（桌機 3 欄、平板 2 欄、手機 1 欄）
+             data-wish-grid：供進站同步時動態插入新卡片與搬移排序（順序 = 試算表列順序） -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" data-wish-grid>
           {wishlistCourses.map((w) => (
             <CourseWishlistCard {...w} />
           ))}
         </div>
+
+        <!-- 動態卡片模板：以 CourseWishlistCard 實際渲染一份佔位卡片，
+             <template> 內容為 inert 不會顯示；前端 clone 此模板建立新卡片，與 SSR 卡片永遠同構 -->
+        <template id="wish-card-template">
+          <CourseWishlistCard
+            id="0"
+            title="課程載入中"
+            teacher=""
+            category=""
+            votes={0}
+            threshold={1}
+            icon="✦"
+            gradient="from-[#D9E9F6] to-[#B3D2EA]"
+          />
+        </template>
 
         <p class="text-center text-xs sm:text-sm text-[#3A3A3A]/60 dark:text-white/50 font-huninn tracking-wide transition-colors">
           許願僅為開課意向統計，不收取任何費用；課程達標後將於 LINE 官方帳號優先公告開課資訊。

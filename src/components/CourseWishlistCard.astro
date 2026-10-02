@@ -1,8 +1,10 @@
 ---
 // ==========================================
-// 課程許願池卡片（敲碗開課）
+// 課程許願池卡片（敲碗開課）v2
+// - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、分類、圖示、配色、票數、門檻與卡片排序
+// - 一票綁定「編號＋課名」：localStorage 記住的是課名，改名即新課、所有人可重新許願
+// - 動態卡片一律 clone 自 index.astro 的 <template id="wish-card-template">，與 SSR 卡片永遠同構
 // - 未設定 PUBLIC_WISHLIST_API_URL 時為純前端 Demo 模式（localStorage 模擬計票）
-// - 設定後自動切換為正式模式（Google Apps Script Web App 計票）
 // ==========================================
 interface Props {
   id: string;
@@ -24,16 +26,17 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   class="wish-card group bg-white/95 dark:bg-[#231f40]/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-200/80 dark:border-white/20 flex flex-col"
   data-wish-card
   data-course-id={id}
+  data-course-name={title}
   data-votes={votes}
   data-threshold={threshold}
 >
   <!-- 意象區：漸層底色 + 分類標籤 + 許願人數膠囊 -->
-  <div class:list={['relative w-full aspect-16/10 bg-gradient-to-br flex items-center justify-center overflow-hidden', gradient]}>
+  <div data-wish-hero class:list={['relative w-full aspect-16/10 bg-gradient-to-br flex items-center justify-center overflow-hidden', gradient]}>
     <span class="absolute -top-6 -left-6 w-24 h-24 bg-white/25 rounded-full blur-2xl"></span>
     <span class="absolute bottom-2 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></span>
 
     <!-- 分類標籤（左上） -->
-    <span class="absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm">
+    <span class="wish-category absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm">
       {category}
     </span>
 
@@ -45,14 +48,14 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     </span>
 
     <!-- 主視覺符號 -->
-    <span class="text-6xl sm:text-7xl drop-shadow-[0_6px_16px_rgba(255,255,255,0.45)] group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 select-none" aria-hidden="true">{icon}</span>
+    <span class="wish-icon text-6xl sm:text-7xl drop-shadow-[0_6px_16px_rgba(255,255,255,0.45)] group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 select-none" aria-hidden="true">{icon}</span>
   </div>
 
   <!-- 資訊區 -->
   <div class="p-5 sm:p-6 flex-1 flex flex-col gap-3">
     <div>
-      <h3 class="text-lg sm:text-xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide transition-colors">{title}</h3>
-      <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜{teacher}</p>
+      <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide transition-colors">{title}</h3>
+      <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
     </div>
 
     <!-- 進度條 -->
@@ -124,6 +127,29 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   const DEMO_KEY = 'starwoven_wish_demo_votes';
   const voteKey = (id: string) => `starwoven_wish_${id}`;
 
+  // 配色白名單（K 欄鍵值 → Tailwind 漸層）：
+  // 以完整 class 字串常駐於此，Tailwind v4 自動內容掃描保證收進 CSS bundle
+  const STYLE_MAP: Record<string, string> = {
+    pink: 'from-[#F3D9E4] to-[#E3B7CC]',
+    blue: 'from-[#D9E9F6] to-[#B3D2EA]',
+    teal: 'from-[#D5EDE7] to-[#A8D8CC]',
+    purple: 'from-[#E4DDF0] to-[#C4B4DC]',
+    gold: 'from-[#FBEBC8] to-[#F5D98D]',
+    orange: 'from-[#F8E0CD] to-[#EFC09C]',
+  };
+
+  // get_all 回傳的單列課程資料（對應試算表 A~K 欄）
+  interface SheetRow {
+    id: string | number;
+    name?: string;
+    total_votes?: number;
+    threshold?: number;
+    teacher?: string;
+    category?: string;
+    icon?: string;
+    style?: string;
+  }
+
   let sessionClientId: string | null = null;
 
   function generateUUID(): string {
@@ -154,6 +180,11 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
 
   function readVotes(card: HTMLElement): number {
     return parseInt(card.dataset.votes || '0', 10) || 0;
+  }
+
+  function setText(card: HTMLElement, selector: string, text: string) {
+    const el = card.querySelector<HTMLElement>(selector);
+    if (el) el.textContent = text;
   }
 
   function renderCard(card: HTMLElement, animate = false) {
@@ -208,44 +239,197 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     }
   }
 
-  function hasVoted(id: string): boolean {
+  // 「認名字」已許願判定：localStorage 存的是課名，儲存值 === 卡片當前課名才算投過
+  // 格子重用（同編號換新課名）時自動失效，所有人可對新課重新許願
+  function hasVoted(card: HTMLElement): boolean {
+    const current = card.dataset.courseName || '';
+    if (!current) return false;
     try {
-      return localStorage.getItem(voteKey(id)) === 'true';
+      return localStorage.getItem(voteKey(card.dataset.courseId || '')) === current;
     } catch {
       return false;
     }
   }
 
-  function trackWish(id: string, mode: string) {
+  // 依卡片當前課名重新判定已許願狀態（三個時機之一：初始化／get_all 課名更新後）
+  function refreshVotedState(card: HTMLElement) {
+    // 投票進行中不插手：交由回應抵達時的課名比對處理
+    if (card.dataset.pending === '1') return;
+    if (hasVoted(card)) {
+      card.dataset.voted = '1';
+      setBtn(card, 'voted');
+    } else if (card.dataset.voted === '1') {
+      // 改名 = 新課：清除記憶體旗標、按鈕解鎖回預設態，開放對新課許願
+      //（localStorage 中的舊課名紀錄留作無害殘留，不主動清除）
+      delete card.dataset.voted;
+      setBtn(card, 'default');
+    }
+  }
+
+  function trackWish(id: string, name: string, mode: string) {
     const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
     if (typeof gtag === 'function') {
-      gtag('event', 'course_wish_click', { course_id: id, mode });
+      gtag('event', 'course_wish_click', { course_id: id, course_name: name, mode });
     }
+  }
+
+  // 配色替換：先移除白名單全部漸層，再加上新鍵值對應者
+  // 鍵值不在白名單 → 既有卡片保留原樣（新卡片由 createCard 先決定預設鍵值 blue）
+  function applyStyle(card: HTMLElement, key: string) {
+    const next = STYLE_MAP[key];
+    if (!next) return;
+    const hero = card.querySelector<HTMLElement>('[data-wish-hero]');
+    if (!hero) return;
+    Object.values(STYLE_MAP).forEach((cls) => cls.split(' ').forEach((c) => hero.classList.remove(c)));
+    next.split(' ').forEach((c) => hero.classList.add(c));
+  }
+
+  // 既有卡片內容同步（既有卡片：空字串欄位保留原值不覆寫）
+  function updateCardContent(card: HTMLElement, row: SheetRow) {
+    // 門檻：正整數才採用，不受票數守衛限制
+    const th = Number(row.threshold);
+    if (Number.isFinite(th) && th > 0) card.dataset.threshold = String(th);
+
+    // 課名：有更新時同步寫入 data-course-name（卡片當前課名的唯一來源）
+    const name = typeof row.name === 'string' ? row.name : '';
+    const nameChanged = !!name && name !== (card.dataset.courseName || '');
+    if (nameChanged) {
+      setText(card, '.wish-title', name);
+      card.dataset.courseName = name;
+    }
+    if (typeof row.teacher === 'string' && row.teacher) setText(card, '.wish-teacher', row.teacher);
+    if (typeof row.category === 'string' && row.category) {
+      const catEl = card.querySelector<HTMLElement>('.wish-category');
+      if (catEl) {
+        catEl.textContent = row.category;
+        catEl.classList.remove('hidden');
+      }
+    }
+    if (typeof row.icon === 'string' && row.icon) setText(card, '.wish-icon', row.icon);
+
+    applyStyle(card, String(row.style || ''));
+
+    // 認名字：課名更新後重新判定；改名解鎖後視為新課，票數恢復正常同步
+    if (nameChanged) refreshVotedState(card);
+
+    // 票數守衛（DEC-036）：pending／voted 中的卡片不覆寫票數。
+    // 例外：本次同步已換課名（改名即新課）——畫面上的 pending 樂觀 +1 屬於舊課，
+    // 對新課無意義，直接套用新課票數；稍後抵達的舊投票回應走課名不符路徑，
+    // 本就不回填票數，兩者不衝突
+    if (typeof row.total_votes === 'number') {
+      if (nameChanged || (card.dataset.pending !== '1' && card.dataset.voted !== '1')) {
+        card.dataset.votes = String(row.total_votes);
+      }
+    }
+
+    renderCard(card);
+  }
+
+  // 動態建立卡片：clone 模板保證與 SSR 卡片同構，再以 textContent 填值（無 HTML 注入風險）
+  function createCard(row: SheetRow): HTMLElement | null {
+    const tpl = document.querySelector<HTMLTemplateElement>('#wish-card-template');
+    if (!tpl || !tpl.content.firstElementChild) return null;
+    const card = tpl.content.firstElementChild.cloneNode(true) as HTMLElement;
+
+    card.dataset.courseId = String(row.id);
+    card.dataset.courseName = typeof row.name === 'string' ? row.name : '';
+    card.dataset.votes = String(typeof row.total_votes === 'number' ? row.total_votes : 0);
+    const th = Number(row.threshold);
+    card.dataset.threshold = Number.isFinite(th) && th > 0 ? String(th) : '1';
+
+    setText(card, '.wish-title', card.dataset.courseName);
+    setText(card, '.wish-teacher', typeof row.teacher === 'string' ? row.teacher : '');
+    // 分類留空 → 隱藏標籤
+    const catEl = card.querySelector<HTMLElement>('.wish-category');
+    const cat = typeof row.category === 'string' ? row.category : '';
+    if (catEl) {
+      if (cat) {
+        catEl.textContent = cat;
+        catEl.classList.remove('hidden');
+      } else {
+        catEl.classList.add('hidden');
+      }
+    }
+    setText(card, '.wish-icon', typeof row.icon === 'string' && row.icon ? row.icon : '✦');
+
+    // 配色：鍵值留空或非法 → 預設 blue
+    const styleKey = String(row.style || '');
+    applyStyle(card, STYLE_MAP[styleKey] ? styleKey : 'blue');
+
+    initCard(card);
+    return card;
+  }
+
+  // 試算表驅動同步：最終 DOM 順序 = 試算表列順序
+  function syncFromSheet(list: SheetRow[]) {
+    const grid = document.querySelector<HTMLElement>('[data-wish-grid]');
+    if (!grid) return;
+    const seen = new Set<string>();
+    list.forEach((row) => {
+      if (!row || row.id == null) return;
+      const id = String(row.id).trim();
+      if (!id) return;
+      seen.add(id);
+      let card = Array.from(grid.querySelectorAll<HTMLElement>('[data-wish-card]')).find(
+        (c) => (c.dataset.courseId || '') === id
+      );
+      if (card) {
+        updateCardContent(card, row);
+      } else {
+        card = createCard(row) || undefined;
+      }
+      if (card) {
+        card.style.display = ''; // 重新出現在清單中時還原顯示
+        grid.appendChild(card); // 既有節點會被搬移，依列序歸位
+      }
+    });
+    // 不在清單中的卡片 → 隱藏（不刪除，重新出現時可還原）
+    grid.querySelectorAll<HTMLElement>('[data-wish-card]').forEach((card) => {
+      if (!seen.has(card.dataset.courseId || '')) card.style.display = 'none';
+    });
+  }
+
+  // 進站與 course_changed 後共用：向試算表拉取最新全量資料
+  // 同步請求序號：初始同步與 course_changed 重新同步可能併發，回應順序不保證；
+  // 只採用「最後一次發出」的回應，避免較舊回應亂序覆寫較新的課程資料
+  let syncSeq = 0;
+  function refreshFromSheet() {
+    const mySeq = ++syncSeq;
+    fetch(`${API_URL}?action=get_all`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (mySeq !== syncSeq) return; // 已有更新的同步請求發出，忽略此過期回應
+        // 格式不符（例如後端尚未更新為 v2 陣列格式）→ 整段略過，維持 SSR 顯示
+        if (!d || d.status !== 'success' || !Array.isArray(d.data)) return;
+        syncFromSheet(d.data as SheetRow[]);
+      })
+      .catch(() => {});
   }
 
   async function vote(card: HTMLElement) {
     const id = card.dataset.courseId;
     if (!id) return;
     // data-voted 為記憶體旗標：即使 localStorage 停用，本頁已投票的卡片也不會重複送票
-    if (hasVoted(id) || card.dataset.voted === '1') {
+    if (hasVoted(card) || card.dataset.voted === '1') {
       setBtn(card, 'voted');
       return;
     }
     // 並發防護：pending 期間忽略任何重複觸發（含程式化 click）
     if (card.dataset.pending === '1') return;
 
-    // 樂觀更新：快照投票前票數（供失敗回滾還原），立即 +1 並鎖定按鈕
+    // 樂觀更新：快照投票前票數（供失敗回滾還原）與當下課名（綁定投票版本），立即 +1 並鎖定按鈕
     const before = readVotes(card);
+    const snapshotName = card.dataset.courseName || '';
     card.dataset.pending = '1';
     card.dataset.votes = String(before + 1);
     renderCard(card, true);
     setBtn(card, 'pending');
 
-    // Demo 模式：未設定 API 時純前端模擬，票數僅存本機
+    // Demo 模式：未設定 API 時純前端模擬，票數僅存本機（認名字以 SSR 課名為準）
     if (!API_URL) {
       window.setTimeout(() => {
         try {
-          localStorage.setItem(voteKey(id), 'true');
+          localStorage.setItem(voteKey(id), snapshotName);
           const demo = JSON.parse(localStorage.getItem(DEMO_KEY) || '{}') as Record<string, number>;
           demo[id] = (demo[id] || 0) + 1;
           localStorage.setItem(DEMO_KEY, JSON.stringify(demo));
@@ -253,7 +437,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
         delete card.dataset.pending;
         card.dataset.voted = '1';
         setBtn(card, 'voted');
-        trackWish(id, 'demo');
+        trackWish(id, snapshotName, 'demo');
       }, 650);
       return;
     }
@@ -262,51 +446,93 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     const controller = new AbortController();
     const timer = window.setTimeout(() => controller.abort(), 8000);
     try {
-      const url = `${API_URL}?action=vote&course_id=${encodeURIComponent(id)}&client_id=${encodeURIComponent(getClientId())}`;
+      const url = `${API_URL}?action=vote&course_id=${encodeURIComponent(id)}&course_name=${encodeURIComponent(snapshotName)}&client_id=${encodeURIComponent(getClientId())}`;
       const res = await fetch(url, { signal: controller.signal });
       const data = await res.json();
       window.clearTimeout(timer);
-      if (data && data.status === 'success') {
+
+      const status: string = (data && data.status) || '';
+      const responseName: string = data && typeof data.course_name === 'string' ? data.course_name : '';
+
+      // 先比對、再分支：回應課名 ≠ 卡片當前課名（等待期間 get_all 已把卡片換成新課）
+      // → 視同 course_changed，絕不鎖定新課、不寫記憶
+      if (
+        status === 'course_changed' ||
+        ((status === 'success' || status === 'already_voted') && responseName !== (card.dataset.courseName || ''))
+      ) {
+        // 課程已換：解除 pending、不鎖定、不寫記憶，重新同步卡片後可對新課許願。
+        // 僅當卡片仍停留在舊課（get_all 尚未更新）才回滾樂觀 +1；
+        // 卡片已是新課時不回填舊課票數快照，交由重新同步帶入正確票數
+        if (snapshotName === (card.dataset.courseName || '')) {
+          card.dataset.votes = String(before);
+        }
+        delete card.dataset.pending;
+        renderCard(card);
+        setBtn(card, 'default');
+        trackWish(id, snapshotName, 'course_changed');
+        refreshFromSheet();
+        return;
+      }
+
+      if (status === 'success') {
         if (typeof data.votes === 'number') {
           card.dataset.votes = String(data.votes);
           renderCard(card);
         }
         try {
-          localStorage.setItem(voteKey(id), 'true');
+          // 只記後端確認過的課名（此處已保證與卡片當前課名一致）
+          localStorage.setItem(voteKey(id), responseName);
         } catch {}
         delete card.dataset.pending;
         card.dataset.voted = '1';
         setBtn(card, 'voted');
-        trackWish(id, 'live');
-      } else if (data && data.status === 'already_voted') {
+        trackWish(id, responseName, 'live');
+      } else if (status === 'already_voted') {
         // 後端判定此前已投過（本機旗標遺失）：本次不新增票數，還原樂觀更新快照後鎖定
         card.dataset.votes = String(before);
         renderCard(card);
         try {
-          localStorage.setItem(voteKey(id), 'true');
+          localStorage.setItem(voteKey(id), responseName);
         } catch {}
         delete card.dataset.pending;
         card.dataset.voted = '1';
         setBtn(card, 'voted');
-        trackWish(id, 'already_voted');
+        trackWish(id, responseName, 'already_voted');
       } else {
         throw new Error((data && data.code) || 'VOTE_FAILED');
       }
     } catch {
-      // 失敗回滾：還原投票前快照（而非從目前值 -1），解除鎖定，2.5 秒後恢復可重試
       window.clearTimeout(timer);
-      card.dataset.votes = String(before);
       delete card.dataset.pending;
+      // 等待期間卡片已被 get_all 換成新課：不回填舊課票數快照、不進重試態，
+      // 解除鎖定並重新同步，由新回應帶入新課的正確票數
+      if (snapshotName !== (card.dataset.courseName || '')) {
+        renderCard(card);
+        setBtn(card, 'default');
+        refreshFromSheet();
+        return;
+      }
+      // 失敗回滾：還原投票前快照（而非從目前值 -1），解除鎖定，2.5 秒後恢復可重試
+      card.dataset.votes = String(before);
       renderCard(card);
       setBtn(card, 'retry');
       window.setTimeout(() => {
-        if (!hasVoted(id)) setBtn(card, 'default');
+        if (!hasVoted(card) && card.dataset.voted !== '1') setBtn(card, 'default');
       }, 2500);
     }
   }
 
+  // SSR 卡片與動態卡片共用的初始化：渲染、認名字判定、綁定投票
+  function initCard(card: HTMLElement) {
+    renderCard(card);
+    refreshVotedState(card);
+    card.querySelector<HTMLElement>('.wish-btn')?.addEventListener('click', () => vote(card));
+  }
+
+  const grid = document.querySelector<HTMLElement>('[data-wish-grid]');
   const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-wish-card]'));
-  if (cards.length > 0) {
+  // 進入條件：有卡片或有 Grid 容器（SSR 清空時仍能從試算表長出全部卡片）
+  if (cards.length > 0 || grid) {
     // Demo 模式：套用本機累積票數，讓重整後票數仍持續累計
     if (!API_URL) {
       let demo: Record<string, number> = {};
@@ -319,33 +545,9 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
       });
     }
 
-    cards.forEach((card) => {
-      renderCard(card);
-      if (hasVoted(card.dataset.courseId || '')) {
-        card.dataset.voted = '1';
-        setBtn(card, 'voted');
-      }
-      card.querySelector<HTMLElement>('.wish-btn')?.addEventListener('click', () => vote(card));
-    });
+    cards.forEach(initCard);
 
-    // 正式模式：進站時同步全站最新票數
-    if (API_URL) {
-      fetch(`${API_URL}?action=get_all`)
-        .then((r) => r.json())
-        .then((d) => {
-          if (!d || d.status !== 'success' || !d.data) return;
-          cards.forEach((card) => {
-            // 略過投票進行中或已完成投票的卡片（以記憶體旗標為準，
-            // localStorage 停用時亦成立），避免較慢的舊回應覆寫最新票數
-            if (card.dataset.pending === '1' || card.dataset.voted === '1') return;
-            const row = d.data[card.dataset.courseId || ''];
-            if (row && typeof row.total_votes === 'number') {
-              card.dataset.votes = String(row.total_votes);
-              renderCard(card);
-            }
-          });
-        })
-        .catch(() => {});
-    }
+    // 正式模式：進站時同步試算表最新內容（課程、票數、門檻、排序）
+    if (API_URL) refreshFromSheet();
   }
 </script>
