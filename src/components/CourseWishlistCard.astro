@@ -1,0 +1,351 @@
+---
+// ==========================================
+// 課程許願池卡片（敲碗開課）
+// - 未設定 PUBLIC_WISHLIST_API_URL 時為純前端 Demo 模式（localStorage 模擬計票）
+// - 設定後自動切換為正式模式（Google Apps Script Web App 計票）
+// ==========================================
+interface Props {
+  id: string;
+  title: string;
+  teacher: string;
+  category: string;
+  votes: number;
+  threshold: number;
+  icon: string;
+  gradient: string;
+}
+
+const { id, title, teacher, category, votes, threshold, icon, gradient } = Astro.props;
+const reached = votes >= threshold;
+const percent = Math.min(100, Math.round((votes / threshold) * 100));
+---
+
+<div
+  class="wish-card group bg-white/95 dark:bg-[#231f40]/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-200/80 dark:border-white/20 flex flex-col"
+  data-wish-card
+  data-course-id={id}
+  data-votes={votes}
+  data-threshold={threshold}
+>
+  <!-- 意象區：漸層底色 + 分類標籤 + 許願人數膠囊 -->
+  <div class:list={['relative w-full aspect-16/10 bg-gradient-to-br flex items-center justify-center overflow-hidden', gradient]}>
+    <span class="absolute -top-6 -left-6 w-24 h-24 bg-white/25 rounded-full blur-2xl"></span>
+    <span class="absolute bottom-2 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></span>
+
+    <!-- 分類標籤（左上） -->
+    <span class="absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm">
+      {category}
+    </span>
+
+    <!-- 許願人數膠囊（右上） -->
+    <span class="absolute top-3 right-3 z-10 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full bg-[#FCE794] text-[#2E2A4F] tracking-wider shadow-md flex items-center gap-1">
+      <span aria-hidden="true">🔥</span>
+      <span class="wish-pill-count inline-block">{votes}</span>
+      <span>人想上</span>
+    </span>
+
+    <!-- 主視覺符號 -->
+    <span class="text-6xl sm:text-7xl drop-shadow-[0_6px_16px_rgba(255,255,255,0.45)] group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-500 select-none" aria-hidden="true">{icon}</span>
+  </div>
+
+  <!-- 資訊區 -->
+  <div class="p-5 sm:p-6 flex-1 flex flex-col gap-3">
+    <div>
+      <h3 class="text-lg sm:text-xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide transition-colors">{title}</h3>
+      <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜{teacher}</p>
+    </div>
+
+    <!-- 進度條 -->
+    <div class="space-y-1.5">
+      <div class="w-full h-2.5 rounded-full bg-[#3A3A3A]/10 dark:bg-white/15 overflow-hidden">
+        <div
+          class:list={['wish-bar-fill h-full rounded-full transition-all duration-500', reached ? 'bg-[#58A497]' : 'bg-[#F5A623]']}
+          style={`width: ${percent}%`}
+        ></div>
+      </div>
+      <div class="flex items-center justify-between text-xs sm:text-sm">
+        <span class="text-[#3A3A3A]/75 dark:text-white/75 font-medium transition-colors">
+          <span class="wish-progress-text">{votes} / {threshold}</span> 人許願
+        </span>
+        <span class:list={['wish-reached font-bold text-[#58A497]', reached ? '' : 'hidden']}>✓ 達標籌備中</span>
+      </div>
+    </div>
+
+    <!-- 許願按鈕 -->
+    <button
+      type="button"
+      class="wish-btn mt-auto w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-[#80A9D4] hover:bg-[#6b97c4] text-white text-sm sm:text-base font-bold font-huninn tracking-widest shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+    >
+      <span class="wish-btn-label">✦ 我想一起</span>
+    </button>
+  </div>
+</div>
+
+<style>
+  .wish-pill-count.wish-pop {
+    animation: wishPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes wishPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.6); }
+    100% { transform: scale(1); }
+  }
+
+  .wish-btn:disabled {
+    cursor: default;
+  }
+
+  .wish-btn.is-pending {
+    opacity: 0.75;
+    animation: wishPulse 1.2s ease-in-out infinite;
+  }
+  @keyframes wishPulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 0.45; }
+  }
+
+  .wish-btn.is-voted {
+    background-color: #FCE794;
+    color: #2E2A4F;
+    box-shadow: 0 0 18px rgba(252, 231, 148, 0.55);
+  }
+
+  .wish-btn.is-retry {
+    background: transparent;
+    color: #B45309;
+    border: 1.5px solid #F5A623;
+    box-shadow: none;
+  }
+</style>
+
+<script>
+  const API_URL = import.meta.env.PUBLIC_WISHLIST_API_URL || '';
+  const CLIENT_KEY = 'starwoven_client_id';
+  const DEMO_KEY = 'starwoven_wish_demo_votes';
+  const voteKey = (id: string) => `starwoven_wish_${id}`;
+
+  let sessionClientId: string | null = null;
+
+  function generateUUID(): string {
+    return (
+      (crypto.randomUUID && crypto.randomUUID()) ||
+      'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (ch) => {
+        const r = (Math.random() * 16) | 0;
+        return (ch === 'x' ? r : (r & 0x3) | 0x8).toString(16);
+      })
+    );
+  }
+
+  function getClientId(): string {
+    try {
+      let cid = localStorage.getItem(CLIENT_KEY);
+      if (!cid) {
+        cid = generateUUID();
+        localStorage.setItem(CLIENT_KEY, cid);
+      }
+      return cid;
+    } catch {
+      // localStorage 停用時改用本頁面工作階段的隨機 UUID，
+      // 避免無儲存權限的訪客共用固定 ID，在後端被視為同一人而互相擋票
+      if (!sessionClientId) sessionClientId = generateUUID();
+      return sessionClientId;
+    }
+  }
+
+  function readVotes(card: HTMLElement): number {
+    return parseInt(card.dataset.votes || '0', 10) || 0;
+  }
+
+  function renderCard(card: HTMLElement, animate = false) {
+    const votes = readVotes(card);
+    const threshold = parseInt(card.dataset.threshold || '1', 10) || 1;
+    const reached = votes >= threshold;
+
+    const fill = card.querySelector<HTMLElement>('.wish-bar-fill');
+    if (fill) {
+      fill.style.width = `${Math.min(100, (votes / threshold) * 100)}%`;
+      fill.classList.toggle('bg-[#58A497]', reached);
+      fill.classList.toggle('bg-[#F5A623]', !reached);
+    }
+
+    const progress = card.querySelector<HTMLElement>('.wish-progress-text');
+    if (progress) progress.textContent = `${votes} / ${threshold}`;
+
+    const pill = card.querySelector<HTMLElement>('.wish-pill-count');
+    if (pill) {
+      pill.textContent = String(votes);
+      if (animate) {
+        pill.classList.remove('wish-pop');
+        void pill.offsetWidth;
+        pill.classList.add('wish-pop');
+      }
+    }
+
+    const tag = card.querySelector<HTMLElement>('.wish-reached');
+    if (tag) tag.classList.toggle('hidden', !reached);
+  }
+
+  type BtnState = 'default' | 'pending' | 'voted' | 'retry';
+
+  function setBtn(card: HTMLElement, state: BtnState) {
+    const btn = card.querySelector<HTMLButtonElement>('.wish-btn');
+    const label = card.querySelector<HTMLElement>('.wish-btn-label');
+    if (!btn || !label) return;
+    btn.classList.remove('is-pending', 'is-voted', 'is-retry');
+    // 以 disabled 屬性鎖定，同時阻擋滑鼠、觸控與鍵盤（Enter/Space）觸發
+    btn.disabled = state === 'pending' || state === 'voted';
+    if (state === 'pending') {
+      btn.classList.add('is-pending');
+      label.textContent = '✦ 許願傳送中…';
+    } else if (state === 'voted') {
+      btn.classList.add('is-voted');
+      label.textContent = '✓ 已成功許願';
+    } else if (state === 'retry') {
+      btn.classList.add('is-retry');
+      label.textContent = '連線稍候，點此重試';
+    } else {
+      label.textContent = '✦ 我想一起';
+    }
+  }
+
+  function hasVoted(id: string): boolean {
+    try {
+      return localStorage.getItem(voteKey(id)) === 'true';
+    } catch {
+      return false;
+    }
+  }
+
+  function trackWish(id: string, mode: string) {
+    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', 'course_wish_click', { course_id: id, mode });
+    }
+  }
+
+  async function vote(card: HTMLElement) {
+    const id = card.dataset.courseId;
+    if (!id) return;
+    // data-voted 為記憶體旗標：即使 localStorage 停用，本頁已投票的卡片也不會重複送票
+    if (hasVoted(id) || card.dataset.voted === '1') {
+      setBtn(card, 'voted');
+      return;
+    }
+    // 並發防護：pending 期間忽略任何重複觸發（含程式化 click）
+    if (card.dataset.pending === '1') return;
+
+    // 樂觀更新：快照投票前票數（供失敗回滾還原），立即 +1 並鎖定按鈕
+    const before = readVotes(card);
+    card.dataset.pending = '1';
+    card.dataset.votes = String(before + 1);
+    renderCard(card, true);
+    setBtn(card, 'pending');
+
+    // Demo 模式：未設定 API 時純前端模擬，票數僅存本機
+    if (!API_URL) {
+      window.setTimeout(() => {
+        try {
+          localStorage.setItem(voteKey(id), 'true');
+          const demo = JSON.parse(localStorage.getItem(DEMO_KEY) || '{}') as Record<string, number>;
+          demo[id] = (demo[id] || 0) + 1;
+          localStorage.setItem(DEMO_KEY, JSON.stringify(demo));
+        } catch {}
+        delete card.dataset.pending;
+        card.dataset.voted = '1';
+        setBtn(card, 'voted');
+        trackWish(id, 'demo');
+      }, 650);
+      return;
+    }
+
+    // 正式模式：呼叫 Apps Script，8 秒逾時自動斷開
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 8000);
+    try {
+      const url = `${API_URL}?action=vote&course_id=${encodeURIComponent(id)}&client_id=${encodeURIComponent(getClientId())}`;
+      const res = await fetch(url, { signal: controller.signal });
+      const data = await res.json();
+      window.clearTimeout(timer);
+      if (data && data.status === 'success') {
+        if (typeof data.votes === 'number') {
+          card.dataset.votes = String(data.votes);
+          renderCard(card);
+        }
+        try {
+          localStorage.setItem(voteKey(id), 'true');
+        } catch {}
+        delete card.dataset.pending;
+        card.dataset.voted = '1';
+        setBtn(card, 'voted');
+        trackWish(id, 'live');
+      } else if (data && data.status === 'already_voted') {
+        // 後端判定此前已投過（本機旗標遺失）：本次不新增票數，還原樂觀更新快照後鎖定
+        card.dataset.votes = String(before);
+        renderCard(card);
+        try {
+          localStorage.setItem(voteKey(id), 'true');
+        } catch {}
+        delete card.dataset.pending;
+        card.dataset.voted = '1';
+        setBtn(card, 'voted');
+        trackWish(id, 'already_voted');
+      } else {
+        throw new Error((data && data.code) || 'VOTE_FAILED');
+      }
+    } catch {
+      // 失敗回滾：還原投票前快照（而非從目前值 -1），解除鎖定，2.5 秒後恢復可重試
+      window.clearTimeout(timer);
+      card.dataset.votes = String(before);
+      delete card.dataset.pending;
+      renderCard(card);
+      setBtn(card, 'retry');
+      window.setTimeout(() => {
+        if (!hasVoted(id)) setBtn(card, 'default');
+      }, 2500);
+    }
+  }
+
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-wish-card]'));
+  if (cards.length > 0) {
+    // Demo 模式：套用本機累積票數，讓重整後票數仍持續累計
+    if (!API_URL) {
+      let demo: Record<string, number> = {};
+      try {
+        demo = JSON.parse(localStorage.getItem(DEMO_KEY) || '{}');
+      } catch {}
+      cards.forEach((card) => {
+        const extra = demo[card.dataset.courseId || ''] || 0;
+        if (extra > 0) card.dataset.votes = String(readVotes(card) + extra);
+      });
+    }
+
+    cards.forEach((card) => {
+      renderCard(card);
+      if (hasVoted(card.dataset.courseId || '')) {
+        card.dataset.voted = '1';
+        setBtn(card, 'voted');
+      }
+      card.querySelector<HTMLElement>('.wish-btn')?.addEventListener('click', () => vote(card));
+    });
+
+    // 正式模式：進站時同步全站最新票數
+    if (API_URL) {
+      fetch(`${API_URL}?action=get_all`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (!d || d.status !== 'success' || !d.data) return;
+          cards.forEach((card) => {
+            // 略過投票進行中或已完成投票的卡片（以記憶體旗標為準，
+            // localStorage 停用時亦成立），避免較慢的舊回應覆寫最新票數
+            if (card.dataset.pending === '1' || card.dataset.voted === '1') return;
+            const row = d.data[card.dataset.courseId || ''];
+            if (row && typeof row.total_votes === 'number') {
+              card.dataset.votes = String(row.total_votes);
+              renderCard(card);
+            }
+          });
+        })
+        .catch(() => {});
+    }
+  }
+</script>

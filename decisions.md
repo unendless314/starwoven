@@ -628,3 +628,63 @@
   2. **優化 .gitignore 目錄白名單規則**：
      - 加入 `!demo_docs/raw-photos/**/`，允許 Git 進入 `raw-photos/` 底下所有分類資料夾，精確納入各子目錄的 `.gitkeep` 結構。
      - 經由 `git check-ignore` 實測，所有子資料夾內之原始高清大圖（`team/以恩.png`、`courses/光與阿卡西紀錄.png` 等）維持被嚴格忽略，而 `.gitkeep` 正常追蹤。
+
+---
+
+## 2026-10-02 — DEC-034：首頁新增「課程許願池（敲碗開課）」區塊（Demo 版，純前端可先展示）
+
+- **背景**：
+  - 業主希望提前看到 `demo_docs/course_wishlist_plan.md` 所規劃之「課程敲碗許願」功能 demo；提供揪團許願類網站截圖作為 UI 參考（卡片含分類標籤、「N 人想上」膠囊、進度條與全寬許願按鈕）。
+  - Google 試算表與 Apps Script 後端（企劃書 Step 1–2）尚未部署，故需一個不依賴後端即可展示互動的 Demo 版本。
+- **決策與執行**：
+  1. **新增共用元件 `src/components/CourseWishlistCard.astro`**：
+     - UI 依參考截圖改編並套用品牌色彩：意象區漸層底色＋左上分類標籤＋右上金色「🔥 N 人想上」膠囊；資訊區含課程名稱、企劃講師、「N / M 人許願」進度條（達標轉為 `#58A497` 綠色並顯示「✓ 達標籌備中」）與全寬「✦ 我想一起」按鈕。
+     - 完整互動狀態機：樂觀更新（點擊即 +1 並彈跳動畫）→ 傳送中鎖定 → 成功鎖定（金色 `#FCE794` 實心「✓ 已成功許願」＋寫入 `localStorage` 持久化）／失敗回滾（票數退回、琥珀警示「連線稍候，點此重試」、2.5 秒後恢復可重試）；正式模式以 `AbortController` 8 秒逾時保護。
+     - 訪客裝置識別碼 `starwoven_client_id`（UUIDv4）與每課 `starwoven_wish_{course_id}` 鎖定旗標均依企劃書規格實作。
+  2. **Demo／正式雙模式切換**：
+     - 讀取 `PUBLIC_WISHLIST_API_URL`（已於 `.env.example` 新增）。
+     - 未設定時為 **Demo 模式**：不發送網路請求，650ms 模擬延遲後視為成功，票數增量存於本機 `starwoven_wish_demo_votes`，重整頁面仍持續累計，供業主展示完整互動。
+     - 設定後為**正式模式**：進站自動 `action=get_all` 同步全站票數，投票走 `action=vote&course_id&client_id`，失敗自動回滾。
+  3. **首頁掛載位置**：於 `/`（`src/pages/index.astro`）「固定循環課程」卡片 Grid 正下方、「學員心聲」輪播之前新增「✦ 課程許願池」區塊；右上方配置金色「我想許願」按鈕導向 LINE 官方帳號（`@347fucvj`），供訪客提案新課程。
+  4. **佔位課程資料**：以 6 門品牌調性佔位課程展示（托特高階解盤、阿卡西深度工作坊、靈氣三階大師班、占星合盤、金錢靈氣、靈數流年），涵蓋未達標與已達標（12/12）兩種視覺狀態；待業主定案欲募集之課程清單後替換，屆時 `id` 需與試算表 A 欄 `course_id` 對齊。
+  5. **GA4 事件**：許願成功時送出 `course_wish_click` 事件（含 `course_id` 與 `mode: demo|live`），便於後續觀察敲碗熱度。
+
+---
+
+## 2026-10-02 — DEC-035：許願池代碼審查修復（匿名 client_id 互相擋票、鍵盤繞過 pending 鎖、get_all 競態覆寫）
+
+- **背景**：
+  - 外部 AI 代碼審查對許願池功能（DEC-034）提出 3 項 P1 問題，經逐條驗證判定全部成立並採納修復；審查同時確認 Apps Script 後端（tryLock、快取、速率限制、前後端合約）、`.env.example` 與 Tailwind 動態 class 保留均無問題。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. **修復匿名 `client_id` 共用導致互相擋票**：
+     - 原實作在 localStorage 停用時回傳固定字串 `anonymous`，後端快取會讓第一位投票的無儲存權限訪客擋住其後所有同類訪客（誤判 `already_voted` 達 6 小時）。
+     - 改為抽出 `generateUUID()`，localStorage 不可用時生成**本頁面工作階段專屬**的隨機 UUID（模組層級 `sessionClientId`），不再共用固定值。
+  2. **pending 鎖定改用 `disabled` 屬性**：
+     - 原實作僅以 CSS `pointer-events: none` 鎖定，已聚焦按鈕仍可用 Enter／Space 觸發 click，造成重複加票與並行請求。
+     - `setBtn()` 改操作 `HTMLButtonElement.disabled`（pending／voted 時為 `true`），同步阻擋滑鼠、觸控與鍵盤；並新增每卡 `data-pending` in-flight 旗標，程式化觸發亦被忽略。CSS 移除多餘的 `pointer-events` 宣告，補 `:disabled` 游標樣式。
+  3. **修復 `get_all` 競態覆寫與回滾失真**：
+     - 原實作中進站 `get_all` 的較慢回應可能在使用者投票後才返回，以舊票數覆寫樂觀更新；失敗回滾又從被覆寫的值再 -1，畫面憑空少一票。
+     - `vote()` 改為先快照投票前票數（`before`），失敗回滾直接還原快照；`get_all` 回應處理略過 `pending` 中或本機已投票的卡片。
+
+---
+
+## 2026-10-02 — DEC-036：許願池第二輪審查修復（localStorage 停用時 get_all 殘留競態）
+
+- **背景**：
+  - 外部 AI 第二輪複審確認 DEC-035 三項修復全數通過（含瀏覽器實測連按 Enter／Space 票數僅 +1 並維持鎖定），但發現 1 項殘留競態：localStorage 停用時 `hasVoted()` 恆為 `false`，正式模式投票成功後 `pending` 旗標已清除，延遲抵達的 `get_all` 舊回應仍可穿透守衛、覆寫剛同步的最新票數。
+  - 影響範圍有限（僅無儲存權限訪客、僅顯示層失真、下次載入即恢復），但修復成本極低，予以採納。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. **新增每卡記憶體旗標 `data-voted`**：初始化時由 `hasVoted()` 映射、投票成功（Demo／正式模式）時設定；「本頁已投票」狀態不再以 localStorage 為唯一判斷來源。
+  2. **`get_all` 回應守衛改以記憶體旗標為準**：略過條件由 `hasVoted()` 改為 `data-pending`／`data-voted`，localStorage 停用情境下同樣成立。
+  3. **`vote()` 入口守衛雙重保險**：同步檢查 `data-voted`，防止任何路徑對已投票卡片重複送票。
+
+---
+
+## 2026-10-02 — DEC-037：許願池第三輪審查修復（already_voted 回應保留幻影 +1）
+
+- **背景**：
+  - 外部 AI 第三輪複審以 mock API 實測重現：本機投票旗標遺失（清除 localStorage 或換瀏覽器）但後端 6 小時快取仍記得該 `client_id` 時，`already_voted` 回應未附帶票數，前端保留樂觀更新的 +1——實際票數 8，畫面卻鎖定在 9。
+- **決策與執行**（`src/components/CourseWishlistCard.astro`）：
+  1. **拆分 `success` 與 `already_voted` 回應分支**：`already_voted` 視為「本次未新增票數」，還原投票前快照（`before`）後再鎖定為已許願狀態，消除幻影 +1。
+  2. **GA4 事件區分**：`already_voted` 情境之 `course_wish_click` 事件以 `mode: 'already_voted'` 標記，不與真實新增票數混淆。
+  3. **不採納後端連動修改**：未採「Apps Script 在 `already_voted` 回應附上總票數」之替代方案——此邊界情境罕見、失真僅顯示層且重整即恢復，相較重新部署後端版本之作業成本，投入產出不成比例；前端快照還原已可正確修復。

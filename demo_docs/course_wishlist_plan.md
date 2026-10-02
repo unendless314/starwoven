@@ -211,23 +211,23 @@ function doGet(e) {
 
 後續開始動工時，按以下 5 個步驟執行：
 
-- [ ] **Step 1：建立 Google 試算表與部署 Apps Script**
+- [x] **Step 1：建立 Google 試算表與部署 Apps Script**（2026-10-02 完成，`get_all` 已驗證回傳正常）
   - 由業主或開發者在 Google 雲端建立試算表，貼上上述具備 LockService 與 CacheService 之 Apps Script。
   - 點擊「部署 ➔ 新增部署作業 ➔ 網頁應用程式」，設定「執行身分：我」、「誰可以存取：任何人」。
   - 取得專屬 Web App URL（形如 `https://script.google.com/macros/s/XXX/exec`）。
-- [ ] **Step 2：環境變數配置**
+- [x] **Step 2：環境變數配置**（2026-10-02 完成）
   - 在 `.env` 與 `.env.example` 新增 `PUBLIC_WISHLIST_API_URL`。
-- [ ] **Step 3：前端元件開發 (`src/components/CourseWishlistCard.astro`)**
+- [x] **Step 3：前端元件開發 (`src/components/CourseWishlistCard.astro`)**（2026-10-02 完成，見 DEC-034）
   - 刻劃敲碗卡片（封面圖、課程名稱、講師、募集中標籤、進度條、敲碗按鈕）。
   - 適配 Dark / Light Mode 與粉圓體字型。
-- [ ] **Step 4：客戶端防刷、裝置識別碼與錯誤回滾實作**
+- [x] **Step 4：客戶端防刷、裝置識別碼與錯誤回滾實作**（2026-10-02 完成，見 DEC-034）
   - 於 `localStorage` 自動生成持久化 `starwoven_client_id`。
   - 撰寫樂觀更新與 `AbortController` 8 秒逾時斷開。
   - 實作完整 `try...catch` 錯誤捕捉：若 API 失敗或超時，自動回滾票數並提示重新嘗試，絕不造成狀態死鎖。
-- [ ] **Step 5：整合與文件驗收**
-  - 於 `/courses` 活動與課程頁面下方新增「✦ 意向募集・熱烈敲碗中」區塊。
-  - 驗收並發點擊測試、防刷阻擋與錯誤回滾機制。
-  - 將成果正式登錄於 `spec.md` 與 `decisions.md`。
+- [x] **Step 5：整合與文件驗收**（2026-10-02 完成）
+  - ~~於 `/courses` 活動與課程頁面下方新增「✦ 意向募集・熱烈敲碗中」區塊。~~ 依業主要求改掛於**首頁**固定循環課程區塊下方（見 DEC-034）。
+  - 驗收並發點擊測試、防刷阻擋與錯誤回滾機制（失敗回滾已於 2026-10-02 以無效網址實測驗證；投票寫入試算表已實測成功）。
+  - 將成果正式登錄於 `spec.md` 與 `decisions.md`（DEC-034）。
 
 ---
 

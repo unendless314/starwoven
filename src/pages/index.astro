@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import CTAButton from '../components/CTAButton.astro';
+import CourseWishlistCard from '../components/CourseWishlistCard.astro';
 
 // ==========================================
 // 圖片素材路徑配置（ComfyUI 生圖或取得真圖後填入此處）
@@ -154,6 +155,81 @@ const recurringCourses = [
     price: '包月四堂2000元',
     image: imgCourseSat,
     code: '首頁-L',
+  },
+];
+
+// 【5. 課程許願池資料（Demo 佔位課程，待業主確認欲募集之課程後替換）】
+interface WishlistCourse {
+  id: string;           // 對應 Google 試算表 A 欄 course_id
+  title: string;
+  teacher: string;
+  category: string;
+  votes: number;        // 初始票數（正式模式上線後由試算表 get_all 覆寫）
+  threshold: number;    // 達標開課人數
+  icon: string;         // 意象區符號（未來可替換為課程圖片）
+  gradient: string;     // 意象區漸層色
+}
+
+const wishlistCourses: WishlistCourse[] = [
+  {
+    id: 'thoth_advanced',
+    title: '托特塔羅・高階解盤專題',
+    teacher: '學長老師',
+    category: '塔羅進階',
+    votes: 7,
+    threshold: 10,
+    icon: '🃏',
+    gradient: 'from-[#F3D9E4] to-[#E3B7CC]',
+  },
+  {
+    id: 'akashic_deep',
+    title: '阿卡西靈魂藍圖深度工作坊',
+    teacher: '古古老師',
+    category: '阿卡西紀錄',
+    votes: 3,
+    threshold: 8,
+    icon: '📖',
+    gradient: 'from-[#D9E9F6] to-[#B3D2EA]',
+  },
+  {
+    id: 'reiki_master',
+    title: '臼井靈氣三階・大師班',
+    teacher: '學長老師',
+    category: '靈氣研修',
+    votes: 12,
+    threshold: 12,
+    icon: '👐',
+    gradient: 'from-[#D5EDE7] to-[#A8D8CC]',
+  },
+  {
+    id: 'astro_synastry',
+    title: '占星合盤・關係星圖對話',
+    teacher: '皮皮老師',
+    category: '占星專題',
+    votes: 5,
+    threshold: 10,
+    icon: '💫',
+    gradient: 'from-[#E4DDF0] to-[#C4B4DC]',
+  },
+  {
+    id: 'money_reiki',
+    title: '金錢靈氣・豐盛顯化工作坊',
+    teacher: '黎夢老師',
+    category: '靈氣專題',
+    votes: 9,
+    threshold: 10,
+    icon: '🪙',
+    gradient: 'from-[#FBEBC8] to-[#F5D98D]',
+  },
+  {
+    id: 'numerology_year',
+    title: '生命靈數・流年藍圖專題',
+    teacher: '皮皮老師',
+    category: '生命靈數',
+    votes: 2,
+    threshold: 8,
+    icon: '🔢',
+    gradient: 'from-[#F8E0CD] to-[#EFC09C]',
   },
 ];
 ---
@@ -571,6 +647,49 @@ const recurringCourses = [
 
           </div>
         ))}
+      </div>
+
+      <!-- ======================================================== -->
+      <!-- 課程許願池・敲碗開課 (Course Wishlist)                    -->
+      <!-- ======================================================== -->
+      <div class="pt-14 sm:pt-20 space-y-8">
+
+        <!-- 區塊標題列（左側標題文案、右側「我想許願」LINE 按鈕） -->
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
+          <div class="space-y-3 max-w-2xl">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FCE794]/30 dark:bg-[#FCE794]/15 border border-[#F5A623]/40 dark:border-[#FCE794]/30 text-[#2E2A4F]/85 dark:text-[#FCE794] text-xs sm:text-sm font-huninn tracking-widest transition-colors">
+              <span>✦</span>
+              <span>敲碗開課・集氣許願</span>
+              <span>✦</span>
+            </div>
+            <h3 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#2E2A4F] dark:text-white font-huninn tracking-wider transition-colors">
+              課程許願池
+            </h3>
+            <p class="text-sm sm:text-base text-[#3A3A3A]/80 dark:text-white/75 font-huninn leading-relaxed transition-colors">
+              有人跟你想的一樣，我們來促成它。按下「我想一起」為心儀的課程集氣，集滿人數即刻開班！
+            </p>
+          </div>
+          <a
+            href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 self-start sm:self-auto shrink-0 bg-[#FCE794] hover:bg-[#F5D96A] text-[#2E2A4F] px-6 py-2.5 rounded-full font-huninn font-bold tracking-wider text-base shadow-sm hover:shadow-md transition-all duration-300"
+          >
+            <span>✦</span>
+            <span>我想許願</span>
+          </a>
+        </div>
+
+        <!-- 許願課程卡片 Grid（桌機 3 欄、平板 2 欄、手機 1 欄） -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {wishlistCourses.map((w) => (
+            <CourseWishlistCard {...w} />
+          ))}
+        </div>
+
+        <p class="text-center text-xs sm:text-sm text-[#3A3A3A]/60 dark:text-white/50 font-huninn tracking-wide transition-colors">
+          許願僅為開課意向統計，不收取任何費用；課程達標後將於 LINE 官方帳號優先公告開課資訊。
+        </p>
       </div>
 
       <!-- ======================================================== -->
