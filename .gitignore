@@ -17,6 +17,10 @@ node_modules/
 Thumbs.db
 Desktop.ini
 
+# Python
+__pycache__/
+*.pyc
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
@@ -33,4 +37,9 @@ demo_docs/reference-screenshots/
 
 # Raw uncompressed generation PNGs (WebP versions are tracked instead)
 demo_docs/sd-assets/**/*.png
+
+# Raw uncompressed real photos (camera originals, high-res PNG/JPG)
+demo_docs/raw-photos/**/*
+!demo_docs/raw-photos/**/
+!demo_docs/raw-photos/**/.gitkeep
 

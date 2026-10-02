@@ -539,3 +539,92 @@
      - 配置標準八字陰陽五行圖示（`icon: 'bazi'`），帶入完整時間、時數、費用與溫暖引言文案。
   4. **規格文件同步**：
      - 同步更新 `demo_docs/content_inventory.md`（Section 3.4）與 `demo_docs/image_prompts.md`（課程海報清單）。
+
+---
+
+## 2026-10-02 — DEC-029：新增夥伴命理師「黎夢」及其專長與對應配置
+
+- **背景**：
+  - 依據業主最新指示，新增一位占卜師夥伴「黎夢」，專長項目為「塔羅占卜、金錢靈氣、奧剛金字塔、靈擺調頻、七脈輪療癒」，需整合至命理師介紹之頁面中。
+- **決策與執行**：
+  1. **關於我們團隊頁面 (`src/pages/about.astro`)**：
+     - 於星靈夥伴名冊中新增第 9 位夥伴「黎夢」，配置專屬留圖變數 `imgMemberLimeng`（代號 `關於-L`）。
+     - 專長標籤完整載入：`塔羅占卜`、`金錢靈氣`、`奧剛金字塔`、`靈擺調頻`、`七脈輪療癒`。
+     - 區塊計數標籤改為動態顯示 `{members.length} 位專業夥伴`，維持響應式優雅流動。
+  2. **規格文件同步**：
+     - 同步更新 Single Source of Truth 文件 `demo_docs/content_inventory.md`（Section 4.3 團隊成員第 9 位）。
+     - 同步於 `demo_docs/image_prompts.md` 登錄素材代號 `[關於]-[圖片 L]`（`about_l_member_limeng_v1.webp`）之規格與生成紀錄表。
+
+---
+
+## 2026-10-02 — DEC-030：移除首頁「命理師介紹」區塊，全站成員介紹集中於「關於我們」頁面
+
+- **背景**：
+  - 依據業主最新指示，首頁（Index）的「命理師介紹」區塊予以移除，訪客欲了解星靈團隊師資與夥伴統一導向「關於我們（`/about`）」頁面。
+  - 首頁原區位空間規劃於後續改放最新公告、品牌動態或更多實體活動花絮照片。
+- **決策與執行**：
+  1. **首頁模板清潔 (`src/pages/index.astro`)**：
+     - 完整移除 Section 4「命理師介紹」卡片 Grid 容器，首頁底部自然收尾於「學員真實回饋（Testimonials）」輪播區塊與頁尾。
+     - 清理 Frontmatter 中未使用的 `imgReaderYiEn`、`imgReaderPiPi`、`imgReaderDaXin` 圖片變數與 `featuredReaders` 陣列，維持程式碼純淨無死碼。
+  2. **素材規劃收斂與去重**：
+     - 移除首頁重複之命理師素材欄位（`首頁-M`、`首頁-N`、`首頁-O`），師資個人照片統一對應「關於我們」之 `關於-B`（以恩）、`關於-C`（皮皮）、`關於-D`（達心），無需準備兩套重複圖檔。
+     - 同步更新 `demo_docs/image_prompts.md` 與 `demo_docs/content_inventory.md`（Section 1.5）。
+
+---
+
+## 2026-10-02 — DEC-031：建立 demo_docs/raw-photos/ 四大分類子目錄與實拍素材標準化歸檔架構
+
+- **背景**：
+  - 隨著實拍素材增多（團隊個人照、各課程活動照、工作坊海報、交流會花絮），若全部存放於同一目錄易造成混亂且難以辨識版本。
+- **決策與執行**：
+  1. **建立 4 大分類子目錄**：
+     - `demo_docs/raw-photos/team/`：團隊夥伴與創辦人個人照。
+     - `demo_docs/raw-photos/courses/`：週一至週六固定循環課程現場照。
+     - `demo_docs/raw-photos/workshops/`：特色主題體驗工作坊海報。
+     - `demo_docs/raw-photos/events/`：實體交流會與聚會花絮。
+  2. **檔案正名與移動**：
+     - 將原 10 張照片移動至 `team/`，並將「達達.png」正名為「達心.png」、「月月.png」正名為「凜月.png」。
+  3. **自動化批次腳本升級 (`scripts/process_photo.py`)**：
+     - 內建 `TEAM_MAPPING`，針對特殊取景（悠悠、凜月之右上半身特寫）設定專屬 ROI 視窗裁切，支援 `--batch-team` 一鍵批次全自動轉換。
+  4. **Git 版控安全設定**：
+     - 更新 `.gitignore` 規則為 `demo_docs/raw-photos/**/*`，遞迴忽略所有子目錄中的原始大圖，保留 `.gitkeep` 結構。
+---
+
+## 2026-10-02 — DEC-032：活動課程與實體交流會 7 張實拍照片 16:10 取景最佳化與 WebP 上架部署
+
+- **背景**：
+  - 業主提供 7 張固定循環課程與實體交流會的現場活動照片，存放在 `demo_docs/raw-photos/courses/`。
+  - 原檔中包含數張直式手機拍攝照片（阿卡西 1093×1795、靈氣 1093×1459、生命靈數 866×1445），若直接等比縮小置入前端 16:10 橫式卡片容器，人像與板書會嚴重失焦或被裁切到無效的天花板。
+- **決策與執行**：
+  1. **直式手機拍圖 16:10 取景最佳化 (ROI Crop)**：
+     - `光與阿卡西紀錄.png`：上半部為大面積白色天花板，指定垂直區間 `(0, 480, 1093, 1163)` 裁切出 16:10 畫面，精確收納前方白板、古古老師與全體冥想學員。
+     - `七脈輪與靈氣.png`：指定垂直區間 `(0, 320, 1093, 1003)` 裁切出 16:10 畫面，完整呈現教室學員圍坐共振氛圍。
+     - `生命靈數.png`：指定垂直區間 `(0, 260, 866, 801)` 裁切出 16:10 畫面，突出皮皮老師講解白板之主體。
+  2. **橫式照片與交流會規格對齊**：
+     - `占星循環課.jpg`、`偉特塔羅.jpg`、`托特塔羅.jpg` 均為 4:3 橫式，直接等比置中裁切為 16:10（960×600 px）。
+     - `命理交流會.png` 指定正圓/方形視窗 `(0, 80, 386, 466)` 裁切為 600×600 px，適配 `/courses` 專屬之 1:1 交流會卡片。
+  3. **自動化批次腳本與 WebP 壓制**：
+     - 於 `scripts/process_photo.py` 整合 `COURSES_MAPPING`，支援 `--batch-courses` 命令全自動處理。
+     - 統一輸出為 WebP Q85，7 張檔案體積介於 19.2 KB ~ 86.1 KB，總體積僅約 388 KB，完美達成 LCP 效能目標。
+  4. **全站雙頁面聯動掛載**：
+     - `src/pages/courses.astro`：6 大固定循環課程卡片（`imgCourseAkashic` ~ `imgCourseNumerology`）與實體交流會卡片（`imgMeetup`）全面掛載實拍圖。
+     - `src/pages/index.astro`：首頁 Section 3 固定循環課表同步引用 `courses_a` ~ `courses_f` 實拍 WebP，告別佔位圖符號。
+  5. **規格與生成紀錄文件同步**：
+     - 同步更新 `demo_docs/image_prompts.md` 與 `demo_docs/content_inventory.md`。
+---
+
+## 2026-10-02 — DEC-033：代碼審查問題修復（process_photo.py 單張與團隊批次參數修正、.gitignore 目錄追蹤規則優化）
+
+- **背景**：
+  - 經由代碼審查指出 3 項潛在問題：
+    1. `scripts/process_photo.py` 在 `main()` 單張轉檔分支調用 `args.quality`，但 `argparse` 中未宣告 `--quality` 參數，導致單張模式拋出 `AttributeError`。
+    2. `scripts/process_photo.py` 在 `batch_team()` 中調用 `process_photo(..., max_size=...)`，但 `process_photo` 簽名為 `target_size`，導致拋出 `TypeError`。
+    3. `.gitignore` 中的 `demo_docs/raw-photos/**/*` 會將子目錄視為忽略對象，使得 Git 停止遞迴檢視，導致後續 `!demo_docs/raw-photos/**/.gitkeep` 例外規則無法生效追蹤分類資料夾。
+- **決策與執行**：
+  1. **修正 process_photo.py 參數與 CLI 宣告**：
+     - 在 `argparse` 補充 `--quality` 參數（預設 85）。
+     - 將 `batch_team()` 中的 `max_size` 參數名對齊為 `target_size`。
+     - 經由實測 `--batch-team`、`--batch-courses` 與單張轉檔 `-i / -o` 命令，全部驗證 100% 執行成功。
+  2. **優化 .gitignore 目錄白名單規則**：
+     - 加入 `!demo_docs/raw-photos/**/`，允許 Git 進入 `raw-photos/` 底下所有分類資料夾，精確納入各子目錄的 `.gitkeep` 結構。
+     - 經由 `git check-ignore` 實測，所有子資料夾內之原始高清大圖（`team/以恩.png`、`courses/光與阿卡西紀錄.png` 等）維持被嚴格忽略，而 `.gitkeep` 正常追蹤。

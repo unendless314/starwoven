@@ -182,24 +182,24 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ## 三、【活動與課程】(Courses / starwovenstudy)
 
-### [課程]-[圖片 A~F]：固定循環課程現場活動照片（6張，待業主提供真圖）
+### [課程]-[圖片 A~F]：固定循環課程現場活動照片（6張，已採用上線）
 
-- **版位用途**：活動課程頁面（`/courses`）固定循環課程 6 大卡片頂部 16:10 照片插槽
+- **版位用途**：活動課程頁面（`/courses`）固定循環課程 6 大卡片頂部 16:10 照片插槽（首頁週一至週六課表亦同步共用引用）
 - **對應編號與檔案**：
-  - `[課程]-[圖片 A]`：週一 光與阿卡西紀錄現場照 (`courses_a_akashic.jpg`)
-  - `[課程]-[圖片 B]`：週二 占星循環班現場照 (`courses_b_astrology.jpg`)
-  - `[課程]-[圖片 C]`：週三 偉特塔羅團練現場照 (`courses_c_waite.jpg`)
-  - `[課程]-[圖片 D]`：週四 七脈輪與靈氣現場照 (`courses_d_reiki.jpg`)
-  - `[課程]-[圖片 E]`：週五 托特塔羅循環班現場照 (`courses_e_thoth.jpg`)
-  - `[課程]-[圖片 F]`：週六 生命靈數循環班現場照 (`courses_f_numerology.jpg`)
-- **備註**：目前前端維護專屬手繪靈性 SVG 符號佔位符；取得現場照片後直接放進 `public/assets/` 即可等比自適應填滿。
+  - `[課程]-[圖片 A]`：週一 光與阿卡西紀錄現場照 (`courses_a_akashic_v1.webp`)
+  - `[課程]-[圖片 B]`：週二 占星循環班現場照 (`courses_b_astrology_v1.webp`)
+  - `[課程]-[圖片 C]`：週三 偉特塔羅團練現場照 (`courses_c_waite_v1.webp`)
+  - `[課程]-[圖片 D]`：週四 七脈輪與靈氣現場照 (`courses_d_reiki_v1.webp`)
+  - `[課程]-[圖片 E]`：週五 托特塔羅循環班現場照 (`courses_e_thoth_v1.webp`)
+  - `[課程]-[圖片 F]`：週六 生命靈數循環班現場照 (`courses_f_numerology_v1.webp`)
+- **備註**：已自 `demo_docs/raw-photos/courses/` 實拍原圖完成 16:10 取景裁切與 WebP Q85 壓縮（各圖約 19~86 KB），正式部署於 `public/assets/`。
 
 ---
 
-### [課程]-[圖片 G]：命理交流會實體現場活動照（1張，待業主提供真圖）
+### [課程]-[圖片 G]：命理交流會實體現場活動照（1張，已採用上線）
 
-- **版位用途**：活動課程頁面「實體交流會」專區左側照片插槽 (`courses_g_meetup.jpg`)
-- **規格建議**：方形或 4:3 橫式，學員排盤、切磋研討之溫馨互動照片。
+- **版位用途**：活動課程頁面「實體交流會」專區左側照片插槽 (`courses_g_meetup_v1.webp`)
+- **規格建議**：正方形 1:1（600×600 px），學員排盤、切磋研討之溫馨互動照片。已完成裁切與 WebP 轉換上架。
 
 ---
 
@@ -239,14 +239,15 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
-### [關於]-[圖片 D~K]：星靈織語夥伴形象照（8張，2欄 × 4排，待業主提供真圖）
+### [關於]-[圖片 D~L]：星靈織語夥伴形象照（9張，待業主提供真圖）
 
-- **版位用途**：關於我們頁面「星靈織語夥伴」8 位成員橫式名片圓框頭像（Canva 原始規格 269 × 269 px）
-- **排列順序（嚴格對應 Canva 原始 2*4 行）**：
+- **版位用途**：關於我們頁面「星靈織語夥伴」9 位成員橫式名片圓框頭像（Canva 原始規格 269 × 269 px）
+- **排列順序**：
   - 第 1 排：`[關於]-[圖片 D]` 達心 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 學長 (`about_e_member_xiaoyu.jpg`)
   - 第 2 排：`[關於]-[圖片 F]` 悠悠 (`about_f_member_youyou.jpg`) · `[關於]-[圖片 G]` 姆姆 (`about_g_member_mumu.jpg`)
   - 第 3 排：`[關於]-[圖片 H]` 凜月 (`about_h_member_linyue.jpg`) · `[關於]-[圖片 I]` 白白 (`about_i_member_baibai.jpg`)
   - 第 4 排：`[關於]-[圖片 J]` Migo (`about_j_member_migo.jpg`) · `[關於]-[圖片 K]` 古古 (`about_k_member_gugu.jpg`)
+  - 第 5 排：`[關於]-[圖片 L]` 黎夢 (`about_l_member_limeng_v1.webp` / `about_l_member_limeng.jpg`)
 - **備註**：取得照片後置於 `public/assets/` 即可立即自動上線。
 
 ---
@@ -302,15 +303,22 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `首頁-D` | 課程學習・筆記本筆 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 翻開手帳筆記本與筆星芒 | 808022016837652 | 採用上架 | 去背 + 轉 WebP | `home_d_open_book_v1.webp` |
 | `首頁-E` | 實體活動・三人社群 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈性夥伴圍坐聚會手繪星芒 | 1004066584927966 | 採用上架 | 去背 + 轉 WebP | `home_e_community_trio_v1.webp` |
 | `首頁-F` | 靈氣調頻・雙手能量 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手托起能量光芒手繪 | 244399405058717 | 採用上架 | 去背 + 轉 WebP | `home_f_reiki_hands_v1.webp` |
-| `首頁-G` | 週一 阿卡西課照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_g_course_akashic.jpg` |
-| `首頁-H` | 週二 占星班照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_h_course_astrology.jpg` |
-| `首頁-I` | 週三 偉特團練照 | 2026-09-30 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_i_course_waite.jpg` |
-| `首頁-J` | 週四 靈氣團練照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_j_course_reiki.jpg` |
-| `首頁-K` | 週五 托特塔羅照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_k_course_thoth.jpg` |
-| `首頁-L` | 週六 生命靈數照 | 2026-09-22 | 業主實拍 | 實體活動現場照片 | - | 待提供 | 壓縮優化 | `home_l_course_numerology.jpg` |
-| `首頁-M` | 以恩 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_m_reader_yien.jpg` |
-| `首頁-N` | 皮皮 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_n_reader_pipi.jpg` |
-| `首頁-O` | 達心 現場照 | 2026-09-22 | 業主實拍 | 實體解盤工作照片 | - | 待提供 | 居中裁切 | `home_o_reader_daxin.jpg` |
+| `首頁-G` | 週一 阿卡西課照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-A`) | `courses_a_akashic_v1.webp` |
+| `首頁-H` | 週二 占星班照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-B`) | `courses_b_astrology_v1.webp` |
+| `首頁-I` | 週三 偉特團練照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-C`) | `courses_c_waite_v1.webp` |
+| `首頁-J` | 週四 靈氣團練照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-D`) | `courses_d_reiki_v1.webp` |
+| `首頁-K` | 週五 托特塔羅照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-E`) | `courses_e_thoth_v1.webp` |
+| `首頁-L` | 週六 生命靈數照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 + 轉 WebP Q85 (共用 `課程-F`) | `courses_f_numerology_v1.webp` |
+| `課程-A` | 週一 阿卡西課照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (居中偏下) + WebP Q85 | `courses_a_akashic_v1.webp` |
+| `課程-B` | 週二 占星班照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (960×600) + WebP Q85 | `courses_b_astrology_v1.webp` |
+| `課程-C` | 週三 偉特團練照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (960×600) + WebP Q85 | `courses_c_waite_v1.webp` |
+| `課程-D` | 週四 靈氣團練照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (居中) + WebP Q85 | `courses_d_reiki_v1.webp` |
+| `課程-E` | 週五 托特塔羅照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (960×600) + WebP Q85 | `courses_e_thoth_v1.webp` |
+| `課程-F` | 週六 生命靈數照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 16:10 裁切 (居中皮皮) + WebP Q85 | `courses_f_numerology_v1.webp` |
+| `課程-G` | 命理交流會現場照 | 2026-10-02 | 業主實拍 | 實體活動現場照片 | - | 採用上架 | 正方形 1:1 裁切 (600×600) + WebP Q85 | `courses_g_meetup_v1.webp` |
+| `首頁-M` | 以恩 現場照 | 2026-10-02 | 業主指示 | 首頁命理師區塊已移除 | - | 取消 (DEC-030) | 集中於關於我們 | `(併入 關於-B)` |
+| `首頁-N` | 皮皮 現場照 | 2026-10-02 | 業主指示 | 首頁命理師區塊已移除 | - | 取消 (DEC-030) | 集中於關於我們 | `(併入 關於-C)` |
+| `首頁-O` | 達心 現場照 | 2026-10-02 | 業主指示 | 首頁命理師區塊已移除 | - | 取消 (DEC-030) | 集中於關於我們 | `(併入 關於-D)` |
 | `首頁-P` | 深靛藍星空背景 | 2026-09-22 | ComfyUI | 深靛藍暗紫星塵留白底圖 | | 待生成 | 壓至1MB內 | `home_p_bg_stars_v1.png` |
 | `服務-A` | 塔羅占卜 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 神秘紫金雙塔羅牌粉晶光芒 | 588777160954832 | 採用上架 | 去背 + 轉 WebP | `services_a_tarot_v1.webp` |
 | `服務-B` | 星盤解析 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 金色天體同心星盤水彩星雲 | 283886040671793 | 採用上架 | 精密圓形抗鋸齒去背 + WebP Q85 | `services_b_astrology_v1.webp` |
@@ -319,16 +327,17 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `服務-E` | 靈氣調頻 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托七脈輪彩虹能量光暈 | 950154034724132 | 採用上架 | 去背 + 轉 WebP | `services_e_reiki_v1.webp` |
 | `服務-F` | 阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂生命之樹金葉星塵水彩 | 877470136253271 | 採用上架 | 去背 + 轉 WebP | `services_f_akashic_v1.webp` |
 | `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
-| `關於-B` | 以恩 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_b_founder_yien.jpg` |
-| `關於-C` | 皮皮 創辦人形象照 | 2026-09-30 | 業主實拍 | 創辦人個人頭像 | - | 待提供 | 正圓裁切 | `about_c_founder_pipi.jpg` |
-| `關於-D` | 達心 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_d_member_daxin.jpg` |
-| `關於-E` | 學長 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_e_member_xiaoyu.jpg` |
-| `關於-F` | 悠悠 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_f_member_youyou.jpg` |
+| `關於-B` | 以恩 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_b_founder_yien_v1.webp` |
+| `關於-C` | 皮皮 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_c_founder_pipi_v1.webp` |
+| `關於-D` | 達心 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_d_member_daxin_v1.webp` |
+| `關於-E` | 學長 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | 縮放800px + 轉 WebP Q85 | `about_e_member_xiaoyu_v1.webp` |
+| `關於-F` | 悠悠 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_f_member_youyou_v1.webp` |
 | `關於-G` | 姆姆 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_g_member_mumu.jpg` |
-| `關於-H` | 凜月 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_h_member_linyue.jpg` |
-| `關於-I` | 白白 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_i_member_baibai.jpg` |
-| `關於-J` | Migo 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_j_member_migo.jpg` |
-| `關於-K` | 古古 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_k_member_gugu.jpg` |
+| `關於-H` | 凜月 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 (月月.png) | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_h_member_linyue_v1.webp` |
+| `關於-I` | 白白 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_i_member_baibai_v1.webp` |
+| `關於-J` | Migo 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_j_member_migo_v1.webp` |
+| `關於-K` | 古古 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_k_member_gugu_v1.webp` |
+| `關於-L` | 黎夢 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | 縮放800px + 轉 WebP Q85 | `about_l_member_limeng_v1.webp` |
 | `共用-A` | 內頁淺藍水彩底圖 | 2026-09-22 | ComfyUI | 淡天藍水彩暈染雲朵 | | 待生成 | 裁切調色 | `common_a_watercolor_bg_v1.png` |
 | `頁尾-A` | Line ID 條碼 | 2026-09-22 | 實體擷圖 | 官方 LINE 條碼 | - | 採用 | 安全留白 | `footer_qr_line.png` |
 | `頁尾-B` | Instagram 條碼 | 2026-09-22 | 實體擷圖 | 官方 IG 條碼 | - | 採用 | 安全留白 | `footer_qr_instagram.png` |

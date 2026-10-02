@@ -12,18 +12,19 @@ import CTAButton from '../components/CTAButton.astro';
 const imgAboutBrand = '';       // 關於-A：品牌故事氛圍插圖（星空下織光網絡，Canva 原版 w=447, h=517）
 
 // 【2. 創辦人形象照（2位）】
-const imgFounderYien = '';      // 關於-B：創辦人以恩形象照（Canva 原版 269×269 圓形頭像）
-const imgFounderPipi = '';      // 關於-C：創辦人皮皮形象照（Canva 原版 269×269 圓形頭像）
+const imgFounderYien = '/assets/about_b_founder_yien_v1.webp';      // 關於-B：創辦人以恩形象照（Canva 原版 269×269 圓形頭像）
+const imgFounderPipi = '/assets/about_c_founder_pipi_v1.webp';      // 關於-C：創辦人皮皮形象照（Canva 原版 269×269 圓形頭像）
 
-// 【3. 星靈織語夥伴形象照（8位，2欄 × 4排）】
-const imgMemberDaxin = '';      // 關於-D：達心形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberXiaoyu = '';     // 關於-E：學長形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberYouyou = '';     // 關於-F：悠悠形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberMumu = '';       // 關於-G：姆姆形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberLinyue = '';     // 關於-H：凜月形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberBaibai = '';     // 關於-I：白白形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberMigo = '';       // 關於-J：Migo 形象照（Canva 原版 269×269 圓形頭像）
-const imgMemberGugu = '';       // 關於-K：古古形象照（Canva 原版 269×269 圓形頭像）
+// 【3. 星靈織語夥伴形象照】
+const imgMemberDaxin = '/assets/about_d_member_daxin_v1.webp';      // 關於-D：達心形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberXiaoyu = '/assets/about_e_member_xiaoyu_v1.webp';    // 關於-E：學長形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberYouyou = '/assets/about_f_member_youyou_v1.webp';    // 關於-F：悠悠形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberMumu = '';       // 關於-G：姆姆形象照（待提供）
+const imgMemberLinyue = '/assets/about_h_member_linyue_v1.webp';    // 關於-H：凜月形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberBaibai = '/assets/about_i_member_baibai_v1.webp';    // 關於-I：白白形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberMigo = '/assets/about_j_member_migo_v1.webp';        // 關於-J：Migo 形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberGugu = '/assets/about_k_member_gugu_v1.webp';        // 關於-K：古古形象照（Canva 原版 269×269 圓形頭像）
+const imgMemberLimeng = '/assets/about_l_member_limeng_v1.webp';    // 關於-L：黎夢形象照（Canva 規格 269×269 圓形頭像）
 
 interface Person {
   name: string;
@@ -143,6 +144,19 @@ const members: Person[] = [
       '阿卡西紀錄解讀',
       '光的能量傳遞',
       'Henna圖騰繪製',
+    ],
+  },
+  // 第 5 排 (Row 5)
+  {
+    name: '黎夢',
+    code: '關於-L',
+    image: imgMemberLimeng,
+    skills: [
+      '塔羅占卜',
+      '金錢靈氣',
+      '奧剛金字塔',
+      '靈擺調頻',
+      '七脈輪療癒',
     ],
   },
 ];
@@ -340,7 +354,7 @@ const members: Person[] = [
           星靈織語夥伴
         </h3>
         <span class="text-xs px-2.5 py-0.5 rounded-full bg-[#80A9D4]/15 text-[#2E2A4F] dark:text-[#8FB8E8] border border-[#80A9D4]/25 dark:border-white/10 font-medium">
-          8 位專業夥伴 · 2 × 4
+          {members.length} 位專業夥伴
         </span>
       </div>
 
