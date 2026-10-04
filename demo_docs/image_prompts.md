@@ -243,9 +243,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 - **版位用途**：關於我們頁面「星靈織語夥伴」9 位成員橫式名片圓框頭像（Canva 原始規格 269 × 269 px）
 - **排列順序**：
-  - 第 1 排：`[關於]-[圖片 D]` 達心 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 學長 (`about_e_member_xiaoyu.jpg`)
+  - 第 1 排：`[關於]-[圖片 D]` 達達 (`about_d_member_daxin.jpg`) · `[關於]-[圖片 E]` 學長 (`about_e_member_xiaoyu.jpg`)
   - 第 2 排：`[關於]-[圖片 F]` 悠悠 (`about_f_member_youyou.jpg`) · `[關於]-[圖片 G]` 姆姆 (`about_g_member_mumu.jpg`)
-  - 第 3 排：`[關於]-[圖片 H]` 凜月 (`about_h_member_linyue.jpg`) · `[關於]-[圖片 I]` 白白 (`about_i_member_baibai.jpg`)
+  - 第 3 排：`[關於]-[圖片 H]` 月月 (`about_h_member_linyue.jpg`) · `[關於]-[圖片 I]` 白白 (`about_i_member_baibai.jpg`)
   - 第 4 排：`[關於]-[圖片 J]` Migo (`about_j_member_migo.jpg`) · `[關於]-[圖片 K]` 古古 (`about_k_member_gugu.jpg`)
   - 第 5 排：`[關於]-[圖片 L]` 黎夢 (`about_l_member_limeng_v1.webp` / `about_l_member_limeng.jpg`)
 - **備註**：取得照片後置於 `public/assets/` 即可立即自動上線。
@@ -329,11 +329,11 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_b_founder_yien_v1.webp` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_c_founder_pipi_v1.webp` |
-| `關於-D` | 達心 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_d_member_daxin_v1.webp` |
+| `關於-D` | 達達 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_d_member_daxin_v1.webp` |
 | `關於-E` | 學長 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | 縮放800px + 轉 WebP Q85 | `about_e_member_xiaoyu_v1.webp` |
 | `關於-F` | 悠悠 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_f_member_youyou_v1.webp` |
-| `關於-G` | 姆姆 夥伴形象照 | 2026-09-30 | 業主實拍 | 夥伴個人頭像 | - | 待提供 | 正圓裁切 | `about_g_member_mumu.jpg` |
-| `關於-H` | 凜月 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 (月月.png) | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_h_member_linyue_v1.webp` |
+| `關於-G` | 姆姆 夥伴形象照 | 2026-10-04 | 業主實拍 | 夥伴個人頭像 (姆姆.jpg) | - | 採用上架 | EXIF校正 + ROI 正中裁切 + 轉 WebP Q85 | `about_g_member_mumu_v1.webp` |
+| `關於-H` | 月月 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 (月月.png) | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_h_member_linyue_v1.webp` |
 | `關於-I` | 白白 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_i_member_baibai_v1.webp` |
 | `關於-J` | Migo 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_j_member_migo_v1.webp` |
 | `關於-K` | 古古 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_k_member_gugu_v1.webp` |

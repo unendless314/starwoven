@@ -37,10 +37,17 @@ TEAM_MAPPING = {
         "crop_box": (0, 0, 462, 462), # 頭部稍微靠上，保留髮頂
         "size": 600,
     },
+    "達達.png": {
+        "output": "about_d_member_daxin_v1.webp",
+        "code": "關於-D",
+        "name": "夥伴 達達",
+        "crop_box": (0, 0, 461, 461), # 保留上方頭髮
+        "size": 600,
+    },
     "達心.png": {
         "output": "about_d_member_daxin_v1.webp",
         "code": "關於-D",
-        "name": "夥伴 達心",
+        "name": "夥伴 達達",
         "crop_box": (0, 0, 461, 461), # 保留上方頭髮
         "size": 600,
     },
@@ -58,6 +65,13 @@ TEAM_MAPPING = {
         "crop_box": (245, 80, 525, 360), # 右上半部半身與持牌特寫
         "size": 600,
     },
+    "姆姆.jpg": {
+        "output": "about_g_member_mumu_v1.webp",
+        "code": "關於-G",
+        "name": "夥伴 姆姆",
+        "crop_box": (430, 100, 1830, 1500), # 正中特寫頭像與前爪，避開左下筆記本
+        "size": 600,
+    },
     "姆姆.png": {
         "output": "about_g_member_mumu_v1.webp",
         "code": "關於-G",
@@ -65,10 +79,17 @@ TEAM_MAPPING = {
         "crop_box": None,
         "size": 600,
     },
+    "月月.png": {
+        "output": "about_h_member_linyue_v1.webp",
+        "code": "關於-H",
+        "name": "夥伴 月月",
+        "crop_box": (135, 0, 445, 310), # 右上半部桌前解盤特寫
+        "size": 600,
+    },
     "凜月.png": {
         "output": "about_h_member_linyue_v1.webp",
         "code": "關於-H",
-        "name": "夥伴 凜月",
+        "name": "夥伴 月月",
         "crop_box": (135, 0, 445, 310), # 右上半部桌前解盤特寫
         "size": 600,
     },
