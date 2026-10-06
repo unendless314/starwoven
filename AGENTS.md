@@ -3,7 +3,7 @@
 ## Repo state
 
 This repo contains the **fully built Astro static site** (initial commit `000b083`),
-iterated through **DEC-001 ~ DEC-048** in `decisions.md`. The original Demo deadline
+iterated through **DEC-001 ~ DEC-049** in `decisions.md`. The original Demo deadline
 (2026-09-23) has passed; the site is feature-complete and under continuous content/UI
 iteration. This file was rewritten on 2026-10-06 — the previous version described a
 pre-build planning repo and is obsolete.
@@ -32,7 +32,8 @@ pre-build planning repo and is obsolete.
 ## Current site IA (actual routes)
 
 ```
-/             index.astro            Hero / 四大核心服務×4 / 固定循環課程×6 / 課程許願池 / 學員評價輪播
+/             index.astro            Hero / 四大核心服務×4 / 固定循環課程×6 / 許願池入口連結 / 學員評價輪播
+/wishlist     wishlist.astro         課程許願池（敲碗開課投票，試算表 SSOT；DEC-049 自首頁獨立為分頁）
 /about        about.astro            品牌故事 + 創辦人×2 + 星靈夥伴×9（真人頭像已上架）
 /services     services.astro         7 大服務雙欄大卡片（塔羅/星盤/靈數/八字/靈氣與光/阿卡西/毛孩溝通）
 /courses      courses.astro          固定課程（圖片常態外顯+手風琴詳情）/ 交流會 / 主題體驗工作坊
@@ -40,7 +41,7 @@ pre-build planning repo and is obsolete.
 /blog/[slug]  blog/[...slug].astro   文章內頁（Content Collections，src/content/blog/ 共 5 篇）
 ```
 
-- Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 星靈專欄 + 「預約諮詢」CTA
+- Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
   - `/reiki`, `/akashic` — pages deleted (DEC-020/023); content lives on as blog
     long-form posts; server-level 301s live in `nginx/starwoven.conf`.
@@ -100,7 +101,7 @@ pre-build planning repo and is obsolete.
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-049).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-050).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in

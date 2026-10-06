@@ -870,3 +870,22 @@
   7. **外部審查第二輪回饋修正（同批）**：
      - `spec.md` 第 4.4 節前提、第 8 節授權與第 9 節風險表第 3 項一併修正：素材為本機 ComfyUI 生成＋OpenAI Playground 個別素材（`服務-G`）＋業主實拍；OpenAI 商用條款結論仍待確認，第 9 節該項改標 ⚠️ 部分待確認。
      - `known_issues` 第 4 項 OG 圖檔名改為 `og-image.webp` 以符合全站 WebP 強制規範，並註明實作時需同步更新 `Layout.astro` 預設 `ogImage` 路徑。
+
+
+---
+
+## 2026-10-06 — DEC-049：「課程許願池」自首頁獨立為 `/wishlist` 分頁並加入主導航
+
+- **背景**：
+  - 業主反映首頁「課程許願池」區塊內容偏多，且未來許願課程可能持續增加，會使首頁過長。
+  - 業主指示：將許願池獨立為導航列分頁，首頁移除該區塊；經討論後首頁保留一個小型跳轉入口連結（位於原區塊位置），方便滑到該處、對許願池有興趣的訪客順手前往。
+- **決策與執行**：
+  1. **新增 `/wishlist` 路由（`src/pages/wishlist.astro`）**：
+     - 沿用內頁版型（預設淺色主題由 `Layout.astro` 自動生效），頁頭為金色「敲碗開課・集氣許願」膠囊＋h1「課程許願池」＋說明文案。
+     - 原首頁之 `wishlistCourses` SSR fallback 資料、卡片 Grid（`data-wish-grid`）、`<template id="wish-card-template">`、「我想許願」LINE 按鈕與免責說明全數遷入；`CourseWishlistCard.astro` 元件**零修改**（僅更新一處註解中的檔名參照），投票／同步／Demo 模式邏輯不受影響。
+  2. **首頁（`src/pages/index.astro`）精簡**：
+     - 移除許願池資料陣列、section 與 template（檔案由約 889 行降至 768 行）。
+     - 原位置改放小型膠囊入口連結：「✦ 想看看大家正在敲碗什麼課？前往「課程許願池」一起集氣 →」，導向 `/wishlist`，深淺主題皆適配。
+  3. **主導航（`src/components/Navbar.astro`）**：`navLinks` 新增 `{ name: '課程許願池', href: '/wishlist' }`（位於「活動與課程」與「星靈專欄」之間），桌面版與行動版選單自動同步；經估算 5 個項目在 1024px 斷點仍可單行容納，間距維持 `gap-6 xl:gap-8` 不變。
+  4. **文件同步**：更新 `AGENTS.md`（路由表、nav 清單、元件說明）、`demo_docs/spec.md` 第 3 節 IA、`known_issues/README.md` 第 3 項（首頁行數與拆分現況）、`demo_docs/content_inventory.md`（新增第 8 節登錄 `/wishlist` 全頁文案與 SSR fallback 課程資料，並於 1.7 登錄首頁入口連結文案；審查回饋後補登）。
+- **備註**：許願池 Google 試算表後端、`PUBLIC_WISHLIST_API_URL`、localStorage 計票 key 皆為 origin 層級，遷移頁面無需任何後端或環境變數調整；若日後需再拆分（如獨立子路由），屆時另記 DEC。

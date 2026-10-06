@@ -3,7 +3,7 @@
 // 課程許願池卡片（敲碗開課）v2
 // - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、分類、圖示、配色、票數、門檻與卡片排序
 // - 一票綁定「編號＋課名」：localStorage 記住的是課名，改名即新課、所有人可重新許願
-// - 動態卡片一律 clone 自 index.astro 的 <template id="wish-card-template">，與 SSR 卡片永遠同構
+// - 動態卡片一律 clone 自 wishlist.astro 的 <template id="wish-card-template">，與 SSR 卡片永遠同構
 // - 未設定 PUBLIC_WISHLIST_API_URL 時為純前端 Demo 模式（localStorage 模擬計票）
 // ==========================================
 interface Props {

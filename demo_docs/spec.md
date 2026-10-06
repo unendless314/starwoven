@@ -37,13 +37,14 @@
 ├── 關於我們 (about)
 ├── 命理服務 (services)
 ├── 活動與課程 (courses)    ← 未來接入報名功能，目前為靜態介紹
+├── 課程許願池 (wishlist)   ← DEC-049 新增；自首頁許願池區塊獨立為分頁（試算表 SSOT）
 ├── 星靈專欄 (blog)         ← DEC-019 新增；下含 /blog/[...slug] 文章內頁（Astro Content Collections）
 └── 預約諮詢 (CTA 按鈕 → LINE 官方帳號，另開新分頁)
 ```
 
 - 各分頁獨立路由（Astro `/pages`），非錨點捲動
 - 全站共用：導航列（含 RWD 漢堡選單）、Footer
-- 導航列項目：關於我們 / 命理服務 / 活動與課程 / 星靈專欄 / 預約諮詢（按鈕樣式）
+- 導航列項目：關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 / 預約諮詢（按鈕樣式）
 
 ## 4. 視覺規格
 
@@ -106,7 +107,7 @@ demo_docs/
 | SEO | 每頁獨立 title / description；OG 圖全站共用 Layout 預設 `/assets/og-image.jpg`（⚠️ 檔案尚未生成，見 `known_issues/README.md` 第 4 項） |
 | 建置 | `npm run build` 輸出 `dist/` |
 | 部署 | VPS 上以 nginx **vhost（server block）** 服務 `dist/`，路徑 `/var/www/starwoven`；同機其他既有站台不可受影響 |
-| 預留銜接點 | Google Analytics (GA4) 已完成正式導入（代碼 `G-27D79HXXF5`，由 `GoogleAnalytics.astro` 元件與 `PUBLIC_GA_ID` 環境變數注入 Layout.astro `<head>`，內建 LINE 預約與外連轉換追蹤）；全站右下角已掛載 LINE 浮動按鈕元件（連結用 LINE ID `@347fucvj`）；首頁「課程許願池」（敲碗開課）已上線，前端 `CourseWishlistCard.astro` + Google Apps Script Web App 寫入 Google 試算表（`PUBLIC_WISHLIST_API_URL` 環境變數注入，詳見 `course_wishlist_plan.md` 與 DEC-034）。 |
+| 預留銜接點 | Google Analytics (GA4) 已完成正式導入（代碼 `G-27D79HXXF5`，由 `GoogleAnalytics.astro` 元件與 `PUBLIC_GA_ID` 環境變數注入 Layout.astro `<head>`，內建 LINE 預約與外連轉換追蹤）；全站右下角已掛載 LINE 浮動按鈕元件（連結用 LINE ID `@347fucvj`）；「課程許願池」（敲碗開課）已上線，原設於首頁、DEC-049 起獨立為 `/wishlist` 分頁，前端 `CourseWishlistCard.astro` + Google Apps Script Web App 寫入 Google 試算表（`PUBLIC_WISHLIST_API_URL` 環境變數注入，詳見 `course_wishlist_plan.md` 與 DEC-034）。 |
 
 ## 7. 部署環境
 
