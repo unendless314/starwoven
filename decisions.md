@@ -788,3 +788,63 @@
   3. **頁面與文件連動**：
      - `src/pages/about.astro`：`imgMemberMumu` 正式指向 `/assets/about_g_member_mumu_v1.webp`，取代原有的 SVG 佔位符。
      - `demo_docs/image_prompts.md`：更新 `關於-G` 項目之生成紀錄表狀態為「採用上架」。
+
+
+---
+
+## 2026-10-05 — DEC-044：頁尾 YouTube 連結更新為官方專屬頻道
+
+- **背景**：
+  - 頁尾（Footer）之社群 Favicon 列表中，YouTube 圖示原採平台首頁佔位連結（`https://www.youtube.com`）。
+  - 業主提供星靈織語專屬官方 YouTube 頻道連結：`https://www.youtube.com/channel/UCw30YbjMjchOx-lAYGfQUoQ`。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - 將 YouTube 圖示連結替換為 `https://www.youtube.com/channel/UCw30YbjMjchOx-lAYGfQUoQ`。
+     - 無障礙標籤 `aria-label` 更新為「前往星靈織語 YouTube 官方頻道」，按鈕提示 `title` 更新為「YouTube: 星靈織語 Starwoven」。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 同步更新 0.2 節官方社群 Favicon 連結清單，將 YouTube 由平台首頁佔位標示為「官方頻道：星靈織語 Starwoven」。
+
+
+---
+
+## 2026-10-05 — DEC-045：頁尾 TikTok 連結更新為官方專屬帳號
+
+- **背景**：
+  - 頁尾（Footer）之社群 Favicon 列表中，TikTok 圖示原採平台首頁佔位連結（`https://www.tiktok.com`）。
+  - 業主提供星靈織語專屬官方 TikTok 帳號連結：`https://www.tiktok.com/@starwoven2026?_r=1&_t=ZS-9AH4nldT20a`（ID: `@starwoven2026`）。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - 將 TikTok 圖示連結替換為 `https://www.tiktok.com/@starwoven2026?_r=1&_t=ZS-9AH4nldT20a`。
+     - 無障礙標籤 `aria-label` 更新為「前往星靈織語 TikTok 官方帳號」，按鈕提示 `title` 更新為「TikTok: @starwoven2026」。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 同步更新 0.2 節官方社群 Favicon 連結清單，將 TikTok 標示為「官方帳號 `@starwoven2026`」。
+
+
+---
+
+## 2026-10-05 — DEC-046：「關於我們」創辦人與夥伴頭像支援純淨超連結跳轉
+
+- **背景**：
+  - 「關於我們」頁面（`/about`）中之創辦人與星靈夥伴頭像原先為純展示容器（`<div>`），點擊無跳轉動作。
+  - 業主期望能埋入每位老師個人的社群平台或主頁連結（如 IG 等），且風格要求簡約純粹、不添加小圖標等額外裝飾，僅需單純點擊圖片即可跳轉目標 URL。
+- **決策與執行**：
+  1. **資料結構擴充 (`src/pages/about.astro`)**：
+     - `Person` 介面新增可選欄位 `link?: string`。
+  2. **簡約純粹的頭像跳轉互動**：
+     - 若有填寫 `link`，大圓形頭像容器自動以 `<a>` 標籤渲染，配置 `target="_blank" rel="noopener noreferrer"` 與 `cursor-pointer`。
+     - 滑鼠懸停時微放大（`hover:scale-105`）與柔和陰影回饋，完全不疊加額外的小 IG 圖示或徽章，維持極簡美感。
+     - 若未填寫 `link`，維持標準 `<div>` 展示，無縫兼顧靈活性。
+
+
+---
+
+## 2026-10-05 — DEC-047：頁尾撤下 Threads 社群圖示（官方帳號遭封禁）
+
+- **背景**：
+  - 星靈織語官方 Threads 帳號遭平台封禁，業主指示頁尾（Footer）暫不顯示 Threads 圖示與連結，避免訪客點擊造成困惑。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - 移除 Threads 圖示與 `https://www.threads.net` 連結。
+     - 頁尾社群 Favicon 列表更新為 6 項：Instagram、Facebook、LINE、YouTube、TikTok、iOpen Mall。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 0.2 節官方社群 Favicon 清單中標記 Threads 已依指示撤下。

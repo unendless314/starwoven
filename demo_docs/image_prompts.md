@@ -165,9 +165,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ## 二、【命理服務】(Services / starwovenwrite)
 
-### [服務]-[圖片 A~F]：六大服務項目全彩手繪水彩插圖（6張，已採用上線）
+### [服務]-[圖片 A~G]：七大服務項目全彩手繪水彩插圖（7張，已採用上線）
 
-- **版位用途**：命理服務頁面（`/services`）6 大雙欄卡片頂部專屬插圖位置（`w-24 h-24 sm:w-28 sm:h-28` 容器，居中 `object-contain`）
+- **版位用途**：命理服務頁面（`/services`）7 大雙欄卡片頂部專屬插圖位置（`w-24 h-24 sm:w-28 sm:h-28` 容器，居中 `object-contain`）
 - **視覺重點**：溫暖靈性的全彩水彩插畫（Full Color Watercolor Illustration），完美呼應 Canva 原站視覺調性，去背透明 WebP 支援深淺色雙主題自適應。
 - **對應編號與檔案**：
   - `[服務]-[圖片 A]`：塔羅占卜插圖（神秘深紫金邊雙牌、星月與粉晶光芒）(`services_a_tarot_v1.webp`)
@@ -176,7 +176,29 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   - `[服務]-[圖片 D]`：八字命理插圖（東方水墨水彩太極陰陽兩儀、五行流轉氣韻）(`services_d_bazi_v1.webp`)
   - `[服務]-[圖片 E]`：靈氣調頻插圖（雙手溫柔托舉、七脈輪彩虹能量光球升騰）(`services_e_reiki_v1.webp`)
   - `[服務]-[圖片 F]`：阿卡西紀錄插圖（茂盛生命之樹、金葉星塵與靈魂源頭水彩）(`services_f_akashic_v1.webp`)
-- **備註**：已全部完成 ComfyUI 生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
+  - `[服務]-[圖片 G]`：毛孩溝通插圖（貓咪與小狗心靈對話、光之絲線與水彩星塵光芒）(`services_g_pet_v1.webp`)
+- **備註**：已全部完成生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
+
+---
+
+### [服務]-[圖片 G]：毛孩溝通（Pet Communication & Telepathy）
+
+- **版位用途**：命理服務頁面（`/services`）服務-G 卡片頂部專屬插圖位置（`services_g_pet_v1.webp`）
+- **視覺重點**：溫柔平靜的貓咪與小狗依偎相伴，心輪散發柔和光芒，光之絲線與金色星塵微光在彼此間流轉，傳遞跨越物種的心靈對話與療癒陪伴。純白底手繪水彩風格，邊緣細膩通透。
+- **色彩規格**：月光藍（`#8FB8E8`）、淡紫羅蘭、暖柔金光，去背透明 WebP 支援深淺色雙主題自適應。
+- **OpenAI Playground / DALL·E 3 提示詞（採用品）**：
+  ```text
+  A delicate and spiritual hand-drawn watercolor illustration symbolizing animal telepathic communication. In the center, a gentle cat and dog rest peacefully side by side with relaxed, joyful expressions. Soft, glowing golden threads of light and tiny stardust sparkles flow between them, representing intuitive soul dialogue. Hand-painted watercolor wash aesthetic with soft bleeding edges in pastel sky blue, lavender, and warm glowing gold. Minimalist, healing, and heartwarming mood. Isolated on a pure, clean solid white background with no shadows or ground plane, suitable for transparent background cutout.
+  ```
+- **ComfyUI / SDXL 標籤式提示詞（備用）**：
+  ```text
+  masterpiece, best quality, minimalist watercolor illustration of a cute cat and gentle dog resting peacefully together, animal communication and telepathy concept, glowing ethereal golden threads of light connecting from heart to heart, soft glowing aura, delicate pencil contour lines, beautiful watercolor wash texture, gentle bleeding edges, scattered tiny sparkling stardust particles, pastel sky blue, soft lavender and warm gold tones, zen healing aesthetic, isolated on pure solid white background, high contrast, clean edges, flat 2d vector feel, no text, no watermark
+  ```
+- **通用負面提示詞（Negative Prompt）**：
+  ```text
+  low quality, blurry, deformed, extra limbs, messy lines, realistic photo, 3d render, dark background, complex background, text, watermark, noise, jpeg artifacts, overexposed, dirty texture, modern tech, sad expression, aggressive animal
+  ```
+- **後製參數**：解析度 1024×1024 / U2Net 自動去背 / WebP Q85（上線體積 172.1 KB）
 
 ---
 
@@ -326,6 +348,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `服務-D` | 八字命理 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 東方水墨水彩太極陰陽五行流轉 | 753048023136719 | 採用上架 | 去背 + 轉 WebP | `services_d_bazi_v1.webp` |
 | `服務-E` | 靈氣調頻 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托七脈輪彩虹能量光暈 | 950154034724132 | 採用上架 | 去背 + 轉 WebP | `services_e_reiki_v1.webp` |
 | `服務-F` | 阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂生命之樹金葉星塵水彩 | 877470136253271 | 採用上架 | 去背 + 轉 WebP | `services_f_akashic_v1.webp` |
+| `服務-G` | 毛孩溝通 (v1) | 2026-10-05 | OpenAI Playground | 貓狗毛孩心靈溝通光之絲線 | - | 採用上架 | 去背 + 轉 WebP | `services_g_pet_v1.webp` |
 | `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_b_founder_yien_v1.webp` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_c_founder_pipi_v1.webp` |

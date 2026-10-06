@@ -13,6 +13,7 @@ const imgNumerology = '/assets/services_c_numerology_v1.webp';  // 服務-C：�
 const imgBazi = '/assets/services_d_bazi_v1.webp';        // 服務-D：八字命理手繪插圖
 const imgReiki = '/assets/services_e_reiki_v1.webp';       // 服務-E：靈氣調頻手繪插圖
 const imgAkashic = '/assets/services_f_akashic_v1.webp';     // 服務-F：阿卡西紀錄手繪插圖
+const imgPet = '/assets/services_g_pet_v1.webp';             // 服務-G：毛孩溝通手繪插圖
 
 interface PractitionerGroup {
   system?: string;         // 例如：'偉特塔羅'、'托特塔羅'
@@ -23,7 +24,7 @@ interface ServiceCard {
   code: string;
   title: string;
   image: string;
-  iconType: 'tarot' | 'astrology' | 'numerology' | 'bazi' | 'reiki' | 'akashic';
+  iconType: 'tarot' | 'astrology' | 'numerology' | 'bazi' | 'reiki' | 'akashic' | 'pet';
   modalities: string[];    // 預約形式：通話語音 / 面對面 / 離線文字
   prices: {
     label: string;
@@ -125,12 +126,26 @@ const services: ServiceCard[] = [
       { names: ['以恩', '古古'] },
     ],
   },
+  {
+    code: '服務-G',
+    title: '毛孩溝通',
+    image: imgPet,
+    iconType: 'pet',
+    modalities: ['通話語音溝通', '面對面溝通（工作室）'],
+    prices: [
+      { label: '通話語音 / 面對面溝通', rate: '30分鐘 1300元 · 60分鐘 2500元' },
+    ],
+    roleTitle: '可預約毛孩溝通師',
+    practitioners: [
+      { names: ['以恩', '古古'] },
+    ],
+  },
 ];
 ---
 
 <Layout
   title="命理服務 — 星靈織語 Starwoven"
-  description="選擇適合你的命理陪伴，讓每一次探索都能更靠近真實的自己。提供星盤解析、塔羅占卜、生命靈數、八字命理、靈氣與光調頻與阿卡西紀錄解讀。"
+  description="選擇適合你的命理陪伴，讓每一次探索都能更靠近真實的自己。提供星盤解析、塔羅占卜、生命靈數、八字命理、靈氣與光調頻、阿卡西紀錄解讀與毛孩溝通。"
   theme="auto"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
@@ -221,6 +236,17 @@ const services: ServiceCard[] = [
                         <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
                         <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
                         <path d="M10 7h6M10 11h4" stroke-linecap="round" />
+                      </svg>
+                    )}
+
+                    {/* 毛孩溝通圖示 */}
+                    {item.iconType === 'pet' && (
+                      <svg class="w-10 h-10 text-[#80A9D4] dark:text-[#8FB8E8] mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 13.5c-2.4 0-4.5 1.5-4.5 3.3 0 1.6 1.9 2.7 4.5 2.7s4.5-1.1 4.5-2.7c0-1.8-2.1-3.3-4.5-3.3z" />
+                        <circle cx="7" cy="10.5" r="1.5" />
+                        <circle cx="10.3" cy="7.8" r="1.5" />
+                        <circle cx="13.7" cy="7.8" r="1.5" />
+                        <circle cx="17" cy="10.5" r="1.5" />
                       </svg>
                     )}
 

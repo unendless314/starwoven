@@ -32,6 +32,7 @@ interface Person {
   role?: string;
   image: string;
   skills: string[];
+  link?: string; // 個人超連結 URL（點擊圓形頭像直接開新分頁跳轉，無額外圖標）
 }
 
 const founders: Person[] = [
@@ -40,6 +41,7 @@ const founders: Person[] = [
     code: '關於-B',
     role: '星靈織語創辦人',
     image: imgFounderYien,
+    link: 'https://www.instagram.com/chinwag.days/',
     skills: [
       '塔羅占卜',
       '星盤解析',
@@ -55,6 +57,7 @@ const founders: Person[] = [
     code: '關於-C',
     role: '星靈織語創辦人',
     image: imgFounderPipi,
+    link: 'https://www.instagram.com/gverv9408',
     skills: [
       '占星教學',
       '師資培訓',
@@ -75,12 +78,14 @@ const members: Person[] = [
     name: '達達',
     code: '關於-D',
     image: imgMemberDaxin,
+    link: 'https://www.instagram.com/b8628628/',
     skills: ['八字命理', '塔羅占卜', '八字基礎教學', '臼井靈氣'],
   },
   {
     name: '學長',
     code: '關於-E',
     image: imgMemberXiaoyu,
+    link: 'https://www.instagram.com/granvillechen',
     skills: [
       '星盤解析',
       '塔羅占卜',
@@ -97,12 +102,14 @@ const members: Person[] = [
     name: '悠悠',
     code: '關於-F',
     image: imgMemberYouyou,
+    link: 'https://www.instagram.com/staryue.cosmic/',
     skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
   },
   {
     name: '姆姆',
     code: '關於-G',
     image: imgMemberMumu,
+    link: 'https://www.instagram.com/mumu__0429/',
     skills: ['塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
   },
   // 第 3 排 (Row 3)
@@ -110,12 +117,14 @@ const members: Person[] = [
     name: '月月',
     code: '關於-H',
     image: imgMemberLinyue,
+    link: 'https://www.instagram.com/linyue_tarot/',
     skills: ['偉特塔羅占卜', '占星練習生', '臼井靈氣', '光的傳遞', '阿卡西紀錄解讀'],
   },
   {
     name: '白白',
     code: '關於-I',
     image: imgMemberBaibai,
+    link: 'https://www.instagram.com/se_mibai/',
     skills: [
       '文字療癒',
       '脈輪檢測',
@@ -131,12 +140,14 @@ const members: Person[] = [
     name: 'Migo',
     code: '關於-J',
     image: imgMemberMigo,
+    link: 'https://www.instagram.com/migoword/',
     skills: ['水晶手串設計', '七脈輪練習生', '臼井靈氣', '阿卡西紀錄解讀'],
   },
   {
     name: '古古',
     code: '關於-K',
     image: imgMemberGugu,
+    link: 'https://www.instagram.com/light_of_ancient_angle/',
     skills: [
       '水晶飾品設計',
       '礦訊解讀',
@@ -152,6 +163,7 @@ const members: Person[] = [
     name: '黎夢',
     code: '關於-L',
     image: imgMemberLimeng,
+    link: 'https://www.instagram.com/tarot.kawaii.magic/',
     skills: [
       '塔羅占卜',
       '金錢靈氣',
@@ -296,27 +308,57 @@ const members: Person[] = [
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {founders.map((founder) => (
           <div class="group relative bg-white/85 dark:bg-white/10 backdrop-blur-xs p-6 sm:p-7 rounded-3xl border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-md hover:border-[#80A9D4]/45 dark:hover:border-white/30 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
-            <!-- 左側：269×269 規格大圓形頭像留圖槽 -->
-            <div class="relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#80A9D4]/40 dark:border-white/25 shadow-md bg-gradient-to-br from-[#80A9D4]/25 via-[#B3C8E8]/15 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex items-center justify-center">
-              {founder.image ? (
-                <img
-                  src={founder.image}
-                  alt={`${founder.name} 創辦人形象照`}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                  <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
-                    {founder.name[0]}
+            <!-- 左側：269×269 規格大圓形頭像（若有 link 則為可點擊超連結，無額外圖標） -->
+            {founder.link ? (
+              <a
+                href={founder.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`前往 ${founder.name} 的個人連結`}
+                title={`${founder.name}（點擊前往個人連結）`}
+                class="group/avatar relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#80A9D4]/40 dark:border-white/25 shadow-md bg-gradient-to-br from-[#80A9D4]/25 via-[#B3C8E8]/15 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-[#80A9D4] hover:shadow-lg"
+              >
+                {founder.image ? (
+                  <img
+                    src={founder.image}
+                    alt={`${founder.name} 創辦人形象照`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover/avatar:scale-105"
+                  />
+                ) : (
+                  <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                    <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                      {founder.name[0]}
+                    </div>
+                    <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/85 text-white dark:bg-black/75 dark:text-[#8FB8E8] border border-white/20">
+                      {founder.code}
+                    </span>
                   </div>
-                  <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/85 text-white dark:bg-black/75 dark:text-[#8FB8E8] border border-white/20">
-                    {founder.code}
-                  </span>
-                </div>
-              )}
-              <!-- 狀態小光點 -->
-              <span class="absolute top-1 right-2 text-amber-400 text-xs">✦</span>
-            </div>
+                )}
+                <!-- 狀態小光點 -->
+                <span class="absolute top-1 right-2 text-amber-400 text-xs">✦</span>
+              </a>
+            ) : (
+              <div class="relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-[#80A9D4]/40 dark:border-white/25 shadow-md bg-gradient-to-br from-[#80A9D4]/25 via-[#B3C8E8]/15 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex items-center justify-center">
+                {founder.image ? (
+                  <img
+                    src={founder.image}
+                    alt={`${founder.name} 創辦人形象照`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                    <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                      {founder.name[0]}
+                    </div>
+                    <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/85 text-white dark:bg-black/75 dark:text-[#8FB8E8] border border-white/20">
+                      {founder.code}
+                    </span>
+                  </div>
+                )}
+                <!-- 狀態小光點 -->
+                <span class="absolute top-1 right-2 text-amber-400 text-xs">✦</span>
+              </div>
+            )}
 
             <!-- 右側：創辦人名稱、身分與技能 -->
             <div class="flex-1 text-center sm:text-left min-w-0">
@@ -363,26 +405,55 @@ const members: Person[] = [
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {members.map((member) => (
           <div class="group relative bg-white/80 dark:bg-white/10 backdrop-blur-xs p-5 sm:p-6 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs hover:shadow-md hover:border-[#80A9D4]/40 dark:hover:border-white/25 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
-            <!-- 左側：269×269 規格大圓形頭像留圖槽 -->
-            <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-[#80A9D4]/20 via-[#B3C8E8]/10 to-[#2E2A4F]/15 dark:from-[#2E2A4F]/50 dark:to-[#1F1938]/70 flex items-center justify-center">
-              {member.image ? (
-                <img
-                  src={member.image}
-                  alt={`${member.name} 形象照`}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                  <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
-                    {member.name[0]}
+            <!-- 左側：269×269 規格大圓形頭像（若有 link 則為可點擊超連結，無額外圖標） -->
+            {member.link ? (
+              <a
+                href={member.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`前往 ${member.name} 的個人連結`}
+                title={`${member.name}（點擊前往個人連結）`}
+                class="group/avatar relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-[#80A9D4]/20 via-[#B3C8E8]/10 to-[#2E2A4F]/15 dark:from-[#2E2A4F]/50 dark:to-[#1F1938]/70 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-[#80A9D4] hover:shadow-md"
+              >
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={`${member.name} 形象照`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover/avatar:scale-105"
+                  />
+                ) : (
+                  <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                    <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                      {member.name[0]}
+                    </div>
+                    <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/80 text-white dark:bg-black/70 dark:text-[#8FB8E8] border border-white/20">
+                      {member.code}
+                    </span>
                   </div>
-                  <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/80 text-white dark:bg-black/70 dark:text-[#8FB8E8] border border-white/20">
-                    {member.code}
-                  </span>
-                </div>
-              )}
-              <span class="absolute top-1 right-1 text-[#80A9D4] text-[10px]">✧</span>
-            </div>
+                )}
+                <span class="absolute top-1 right-1 text-[#80A9D4] text-[10px]">✧</span>
+              </a>
+            ) : (
+              <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-[#80A9D4]/20 via-[#B3C8E8]/10 to-[#2E2A4F]/15 dark:from-[#2E2A4F]/50 dark:to-[#1F1938]/70 flex items-center justify-center">
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={`${member.name} 形象照`}
+                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
+                    <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shadow-xs mb-1">
+                      {member.name[0]}
+                    </div>
+                    <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-[#2E2A4F]/80 text-white dark:bg-black/70 dark:text-[#8FB8E8] border border-white/20">
+                      {member.code}
+                    </span>
+                  </div>
+                )}
+                <span class="absolute top-1 right-1 text-[#80A9D4] text-[10px]">✧</span>
+              </div>
+            )}
 
             <!-- 右側：夥伴名稱與專長清單 -->
             <div class="flex-1 text-center sm:text-left min-w-0">

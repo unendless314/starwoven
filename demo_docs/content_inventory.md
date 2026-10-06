@@ -22,9 +22,11 @@
 - **官方社群 Favicon 連結（頁尾右側）**：
   - **Instagram**：`https://www.instagram.com/starwoven2026`（真實帳號 `starwoven2026`）
   - **Facebook**：`https://www.facebook.com`（平台首頁預留佔位）
-  - **Threads**：`https://www.threads.net`（平台首頁預留佔位）
+  - **Threads**：已依業主指示撤下（官方帳號封禁，頁尾暫不顯示圖示）
   - **LINE 官方帳號**：`https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url`（真實帳號 `@347fucvj`）
-  - **YouTube**：`https://www.youtube.com`（平台首頁預留佔位）
+  - **YouTube**：`https://www.youtube.com/channel/UCw30YbjMjchOx-lAYGfQUoQ`（官方頻道：星靈織語 Starwoven）
+  - **TikTok**：`https://www.tiktok.com/@starwoven2026?_r=1&_t=ZS-9AH4nldT20a`（官方帳號 `@starwoven2026`）
+  - **星靈選物（iOpen Mall 賣場）**：`https://mall.iopenmall.tw/117352/`（7-11 線上賣場）
 - **實體工作室地址（點擊直通 Google Map 導航按鈕）**：
   - 地址：高雄市前金區河南二路140號2樓（近捷運前金站一號出口）
   - Google Maps 導航 URL：`https://maps.app.goo.gl/ZZuc8QC1tHn13GxE6`
@@ -99,7 +101,7 @@
 
 ### 1.6 頁尾工作室資訊（Footer）
 - **實體地址**：高雄市前金區河南二路140號2樓（近捷運前金站一號出口），點擊直通 Google Map 導航。
-- **社群圖標列**：Instagram（真實帳號）、Facebook（平台首頁）、Threads（平台首頁）、LINE（官方帳號）、YouTube（平台首頁）。
+- **社群圖標列**：Instagram（官方帳號）、Facebook（平台首頁）、LINE（官方帳號）、YouTube（官方頻道）、TikTok（官方帳號）、星靈選物（iOpen Mall 賣場）。（註：Threads 原列於此，已依業主指示因帳號封禁撤下）
 
 ---
 
@@ -218,28 +220,39 @@
 
 ### 4.2 創辦人（2位）
 1. **以恩**（星靈織語創辦人）
+   - 個人社群：`https://www.instagram.com/chinwag.days/`
    - 專業領域：塔羅占卜、星盤解析、臼井靈氣、光的傳遞、毛孩溝通、阿卡西紀錄解讀、偉特塔羅占卜培訓
 2. **皮皮**（星靈織語創辦人）
+   - 個人社群：`https://www.instagram.com/gverv9408`
    - 專業領域：占星教學、師資培訓、占星課程循環班導師、占星解盤、生命靈數、阿卡西解讀、臼井靈氣、光的傳遞
 
 ### 4.3 團隊成員（8位）
 1. **達達**
+   - 個人社群：`https://www.instagram.com/b8628628/`
    - 專業領域：八字命理、塔羅占卜、八字基礎教學、臼井靈氣
 2. **悠悠**
+   - 個人社群：`https://www.instagram.com/staryue.cosmic/`
    - 專業領域：塔羅占卜、占星練習生、臼井靈氣、光的傳遞、阿卡西紀錄解讀
 3. **學長**
+   - 個人社群：`https://www.instagram.com/granvillechen`
    - 專業領域：星盤解析、塔羅占卜、占星教學、托特塔羅教學、臼井靈氣、阿育吠陀靈氣、亢達里尼靈氣、靈氣引導教學
 4. **姆姆**
+   - 個人社群：`https://www.instagram.com/mumu__0429/`
    - 專業領域：塔羅占卜、占星練習生、臼井靈氣、光的傳遞、阿卡西紀錄解讀
 5. **Migo**
+   - 個人社群：`https://www.instagram.com/migoword/`
    - 專業領域：水晶手串設計、七脈輪練習生、臼井靈氣、阿卡西紀錄解讀
 6. **月月**
+   - 個人社群：`https://www.instagram.com/linyue_tarot/`
    - 專業領域：偉特塔羅占卜、占星練習生、臼井靈氣、光的傳遞、阿卡西紀錄解讀
 7. **白白**
+   - 個人社群：`https://www.instagram.com/se_mibai/`
    - 專業領域：文字療癒、脈輪檢測、光的能量、占星練習生、臼井靈氣、光的傳遞、阿卡西紀錄解讀
 8. **古古**
+   - 個人社群：`https://www.instagram.com/light_of_ancient_angle/`
    - 專業領域：水晶飾品設計、礦訊解讀、火漆章占卜、阿卡西紀錄解讀、光的能量傳遞、Henna圖騰繪製、毛孩溝通
 9. **黎夢**
+   - 個人社群：`https://www.instagram.com/tarot.kawaii.magic/`
    - 專業領域：塔羅占卜、金錢靈氣、奧剛金字塔、靈擺調頻、七脈輪療癒
 
 ---
