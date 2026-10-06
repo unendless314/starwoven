@@ -162,6 +162,8 @@ interface Workshop {
   image: string;
   badge: string;
   icon: string;
+  highlights?: string[];
+  suitableFor?: string;
 }
 
 // 主題體驗課程資料
@@ -175,6 +177,8 @@ const workshops: Workshop[] = [
     duration: '12小時精華',
     fee: 'NT$15,000元 / 人',
     description: '採用客觀系統與模型，運用邏輯思維，清晰分析人生選項中的優劣勢。擺脫模糊猜測，以易理象數為指引，在重大人生節點做出精準決策。',
+    highlights: ['易理象數與客觀模型推演', '生活決策與事業選項優劣勢分析', '擺脫模糊猜測的精準邏輯指引'],
+    suitableFor: '面臨重大人生抉擇、渴望有系統學習理性決策心法的學員。',
     image: imgWorkshopMeihua,
     badge: '專業研修',
     icon: 'meihua',
@@ -189,6 +193,8 @@ const workshops: Workshop[] = [
     fee: 'NT$1,000元 / 人',
     feeNote: '4 小時扎實精華體驗與個人盤面初探',
     description: '透過生辰八字的天干地支與五行能量，帶領學員初步認識個人先天命盤結構、五行喜忌與性格特質，從古老東方命理智慧中找到安頓身心與自我理解的清晰視角。',
+    highlights: ['天干地支與五行生剋本質', '個人先天命盤結構與五行喜忌初探', '古老智慧中找到自我安頓的視角'],
+    suitableFor: '想透過生辰八字了解自我性格、完全零基礎的初學者。',
     image: imgWorkshopBazi,
     badge: '命理體驗',
     icon: 'bazi',
@@ -203,6 +209,8 @@ const workshops: Workshop[] = [
     fee: '一堂 600元 · 兩堂 1,200元 / 人',
     feeNote: '兩天具備不同主題，可自由選擇單堂報名（600元）或兩堂合報（1,200元）',
     description: '深入淺出解讀紫微斗數命盤，探索十二宮位與星曜互動玄機。兩日分別規劃不同深度主題，從認識本命格局到洞察人際互動與吉凶契機，全面掌握東方帝王之學的解析邏輯。',
+    highlights: ['深入淺出解讀命盤十二宮位架構', '十四主星性格原型與星曜互動玄機', '掌握東方帝王之學的系統化解析思維'],
+    suitableFor: '對紫微斗數有興趣、想有系統掌握個人命運藍圖的朋友。',
     schedule: [
       {
         day: '11/08（日）Day 1',
@@ -574,143 +582,221 @@ const workshops: Workshop[] = [
         <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50">採單場預約報名制</span>
       </div>
 
-      <!-- 主題體驗課程卡片 Grid (2 欄海報式寬幅大卡片) -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-        {workshops.map((w) => (
-          <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
-            
-            <div>
-              <!-- 卡片頂部照片插槽 (大面積海報留圖區) -->
-              <div class="relative w-full aspect-16/9 rounded-2xl overflow-hidden mb-6 bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10">
+      <!-- 主題體驗課程列表 (9:16 短影音交錯式排版 + 詳細介紹手風琴收折) -->
+      <div class="flex flex-col gap-6 sm:gap-10" id="workshops-accordion-container">
+        {workshops.map((w, index) => {
+          const isReversed = index % 2 === 1;
+          return (
+            <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-4 sm:p-7 lg:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl transition-all duration-300">
+              <div class:list={[
+                'flex items-start gap-3.5 sm:gap-8 lg:gap-12',
+                isReversed ? 'flex-row-reverse' : 'flex-row'
+              ]}>
                 
-                <!-- 標籤 Badge -->
-                <span class="absolute top-3 left-3 z-10 text-xs font-bold px-3 py-1 rounded-full bg-[#2E2A4F] text-white dark:bg-white dark:text-[#2E2A4F] shadow-md tracking-wider">
-                  {w.badge}
-                </span>
-
-                <!-- 價格標籤（右下角） -->
-                <span class="absolute bottom-3 right-3 z-10 text-xs sm:text-sm font-bold px-3.5 py-1.5 rounded-full bg-white/95 dark:bg-[#1E1B3A]/95 text-[#2E2A4F] dark:text-[#FCE794] shadow-md border border-[#80A9D4]/20">
-                  {w.fee}
-                </span>
-
-                <!-- 留圖空間（Workshop Photo Placeholder） -->
-                {w.image ? (
-                  <img
-                    src={w.image}
-                    alt={`${w.title} 海報`}
-                    class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                ) : (
-                  <div class="w-full h-full border-2 border-dashed border-[#80A9D4]/40 dark:border-white/20 flex flex-col items-center justify-center p-6 text-center group-hover:border-[#2E2A4F]/40 dark:group-hover:border-white/40 transition-colors">
+                <!-- 9:16 直式短影音佔位（IG Reels / YouTube Shorts 規格） -->
+                <div class="w-[40%] sm:w-[32%] md:w-[28%] lg:w-[24%] max-w-[280px] shrink-0 self-start lg:sticky lg:top-24">
+                  <div class="relative w-full aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#1E1B3A] via-[#2D264E] to-[#120F24] border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md group-hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-2.5 sm:p-4 text-white">
                     
-                    {/* 工作坊特色圖示 */}
-                    {w.icon === 'bazi' && (
-                      <svg class="w-12 h-12 text-[#80A9D4] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="M12 3a4.5 4.5 0 0 0 0 9 4.5 4.5 0 0 1 0 9" />
-                        <circle cx="12" cy="7.5" r="1" fill="currentColor" />
-                        <circle cx="12" cy="16.5" r="1" />
-                      </svg>
-                    )}
-                    {w.icon === 'ziwei' && (
-                      <svg class="w-12 h-12 text-[#9880B8] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z" />
-                        <circle cx="12" cy="12" r="2" fill="currentColor" />
-                      </svg>
-                    )}
-                    {w.icon === 'meihua' && (
-                      <svg class="w-12 h-12 text-[#58A497] dark:text-[#8FB8E8] mb-1.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <circle cx="12" cy="12" r="9" />
-                        <path d="M7 8h10M7 11h10M7 14h4m2 0h4M7 17h10" stroke-linecap="round" />
-                      </svg>
+                    {/* 背景：若有自訂海報/影片截圖 */}
+                    {w.image && (
+                      <img
+                        src={w.image}
+                        alt={`${w.title} 影片截圖`}
+                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                      />
                     )}
 
-                    <span class="text-xs font-semibold text-[#2E2A4F]/70 dark:text-white/70 tracking-wider">
-                      {w.code}・工作坊情境海報
-                    </span>
-                  </div>
-                )}
-              </div>
+                    {/* 微光暗部漸層疊層，確保字體清晰 */}
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/60 pointer-events-none"></div>
 
-              <!-- 課程標題與副標 -->
-              <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide mb-1 transition-colors">
-                {w.title}
-              </h3>
-              <p class="text-sm font-medium text-[#80A9D4] dark:text-[#8FB8E8] mb-4">
-                {w.subtitle}
-              </p>
+                    <!-- 頂部資訊列：Badge + Shorts/Reels 標籤 -->
+                    <div class="relative z-10 flex items-center justify-between gap-1">
+                      <span class="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20 tracking-wider">
+                        {w.badge}
+                      </span>
+                      <span class="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur-md text-white font-medium shadow-xs">
+                        <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                          <polygon points="5 3 19 12 5 21 5 3" />
+                        </svg>
+                        <span class="hidden sm:inline">Shorts</span>
+                      </span>
+                    </div>
 
-              <!-- 時段與講師標籤 -->
-              <div class="flex flex-wrap items-center gap-3 text-xs sm:text-sm font-medium text-[#3A3A3A]/80 dark:text-white/80 mb-4">
-                <span class="inline-flex items-center gap-1 bg-[#EAF3F8] dark:bg-white/10 px-2.5 py-1 rounded-md">
-                  <svg class="w-3.5 h-3.5 text-[#80A9D4] dark:text-[#8FB8E8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 6v6l4 2" />
-                  </svg>
-                  {w.duration}
-                </span>
-                <span class="inline-flex items-center gap-1 bg-[#EAF3F8] dark:bg-white/10 px-2.5 py-1 rounded-md">
-                  <svg class="w-3.5 h-3.5 text-[#80A9D4] dark:text-[#8FB8E8]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                    <circle cx="8.5" cy="7" r="4" />
-                  </svg>
-                  {w.teacher}
-                </span>
-              </div>
-
-              <!-- 溫暖介紹文案 -->
-              <p class="text-sm sm:text-base text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed mb-4">
-                {w.description}
-              </p>
-
-              {/* 兩日課綱區塊（若有兩日獨立主題） */}
-              {w.schedule && (
-                <div class="mt-2 mb-4 p-3.5 rounded-2xl bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/20 dark:border-white/10 space-y-2">
-                  <div class="text-xs font-semibold text-[#80A9D4] dark:text-[#8FB8E8] flex items-center gap-1.5">
-                    <span class="w-1.5 h-1.5 rounded-full bg-[#80A9D4] dark:bg-[#8FB8E8]"></span>
-                    兩日課綱主題規劃（雙主題）
-                  </div>
-                  <div class="space-y-1.5 text-xs">
-                    {w.schedule.map((s) => (
-                      <div class="flex items-start gap-2 bg-white/70 dark:bg-white/5 p-2 rounded-xl border border-[#80A9D4]/15 dark:border-white/5">
-                        <span class="font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shrink-0">{s.day}</span>
-                        <span class="text-[#3A3A3A]/40 dark:text-white/40">｜</span>
-                        <span class="text-[#3A3A3A]/85 dark:text-white/85">{s.topic}</span>
+                    <!-- 中央：影音佔位視覺標記（無假點擊暗示，真實標示籌備中） -->
+                    <div class="relative z-10 flex flex-col items-center justify-center my-auto py-2 text-center select-none">
+                      <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center text-white/90 shadow-md">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current translate-x-0.5 opacity-80" viewBox="0 0 24 24">
+                          <polygon points="6 4 20 12 6 20 6 4" />
+                        </svg>
                       </div>
-                    ))}
+                      <span class="text-[10px] sm:text-xs text-white/85 font-medium tracking-wider mt-2">
+                        短影音籌備中
+                      </span>
+                      <span class="text-[9px] sm:text-[10px] text-white/50 hidden sm:inline mt-0.5">
+                        9:16 Reels / Shorts
+                      </span>
+                    </div>
+
+                    <!-- 底部：課程代碼與標籤 -->
+                    <div class="relative z-10 flex items-center justify-between text-[10px] sm:text-xs text-white/75 border-t border-white/10 pt-1.5">
+                      <span class="font-semibold truncate">{w.code}</span>
+                      <span class="text-[9px] sm:text-[10px] text-white/50 shrink-0">Reels</span>
+                    </div>
+
                   </div>
                 </div>
-              )}
 
-              {w.feeNote && (
-                <p class="text-xs text-[#3A3A3A]/70 dark:text-white/60 bg-[#EAF3F8]/50 dark:bg-white/5 p-2 rounded-lg mb-4">
-                  ＊ {w.feeNote}
-                </p>
-              )}
-            </div>
+                <!-- 課程詳細文案說明區塊 -->
+                <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch py-1 sm:py-2">
+                  <div>
+                    <!-- 標題與副標 -->
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1">
+                      <span class="text-xs font-bold text-[#80A9D4] dark:text-[#8FB8E8] tracking-wider">
+                        {w.code}
+                      </span>
+                      <span class="text-xs text-gray-400 dark:text-gray-500 hidden sm:inline">•</span>
+                      <p class="text-xs sm:text-sm font-medium text-[#80A9D4] dark:text-[#8FB8E8] truncate sm:whitespace-normal">
+                        {w.subtitle}
+                      </p>
+                    </div>
 
-            <!-- 卡片底部報名按鈕 -->
-            <div class="pt-5 border-t border-gray-100 dark:border-white/10 flex items-center justify-between">
-              <div>
-                <span class="text-xs text-[#3A3A3A]/60 dark:text-white/50 block">報名費用</span>
-                <span class="text-lg font-bold font-huninn text-[#2E2A4F] dark:text-[#FCE794]">{w.fee}</span>
+                    <h3 class="text-base sm:text-2xl lg:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide mb-2 transition-colors break-words">
+                      {w.title}
+                    </h3>
+
+                    <!-- 時段與講師標籤（加上寬度約束與折行防溢出） -->
+                    <div class="flex flex-wrap items-center gap-1.5 sm:gap-2.5 text-xs sm:text-sm font-medium text-[#3A3A3A]/80 dark:text-white/80 mb-2 sm:mb-3">
+                      <span class="inline-flex items-center gap-1 max-w-full min-w-0 bg-[#EAF3F8] dark:bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs leading-snug">
+                        <svg class="w-3 h-3 text-[#80A9D4] dark:text-[#8FB8E8] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <circle cx="12" cy="12" r="10" />
+                          <path d="M12 6v6l4 2" />
+                        </svg>
+                        <span class="break-words line-clamp-2 sm:line-clamp-none min-w-0">{w.duration}</span>
+                      </span>
+                      <span class="inline-flex items-center gap-1 max-w-full min-w-0 bg-[#EAF3F8] dark:bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md text-[11px] sm:text-xs shrink-0">
+                        <svg class="w-3 h-3 text-[#80A9D4] dark:text-[#8FB8E8] shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="8.5" cy="7" r="4" />
+                        </svg>
+                        <span class="truncate">{w.teacher}</span>
+                      </span>
+                    </div>
+
+                    <!-- 手風琴收折面板（詳細介紹文案、學習重點、兩日課綱、適合對象） -->
+                    <details
+                      name="workshops-details"
+                      class="course-accordion group/details mt-2 rounded-2xl border border-[#80A9D4]/20 dark:border-white/10 bg-[#F6F9FB]/60 dark:bg-white/[0.02] overflow-hidden transition-all duration-300"
+                      open={index === 0}
+                    >
+                      <!-- 收折切換按鈕摘要列（防止窄螢幕文案破版溢出） -->
+                      <summary class="list-none flex items-center justify-between gap-1 px-3 sm:px-4 py-2 sm:py-2.5 cursor-pointer select-none text-xs sm:text-sm font-semibold text-[#80A9D4] dark:text-[#8FB8E8] hover:bg-[#80A9D4]/10 dark:hover:bg-white/5 transition-colors focus:outline-none">
+                        <span class="flex items-center gap-1.5 min-w-0">
+                          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                            <polyline points="14 2 14 8 20 8" />
+                            <line x1="16" y1="13" x2="8" y2="13" />
+                            <line x1="16" y1="17" x2="8" y2="17" />
+                          </svg>
+                          <span class="group-open/details:hidden text-[11px] sm:text-xs md:text-sm truncate">點擊展開詳細介紹與學習重點</span>
+                          <span class="hidden group-open/details:inline text-[11px] sm:text-xs md:text-sm truncate">收合詳細介紹</span>
+                        </span>
+
+                        <div class="w-5 h-5 sm:w-6 sm:h-6 shrink-0 rounded-full bg-[#80A9D4]/15 dark:bg-white/10 flex items-center justify-center text-[#80A9D4] dark:text-[#8FB8E8] group-open/details:rotate-180 transition-transform duration-300">
+                          <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="6 9 12 15 18 9" />
+                          </svg>
+                        </div>
+                      </summary>
+
+                      <!-- 收折內容主體 -->
+                      <div class="course-content p-3.5 sm:p-5 border-t border-[#80A9D4]/15 dark:border-white/10 space-y-3 sm:space-y-3.5">
+                        <!-- 課程簡介 Overview -->
+                        <div>
+                          <div class="text-[11px] font-bold text-[#80A9D4] dark:text-[#8FB8E8] mb-1 tracking-wider">
+                            ✦ 課程簡介 Overview
+                          </div>
+                          <p class="text-xs sm:text-sm text-[#3A3A3A]/85 dark:text-white/85 leading-relaxed font-light">
+                            {w.description}
+                          </p>
+                        </div>
+
+                        <!-- 學習重點 Highlights -->
+                        {w.highlights && (
+                          <div>
+                            <div class="text-[11px] font-bold text-[#80A9D4] dark:text-[#8FB8E8] mb-1 tracking-wider">
+                              ✦ 學習重點 Highlights
+                            </div>
+                            <ul class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs text-[#3A3A3A]/80 dark:text-white/80">
+                              {w.highlights.map((h) => (
+                                <li class="flex items-center gap-1.5 sm:gap-2">
+                                  <span class="w-1.5 h-1.5 rounded-full bg-[#80A9D4] dark:bg-[#8FB8E8] shrink-0"></span>
+                                  <span>{h}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <!-- 兩日課綱區塊（若有兩日獨立主題） -->
+                        {w.schedule && (
+                          <div>
+                            <div class="text-[11px] font-bold text-[#80A9D4] dark:text-[#8FB8E8] mb-1.5 tracking-wider">
+                              ✦ 課綱主題規劃 Schedule
+                            </div>
+                            <div class="space-y-1.5 text-xs">
+                              {w.schedule.map((s) => (
+                                <div class="flex items-start gap-1.5 bg-white/70 dark:bg-white/5 p-1.5 sm:p-2 rounded-xl border border-[#80A9D4]/15 dark:border-white/5">
+                                  <span class="font-bold text-[#2E2A4F] dark:text-[#8FB8E8] shrink-0">{s.day}</span>
+                                  <span class="text-[#3A3A3A]/40 dark:text-white/40">｜</span>
+                                  <span class="text-[#3A3A3A]/85 dark:text-white/85">{s.topic}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        <!-- 適合對象 -->
+                        {w.suitableFor && (
+                          <div class="text-xs text-[#3A3A3A]/75 dark:text-white/70 bg-white/70 dark:bg-white/5 p-2 sm:p-2.5 rounded-xl border border-[#80A9D4]/15 dark:border-white/5">
+                            <span class="font-bold text-[#2E2A4F] dark:text-white">適合對象：</span>
+                            <span>{w.suitableFor}</span>
+                          </div>
+                        )}
+
+                        {w.feeNote && (
+                          <p class="text-[11px] sm:text-xs text-[#3A3A3A]/70 dark:text-white/60 bg-[#EAF3F8]/50 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg">
+                            ＊ {w.feeNote}
+                          </p>
+                        )}
+                      </div>
+                    </details>
+                  </div>
+
+                  <!-- 底部報名按鈕與費用列 -->
+                  <div class="pt-3 sm:pt-4 border-t border-[#80A9D4]/15 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 mt-3">
+                    <div>
+                      <span class="text-[10px] sm:text-xs text-[#3A3A3A]/60 dark:text-white/50 block">報名費用</span>
+                      <span class="text-sm sm:text-lg font-bold font-huninn text-[#2E2A4F] dark:text-[#FCE794]">{w.fee}</span>
+                    </div>
+                    <a
+                      href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="inline-flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-semibold text-white bg-[#80A9D4] hover:bg-[#6b97c4] px-3.5 sm:px-4 py-1.5 sm:py-2 rounded-full shadow-xs hover:shadow transition-all active:scale-95"
+                    >
+                      <span>私訊報名</span>
+                      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+
+                </div>
+
               </div>
-              <a
-                href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white bg-[#80A9D4] hover:bg-[#6b97c4] px-4 py-2 rounded-full shadow-xs hover:shadow transition-all active:scale-95"
-              >
-                <span>私訊報名</span>
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </a>
             </div>
-
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
 
@@ -751,19 +837,21 @@ const workshops: Workshop[] = [
   <script is:inline>
     // 手風琴互斥模式（Accordion Mode）相容性保證腳本
     document.addEventListener('DOMContentLoaded', () => {
-      const container = document.getElementById('courses-accordion-container');
-      if (!container) return;
+      ['courses-accordion-container', 'workshops-accordion-container'].forEach((containerId) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
 
-      const accordions = container.querySelectorAll('details.course-accordion');
-      accordions.forEach((acc) => {
-        acc.addEventListener('toggle', () => {
-          if (acc.open) {
-            accordions.forEach((other) => {
-              if (other !== acc && other.open) {
-                other.open = false;
-              }
-            });
-          }
+        const accordions = container.querySelectorAll('details.course-accordion');
+        accordions.forEach((acc) => {
+          acc.addEventListener('toggle', () => {
+            if (acc.open) {
+              accordions.forEach((other) => {
+                if (other !== acc && other.open) {
+                  other.open = false;
+                }
+              });
+            }
+          });
         });
       });
     });
