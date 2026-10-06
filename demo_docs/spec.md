@@ -1,6 +1,7 @@
 # 星靈織語 Starwoven — 網站重建 Demo 規格書（Spec）
 
-> 狀態：草稿 v0.1（2026-09-21）
+> 狀態：v0.2（2026-10-06）— Demo 已交付（原期限 2026-09-23），本文件保留為**基準規格**。
+> 其後所有範疇／IA／內容變更以 `decisions.md`（DEC-001 起）為準，文案以 `content_inventory.md` 為準。
 > 目的：將 Canva 架設的現行網站重建為可自架於 VPS 的獨立網站，Demo 階段以純靜態網站為目標，向團隊證明可行性。
 
 ---
@@ -27,19 +28,22 @@
 
 ## 3. 網站資訊架構（IA）
 
+> ⚠️ 以下為**現況**（2026-10-06 同步）。與原規劃的差異：
+> - 原 `/reiki`（靈氣與脈輪）、`/akashic`（光與阿卡西紀錄）兩個獨立路由已**移除**，內容深度移植為星靈專欄長文（DEC-019/020），舊網址由 nginx server 層 301 轉址至對應文章（DEC-023，`nginx/starwoven.conf`）。
+> - `/shop`（星靈選物）確認**不建置**（DEC-004），購物需求由頁尾 iOpen Mall 連結承接。
+
 ```
 首頁 (index)
-├── 命理服務 (services)
-├── 活動課程 (courses)      ← 未來接入報名功能，Demo 為靜態介紹
 ├── 關於我們 (about)
-├── 靈氣與脈輪 (reiki)
-├── 光與阿卡西紀錄 (akashic)
+├── 命理服務 (services)
+├── 活動與課程 (courses)    ← 未來接入報名功能，目前為靜態介紹
+├── 星靈專欄 (blog)         ← DEC-019 新增；下含 /blog/[...slug] 文章內頁（Astro Content Collections）
 └── 預約諮詢 (CTA 按鈕 → LINE 官方帳號，另開新分頁)
 ```
 
 - 各分頁獨立路由（Astro `/pages`），非錨點捲動
 - 全站共用：導航列（含 RWD 漢堡選單）、Footer
-- 導航列項目：首頁 / 命理服務 / 活動課程 / 關於我們 / 靈氣與脈輪 / 光與阿卡西紀錄 / 預約諮詢（按鈕樣式）
+- 導航列項目：關於我們 / 命理服務 / 活動與課程 / 星靈專欄 / 預約諮詢（按鈕樣式）
 
 ## 4. 視覺規格
 
@@ -63,7 +67,7 @@
 
 ### 4.4 素材清單
 
-> **重要前提：手上沒有 Canva 原始素材檔，全部素材需以 Stable Diffusion 重新生成。**
+> **重要前提：手上沒有 Canva 原始素材檔，素材需重新製作。** 實際執行方式：以本機 ComfyUI（Z-Image-Turbo）生成為主、個別素材使用 OpenAI Playground（如 `服務-G`），課程與團隊照片為業主實拍（見 `image_prompts.md` 生成紀錄）。
 > AI 生圖是**人機協作流程**：提示詞由人類參考 `image_prompts.md` 調整、生圖與挑圖由人類執行，成品需人工修圖（去背、調色、構圖裁切）。**不可期待全自動產出，也不可直接使用未經人工檢視的圖。**
 
 | 素材 | 來源 | 備註 |
@@ -87,8 +91,8 @@ demo_docs/
 
 ## 5. 內容需求
 
-- 各頁文案以原站為準逐頁抄錄（文案已統整於 `content_inventory.md` 作為 Single Source of Truth）
-- 注意：原站「關於我們」頁面內容幾乎空白，需向業主確認是否尚未建置
+- ✅ 各頁文案已從原站發布快取完整萃取，統整於 `content_inventory.md`（DEC-001），作為全站文案 Single Source of Truth
+- 「關於我們」原站空白為 Canva 顯示限制；真實團隊資料已萃取並上架：創辦人 2 位（以恩、皮皮）＋星靈夥伴 9 位（DEC-001，第 9 位黎夢於 DEC-029 新增），成員實拍頭像已陸續上架（DEC-043 等）
 - 文案整理時統一標點（全形）與用語
 
 ## 6. 技術規格
@@ -99,7 +103,7 @@ demo_docs/
 | 樣式 | 原生 CSS 或 Tailwind（依開發者習慣；建議 Tailwind 加速切版） |
 | 元件 | Layout.astro（head/meta/footer）、Navbar.astro、CTAButton.astro |
 | 語系 | 繁體中文，`lang="zh-Hant"` |
-| SEO | 每頁獨立 title / description / OG 圖 |
+| SEO | 每頁獨立 title / description；OG 圖全站共用 Layout 預設 `/assets/og-image.jpg`（⚠️ 檔案尚未生成，見 `known_issues/README.md` 第 4 項） |
 | 建置 | `npm run build` 輸出 `dist/` |
 | 部署 | VPS 上以 nginx **vhost（server block）** 服務 `dist/`，路徑 `/var/www/starwoven`；同機其他既有站台不可受影響 |
 | 預留銜接點 | Google Analytics (GA4) 已完成正式導入（代碼 `G-27D79HXXF5`，由 `GoogleAnalytics.astro` 元件與 `PUBLIC_GA_ID` 環境變數注入 Layout.astro `<head>`，內建 LINE 預約與外連轉換追蹤）；全站右下角已掛載 LINE 浮動按鈕元件（連結用 LINE ID `@347fucvj`）；首頁「課程許願池」（敲碗開課）已上線，前端 `CourseWishlistCard.astro` + Google Apps Script Web App 寫入 Google 試算表（`PUBLIC_WISHLIST_API_URL` 環境變數注入，詳見 `course_wishlist_plan.md` 與 DEC-034）。 |
@@ -110,29 +114,31 @@ demo_docs/
 - **網域**：已確定為 `starwoven.xyz`（DNS A record 指向 `<YOUR_VPS_IP>`）
 - **同機現況**：nginx 已在運作，新站以 vhost 加入（`server_name starwoven.xyz www.starwoven.xyz;`），切勿動到現有其他站台設定
 - **HTTPS**：certbot + Let's Encrypt，auto-renew
-- 詳細決策紀錄見 [phase0_answers](C:\Users\user\Documents\starwoven\demo_docs\phase0_answers.md) 與 [decisions](C:\Users\user\Documents\starwoven\decisions.md)
+- 詳細決策紀錄見 [phase0_answers](phase0_answers.md) 與 [decisions](../decisions.md)
 
 ## 8. 授權與法律
 
-- 本專案素材全數由 Stable Diffusion 生成，**無 Canva 原始素材**，不涉及 Canva 平台素材的移出授權問題
-- 仍須注意所用 SD 模型與服務的授權條款（商用允許與否、是否需署名）
+- 本專案素材為 AI 生成（以本機 ComfyUI / Z-Image-Turbo 為主，個別素材使用 OpenAI Playground，如 `服務-G` 毛孩溝通）＋業主實拍照片，**無 Canva 原始素材**，不涉及 Canva 平台素材的移出授權問題
+- 仍須注意所用模型與服務的授權條款（商用允許與否、是否需署名）；**OpenAI 服務條款之商用結論尚未確認**，需確認後記錄於 `decisions.md`（見 `development_roadmap.md` Phase 2 勾選項）
 - 所有生成素材的提示詞、種子與採用紀錄統一留存於 `image_prompts.md` 的「生成紀錄」表
-- 月亮 Logo 等識別性素材經人工修圖/重繪後，建議由團隊作為品牌資產留存管理
+- 月亮 Logo 等識別性素材（現為 inline SVG）若日後改為點陣／向量品牌素材，建議由團隊作為品牌資產留存管理
 
 ## 9. 風險與待確認事項
 
+> 2026-10-06 更新：除第 3 項（授權確認）外，各項均已結案或有定案，僅保留紀錄。
+
 | # | 事項 | 說明 |
 |---|---|---|
-| 1 | ~~預約諮詢連結~~ ✅ 已確認（LINE `@347fucvj`） | |
-| 2 | 關於我們頁內容 | 原站空白為 Canva 顯示限制；10 人（創辦人 2 + 成員 8）資料待人工提供，先以佔位版型 |
-| 3 | 素材授權 | 生圖改用 **OpenAI 雲端服務**（非本機 SD），其服務條款的商用結論需記錄於 `decisions.md` |
-| 4 | ~~VPS 規格~~ ✅ 已確認（Hetzner，詳見第 7 節） | |
-| 5 | 未來課程/商城 | 不屬本 Demo（已於 DEC-004 決策確認移除 `/shop`，維持 6 大核心頁面；購買管道由頁尾承接） |
-| 6 | 期限 | **2026-09-23（後天）**；多 agent 平行開發，瓶頸在 review 與溝通效率 |
+| 1 | 預約諮詢連結 | ✅ 已確認（LINE `@347fucvj`） |
+| 2 | 關於我們頁內容 | ✅ 已解決（DEC-001 從發布快取萃取真實資料；成員後增至 9 位，DEC-029；實拍頭像陸續上架，DEC-043） |
+| 3 | 素材授權 | ⚠️ **部分待確認**：素材以本機 ComfyUI（Z-Image-Turbo）＋業主實拍為主，但個別素材曾用 OpenAI Playground（`服務-G`，見 `image_prompts.md` 生成紀錄）；OpenAI 服務條款之商用結論仍需確認並記錄於 `decisions.md` |
+| 4 | VPS 規格 | ✅ 已確認（Hetzner，詳見第 7 節） |
+| 5 | 未來課程/商城 | ✅ 不屬本 Demo（DEC-004 確認移除 `/shop`，維持核心頁面；購買管道由頁尾 iOpen Mall 承接） |
+| 6 | 期限 | ✅ Demo 已交付（原期限 2026-09-23）；後續迭代見 `decisions.md` |
 
 ---
 
 ## 交付文件
 
-- [spec](C:\Users\user\Documents\starwoven\demo_docs\spec.md)
-- [development_roadmap](C:\Users\user\Documents\starwoven\demo_docs\development_roadmap.md)
+- [spec](spec.md)
+- [development_roadmap](development_roadmap.md)

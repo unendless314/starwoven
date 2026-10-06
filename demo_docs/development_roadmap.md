@@ -1,8 +1,9 @@
 # 星靈織語 Demo — 建議開發順序
 
-> 狀態：v0.2（2026-09-21，Phase 0 已完成，見 [phase0_answers.md](phase0_answers.md)）
+> 狀態：v0.3（2026-10-06）— **Phase 0–4 已完成、Demo 已交付**；Phase 5 部署配置檔已備妥（`nginx/starwoven.conf`），實際 VPS 部署與 Phase 6 簡報尚未執行（依業主安排）。
+> 後續迭代不再走 Phase 制，統一記錄於 `decisions.md`（DEC-001 起）。
 > 配套文件：[spec.md](spec.md)、[phase0_answers.md](phase0_answers.md)、[image_prompts.md](image_prompts.md)
-> **專案期限：2026-09-23**。採多 agent 平行開發策略，瓶頸在 review 與溝通效率。
+> ~~專案期限：2026-09-23~~（已達成）。採多 agent 平行開發策略，瓶頸在 review 與溝通效率。
 > 設計給接手的 AI 或開發者依序執行，每個 Phase 完成後建議跑一次檢查點再往下。
 
 ---
@@ -34,57 +35,59 @@
 
 ## Phase 2：素材準備（1～2 天，人機協作，可與 Phase 1 平行）
 
-> ⚠️ 本階段為**人工為主、AI 為輔**：生圖（OpenAI 雲端批量生成）、挑圖、修圖由人類執行，AI 助手只協助起草原案與提示詞。團隊已確認接受 AI 重製視覺與原站的差異（見 phase0_answers.md 問題 3）。
-> 注意：`image_prompts.md` 的模板原為 SD 風格，使用前需改寫為自然語言版給 OpenAI 生圖（模板內容仍具參考價值）。`sd-assets/` 資料夾現作「AI 生成圖存放區」通用用途。
+> ⚠️ 本階段為**人工為主、AI 為輔**：生圖、挑圖、修圖由人類執行，AI 助手只協助起草原案與提示詞。團隊已確認接受 AI 重製視覺與原站的差異（見 phase0_answers.md 問題 3）。
+> 實際執行差異（2026-10-06 註記）：生圖以**本機 ComfyUI（Z-Image-Turbo）**為主、輔以**業主實拍照片**；**個別素材曾使用 OpenAI Playground**（如 `服務-G` 毛孩溝通插圖，見 `image_prompts.md`「六、生成紀錄」），OpenAI 服務條款之商用授權結論仍需確認。
 
-- [ ] 人類操作 OpenAI 生圖，參考 `image_prompts.md` 生成並挑選：
-  - [ ] 月亮＋星星 Logo 草稿 → 人工修圖/去背定稿
-  - [ ] 首頁星空背景（中央留白版本）
-  - [ ] 內頁水彩雲朵底圖（多張風格統一的變體）
-  - [ ] 手繪游標等插圖 → 人工去背
-- [ ] 採用圖放 `demo_docs/sd-assets/`，淘汰圖放 `demo_docs/sd-assets/rejected/`
-- [ ] 逐筆填寫 `image_prompts.md` 的「生成紀錄」（提示詞、日期、結果、後製方式）
-- [ ] 確認 OpenAI 生圖服務條款的商用結論，記錄於 `decisions.md`
-- [ ] 所有圖檔壓縮（目標：首頁總圖檔 < 1 MB），正式版放網站 `public/assets/`
+- [x] 人類操作生圖，參考 `image_prompts.md` 生成並挑選：
+  - [x] 月亮＋星星 Logo — 以 inline SVG（月亮＋四芒星）定稿於 `Navbar.astro`，無位圖素材
+  - [x] 首頁星空背景 — 未採用位圖，由 CSS 漸層與光斑粒子渲染（`index.astro` 保留 `imgHeroBg` 介面）
+  - [x] 內頁水彩雲朵底圖 — 同上，以 CSS 漸層與光斑呈現
+  - [ ] 手繪游標等插圖 — 版面未使用，未生成
+- [x] 採用圖放 `demo_docs/sd-assets/`，淘汰圖放 `demo_docs/sd-assets/rejected/`
+- [x] 逐筆填寫 `image_prompts.md` 的「生成紀錄」（提示詞、日期、結果、後製方式）
+- [ ] 生圖授權結論 — 生圖以本機 ComfyUI 為主，但曾使用 OpenAI Playground（`服務-G` 毛孩溝通）；OpenAI 服務條款之商用結論仍需確認並記錄於 `decisions.md`
+- [x] 所有圖檔壓縮為 WebP Q85（首頁總圖檔遠低於 1 MB），正式版放網站 `public/assets/`
 
 **檢查點**：所有素材就位於 `sd-assets/` 且都有生成紀錄；**人工逐一檢視過**，沒有未經人眼的圖上站。
 
 ## Phase 3：首頁切版（1 天）
 
-- [ ] Hero 區：星空背景 + Logo + 標語「每一段相遇，都是一場心靈的編織。」+ 副標
-- [ ] 導航列置頂（可半透明毛玻璃效果，貼近原站）
-- [ ] 頁尾（footer）：版權、聯絡方式
-- [ ] 響應式檢查（手機 / 平板 / 桌面）
+- [x] Hero 區：星空背景（CSS 漸層＋光斑粒子）+ Logo + 標語「每一段相遇，都是一場心靈的編織。」+ 副標
+- [x] 導航列置頂（sticky＋半透明毛玻璃效果，貼近原站）
+- [x] 頁尾（footer）：聯絡我們、地址導航按鈕、社群圖示列、版權（後續多次改版見 DEC-007/009/025/044/045/047）
+- [x] 響應式檢查（手機 / 平板 / 桌面）
 
-**檢查點**：首頁與原站設計規劃（依據 `content_inventory.md` 與規格）並排比對，風格一致。
+**檢查點**：首頁與原站設計規劃（依據 `content_inventory.md` 與規格）並排比對，風格一致。✅ 已達成（首頁另陸續擴充四大服務卡片、固定循環課程、課程許願池與學員評價輪播，見 DEC-006/030/034）。
 
 ## Phase 4：內頁切版（1.5～2 天）
 
 依內容多寡排序進行：
 
-1. 命理服務（`services`）— 服務項目卡片 / 價格 / 預約按鈕
-2. 活動課程（`courses`）— 課程列表卡片（預留未來報名按鈕位置）
-3. 靈氣與脈輪（`reiki`）
-4. 光與阿卡西紀錄（`akashic`）
-5. 關於我們（`about`）— ⚠️ 內容待 Phase 0 確認，最後做
+1. 命理服務（`services`）✅ — 7 大服務雙欄大卡片／價格／師資名單／預約按鈕（DEC-011，毛孩溝通於 DEC-042 上架）
+2. 活動課程（`courses`）✅ — 固定課程（圖片常態外顯＋手風琴詳情）、交流會、主題體驗工作坊（DEC-014/015/016/028）
+3. 靈氣與脈輪（`reiki`）✅ — **改以星靈專欄長文承接**（DEC-019/020），獨立路由移除並設 301（DEC-023）
+4. 光與阿卡西紀錄（`akashic`）✅ — 同上，移植為專欄長文
+5. 關於我們（`about`）✅ — 真實團隊資料（DEC-001）＋ Canva 2×4 成員網格對齊（DEC-017）＋ 實拍頭像上架（DEC-043）
 
-- [ ] 每頁套用淺藍水彩風格底圖
-- [ ] 每頁獨立 title / description / OG 圖
-- [ ] 各頁與原站截圖比對
+- [x] 每頁套用淺藍水彩風格底色（以 CSS 漸層實現；另支援全站深淺色切換，DEC-008）
+- [x] 每頁獨立 title / description
+- [ ] 每頁獨立 OG 圖 — 目前各頁未傳 `ogImage`，共用 Layout 預設 `/assets/og-image.jpg` 且**該檔案尚未存在**（見 `known_issues/README.md` 第 4 項）
+- [x] 各頁與原站截圖比對（DEC-011/014/017 等多次對齊 Canva 原版）
 
-**檢查點**：6 頁全部完成，導航、CTA、響應式皆正常。
+**檢查點**：核心頁面全部完成，導航、CTA、響應式皆正常。✅ 已達成；IA 後續調整（新增 `/blog`、移除 `/reiki` `/akashic`）見 `decisions.md`。
 
 ## Phase 5：建置與部署（0.5～1 天）
 
 > 環境已確認（見 phase0_answers.md 問題 5）：Hetzner Ubuntu arm64、nginx 已在運作。
+> 2026-10-06 註記：vhost 配置檔已落地版控（`nginx/starwoven.conf`，含 `/reiki` `/akashic` 301、靜態快取、gzip、安全標頭，DEC-023）；**實際上傳 VPS、DNS 與憑證作業尚未執行**，待業主安排。
 
-- [ ] `npm run build` 產生 `dist/`，本機用 `npx serve dist` 驗證正式輸出無誤
-- [ ] 以 **vhost（server block）** 加入新站，root 指向 `/var/www/starwoven`；**切勿改動現有既有站台**，注意 port 衝突
-- [ ] 上傳 `dist/` 至 VPS（rsync / scp）
-- [ ] DNS A record（`@` 與 `www`）指向 `<YOUR_VPS_IP>`，Nginx server block 設定 `server_name starwoven.xyz www.starwoven.xyz`
-- [ ] 以 certbot + Let's Encrypt 啟用 HTTPS（auto-renew）
+- [x] `npm run build` 產生 `dist/`，本機驗證正式輸出無誤
+- [x] 以 **vhost（server block）** 撰寫新站配置（root 指向 `/var/www/starwoven`，`server_name starwoven.xyz www.starwoven.xyz`），配置檔收錄於 `nginx/starwoven.conf`；**切勿改動現有既有站台**，注意 port 衝突
+- [ ] 上傳 `dist/` 至 VPS（rsync / scp）⬅ 待執行
+- [ ] DNS A record（`@` 與 `www`）指向 `<YOUR_VPS_IP>` ⬅ 待執行（網域已定案 `starwoven.xyz`，DEC-003）
+- [ ] 以 certbot + Let's Encrypt 啟用 HTTPS（auto-renew）⬅ 待執行
 - [x] 導入 Google Analytics 4 (GA4: `G-27D79HXXF5`) 與核心轉換事件埋點（LINE 預約、地圖導航、iOpen Mall 賣場）
-- [ ] 手機實機測試一次
+- [ ] 手機實機測試一次 ⬅ 待執行
 
 **檢查點**：團隊可由外部網址（或 IP）瀏覽完整網站。
 
@@ -123,5 +126,5 @@
 
 ## 交付文件
 
-- [spec](C:\Users\user\Documents\starwoven\demo_docs\spec.md)
-- [development_roadmap](C:\Users\user\Documents\starwoven\demo_docs\development_roadmap.md)
+- [spec](spec.md)
+- [development_roadmap](development_roadmap.md)

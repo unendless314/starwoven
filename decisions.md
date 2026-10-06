@@ -848,3 +848,25 @@
      - 頁尾社群 Favicon 列表更新為 6 項：Instagram、Facebook、LINE、YouTube、TikTok、iOpen Mall。
   2. **文案總清單 (`demo_docs/content_inventory.md`)**：
      - 0.2 節官方社群 Favicon 清單中標記 Threads 已依指示撤下。
+
+
+---
+
+## 2026-10-06 — DEC-048：專案文件全面同步（AGENTS.md 重寫、spec.md 與 development_roadmap.md 對齊現況）
+
+- **背景**：
+  - `AGENTS.md` 仍停留在建置前狀態（宣稱無 `package.json`、無原始碼、無 git 歷史、IA 為 6 大頂層路由、`decisions.md` 不存在等），與實際 repo 嚴重落差，會誤導接手 agent。
+  - `demo_docs/spec.md` 的 IA（第 3 節）、內容需求（第 5 節）與風險表（第 9 節）部分過時；`demo_docs/development_roadmap.md` 多數 Phase checkbox 未隨實際進度更新。
+- **決策與執行**：
+  1. **重寫 `AGENTS.md`**：更新為建置後現況——實際路由表（含 `/blog`，並註明 `/reiki`、`/akashic`、`/shop` 已移除及對應 DEC 編號）、共用元件清單、深淺色雙主題與硬編碼色碼慣例、素材管線（`scripts/process_asset.py`、`process_photo.py`）、文件優先級（`decisions.md` 最高）、多 agent 協作規範與部署現況（以 `nginx/starwoven.conf` 為準）。
+  2. **同步 `demo_docs/spec.md`**：狀態標頭改為 v0.2（Demo 已交付，後續以 `decisions.md` 為準）；第 3 節 IA 改為實際路由（含 DEC-019/020/023/004 差異註記）；第 5 節標記 `content_inventory.md` 已建立（DEC-001）；第 9 節除第 3 項 OpenAI 授權確認外逐項結案；修正檔內殘留之 Windows 絕對路徑連結（第 7 節與文末「交付文件」）為相對路徑。
+  3. **同步 `demo_docs/development_roadmap.md`**：狀態標頭改為 v0.3；Phase 2–4 checkbox 依實際完成狀態勾選（Logo／星空背景以 inline SVG＋CSS 漸層實現、生圖以本機 ComfyUI 為主等差異均加註）；Phase 5 僅勾選可驗證之完成項（build、nginx 配置檔、GA4），實際 VPS 部署、DNS、HTTPS 與 Phase 6 維持未勾選。
+  4. **更新 `known_issues/README.md`**：第 3 項（首頁檔案過長）更新行數與已拆分元件之現況，維持「後續優化」狀態；新增第 4 項（全站 OG 分享圖檔案尚未存在）。
+  5. **文件優先級定調**：`decisions.md` ＞ `content_inventory.md`（文案）＞ `phase0_answers.md` ＞ `spec.md`。
+  6. **外部審查回饋修正（同批變更，與上述同步提交）**：
+     - 更正「OpenAI 雲端未使用」之誤述：`服務-G` 毛孩溝通素材實為 OpenAI Playground 生成（`image_prompts.md` 生成紀錄），文件改為「以 ComfyUI 為主、曾使用 OpenAI Playground」，roadmap Phase 2 授權確認項恢復為未完成。
+     - 更正「每頁獨立 OG 圖」之誤述：各頁未傳 `ogImage`，共用之 Layout 預設 `/assets/og-image.jpg` 尚未存在；`AGENTS.md`、roadmap Phase 4、spec 第 6 節據實標記，並新增 `known_issues` 第 4 項追蹤。
+     - `AGENTS.md` 元件章節標題修正為含 `src/layouts/`；文件優先級排序與本檔第 5 項統一。
+  7. **外部審查第二輪回饋修正（同批）**：
+     - `spec.md` 第 4.4 節前提、第 8 節授權與第 9 節風險表第 3 項一併修正：素材為本機 ComfyUI 生成＋OpenAI Playground 個別素材（`服務-G`）＋業主實拍；OpenAI 商用條款結論仍待確認，第 9 節該項改標 ⚠️ 部分待確認。
+     - `known_issues` 第 4 項 OG 圖檔名改為 `og-image.webp` 以符合全站 WebP 強制規範，並註明實作時需同步更新 `Layout.astro` 預設 `ogImage` 路徑。
