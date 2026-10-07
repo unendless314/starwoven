@@ -464,6 +464,23 @@
         card.dataset.voted = '1';
         setBtn(card, 'voted');
         trackWish(id, responseName, 'already_voted');
+      } else if (status === 'course_closed') {
+        // 等待期間業主已收票（已開課／已結束）：後端拒收，不計票、不記已投、不進重試態。
+        // 回滾樂觀 +1，套用後端回報的狀態值，卡片即時轉停投或下架
+        delete card.dataset.pending;
+        if (snapshotName === (card.dataset.courseName || '')) {
+          card.dataset.votes = String(before);
+          renderCard(card);
+          const closed = typeof data.course_status === 'string' ? data.course_status.trim() : '';
+          card.dataset.wishStatus = closed === STATUS_ENDED ? STATUS_ENDED : STATUS_OPENED;
+          applyStatus(card);
+          trackWish(id, snapshotName, 'course_closed');
+        } else {
+          // 卡片已被 get_all 換成新課：不回填舊課快照、不鎖定，交由重新同步帶入正確狀態
+          renderCard(card);
+          setBtn(card, 'default');
+          refreshFromSheet();
+        }
       } else {
         throw new Error((data && data.code) || 'VOTE_FAILED');
       }

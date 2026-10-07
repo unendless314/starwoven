@@ -937,3 +937,16 @@
   5. **文件同步**：`course_wishlist_plan_v3.md` 第一節設計原則、第四節前端設計（SSR fallback 條目改寫為骨架卡＋錯誤區塊、Demo 模式條目改寫、掛勾補 `data-wish-skeleton`／`#wish-error`）、第五節 Step 9 驗收增列三項、第六節已知取捨兩項改寫；`known_issues/README.md` 第 5 項改標 ✅ 已解決。
 - **備註**：純前端變更，Apps Script 與試算表零改動。驗證：`npm run build` 通過（11 頁）；`dist/wishlist/index.html` 含 6 張骨架卡與 `#wish-error`、不再含舊課名；正式 bundle 含 API 網址且不含 demo 資料。
 - **踩坑紀錄（同批修正）**：初版本地預覽只剩骨架卡不動——Astro 會把元件 `<script>` 標籤插在元件首次使用處；元件僅被 `<template>` 使用時，腳本落入 `<template>` 內成為 inert 永不執行（此前因 SSR 實體卡片存在，腳本標籤位於模板外而倖免）。修正：互動邏輯原樣抽出為 `src/scripts/wishlist.ts`，由 `wishlist.astro` 頁面層級 `<script>` 引入；已驗證打包後 script 標籤位於模板外、`<template>` 內無 script。
+
+---
+
+## 2026-10-07 — DEC-053：許願池 vote 後端補 G 欄狀態檢查（程式碼審查 P1 修正）
+
+- **背景**：外部程式碼審查回報 P1 缺陷——DEC-050 的 G 欄 status 手動下架開關僅前端實作（按鈕停用＋`vote()` 入口守衛），Apps Script 收票流程全程不讀 G 欄：訪客舊分頁（頁面載入後業主才標已開課）或直接呼叫公開 vote 端點，仍可對已開課／已結束課程加票，下架開關在後端形同虛設。
+- **評估結論**：屬實，採納。威脅模型雖低（無預期惡意攻擊），但「舊分頁送票」無需惡意即自然發生；修正僅十餘行且完全位於既有排他鎖與入帳原則之內，風險極低，並讓 DEC-050 的開關語意完整（前後端一致）。
+- **決策與執行**：
+  1. **Apps Script（`course_wishlist_plan_v3.md` 第三節，v3.2）**：`findRow()` 加讀 G 欄（trim 後比對）；新增步驟 2.6 鎖內狀態檢查（版本核對之後、防重複／限流之前）——`已開課`／`已結束` 回傳 `course_closed`（附 `course_status` 實際值與對應文案），不計票、不記已投、不占限流額度；原步驟 2.6~2.10 順延為 2.7~2.11，標頭功能摘要同步補述。
+  2. **前端（`src/scripts/wishlist.ts`）**：`vote()` 新增 `course_closed` 分支——回滾樂觀 +1、清 pending、不記已投，依後端 `course_status` 即時把卡片轉停投（`STATUS_OPENED`）或下架（`STATUS_ENDED`，沿用 `applyStatus`）；後端未附狀態值時保守視同已開課；卡片已被 `get_all` 換課時不干預、交由重新同步。GA4 `course_wish_click` 的 `mode` 新增 `course_closed`。
+  3. **雜項**：移除 `CourseWishlistCard.astro` 檔尾多餘空行（審查以 `git diff --check` 回報）。
+  4. **文件同步**：v3 規格書沿革摘要、第一節 G 欄說明、第二節業主操作規則第 7 條、第四節投票回應分支與 GA4 mode 值、第五節 Step 4 補充與 Step 9 驗收增列一項。
+- **業主側待辦**：Apps Script 貼上第三節新版程式碼 →「部署 → 管理部署作業 → ✏️ 編輯 → 版本：新增版本 → 部署」（**Web App 網址不變，`.env` 無需修改；勿刪除重建部署**）。新前端搭配舊後端不受影響（舊後端本無 `course_closed` 回應）；部署後依 Step 9 新增項驗收。
