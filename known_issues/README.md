@@ -34,3 +34,10 @@
 - **處理方式**：
   1. 由素材管線產出 1200×630 品牌 OG 圖，依全站 WebP 強制規範輸出為 `og-image.webp`（Q85）放入 `public/assets/`，並同步把 `Layout.astro` 預設 `ogImage` 改為 `/assets/og-image.webp`；若目標分享平台不相容 WebP，再例外評估 JPG 並記錄於 `decisions.md`。
   2. 或於各頁 `<Layout ogImage="...">` 個別指定既有素材。
+
+## 5. 許願池 SSR fallback 與試算表最新課程清單未同步
+
+- **狀態**：後續優化（待業主試算表內容穩定後再一次同步）
+- **影響位置**：`src/pages/wishlist.astro` 的 `wishlistCourses` SSR fallback；`demo_docs/course_wishlist_plan_v3.md`（「1~6」編號敘述、配色白名單表「目前使用課程」欄）
+- **說明**：2026-10-07 部署驗收時，試算表課程已由 6 門擴充為 8 門且課名全面更新（業主持續編輯中）。SSR fallback 仍為舊 6 門（托特塔羅高階等）；正式模式下進站 1~3 秒會先顯示舊清單，`get_all` 回應後再逐卡更新為新清單——功能正確，僅首屏短暫跳動。決議暫不同步，避免追著變動中的試算表改。
+- **處理方式**：待業主確認課程清單定稿後，將 SSR 陣列（課名／講師／價格／票數／門檻／圖示／漸層）與 v3 文件相關敘述一次同步至當時試算表內容。
