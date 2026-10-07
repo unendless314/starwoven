@@ -3,7 +3,7 @@
 ## Repo state
 
 This repo contains the **fully built Astro static site** (initial commit `000b083`),
-iterated through **DEC-001 ~ DEC-053** in `decisions.md`. The original Demo deadline
+iterated through **DEC-001 ~ DEC-054** in `decisions.md`. The original Demo deadline
 (2026-09-23) has passed; the site is feature-complete and under continuous content/UI
 iteration. This file was rewritten on 2026-10-06 — the previous version described a
 pre-build planning repo and is obsolete.
@@ -102,7 +102,7 @@ pre-build planning repo and is obsolete.
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-054).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-055).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in

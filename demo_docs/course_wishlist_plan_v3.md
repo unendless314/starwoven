@@ -2,7 +2,7 @@
 
 > **文件狀態**：v3.1（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~052）
 > **建立日期**：2026-10-07（v3.0 整併定稿；v3.1 骨架卡改造 DEC-052；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
-> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）。
+> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）→ 2.9 寫入前核對改讀 A~G，收票瞬間與移列重定位後的狀態以緊貼寫入前的複查為準（DEC-054，v3.3）。
 > **核心目標**：Google 試算表成為許願池的**單一資料來源（SSOT）**——業主在手機上改試算表，網頁重整即更新，**不需要重新部署**。
 
 ---
@@ -78,7 +78,7 @@
  *    不符回傳 course_changed；防重複快取鍵納入課名雜湊（改名即新課）
  * 4. vote 鎖內檢查 G 欄狀態：已開課／已結束回傳 course_closed（附 course_status）不計票
  *    ——手動下架開關的後端強制（前端停用按鈕僅為 UI，舊分頁或直接呼叫端點仍可能送票）
- * 5. vote 寫入前再次核對目標列的編號與課名，防止業主移列/改名瞬間寫錯課
+ * 5. vote 寫入前再次核對目標列 A~G（編號、課名與 G 欄狀態一次讀取），防止業主移列/改名/收票瞬間寫錯課或收下已關閉的票
  * 6. 課名以 SHA-256 雜湊後才進快取鍵（CacheService key 上限 250 字元）
  * 7. D 欄入帳後的附屬寫入（flush、快取）以獨立 try/catch 保護，失敗仍回傳成功（見原則 B）
  */
@@ -223,11 +223,13 @@ function doGet(e) {
         })).setMimeType(ContentService.MimeType.JSON);
       }
 
-      // 2.9 寫入前核對：一次讀取目標列 A、B 兩欄，須仍等於請求的（編號, 課名）
-      // 防止業主移列／改名瞬間，快照列號已指向別門課
-      var check = sheet.getRange(target.rowIndex, 1, 1, 2).getValues()[0];
+      // 2.9 寫入前核對：一次讀取目標列 A~G 欄，（編號, 課名）須仍匹配、G 欄狀態須仍可投票
+      // 防止業主移列／改名／收票瞬間，快照列號或快照狀態已過期——2.6 判定後 G 欄仍可能被改，
+      // 故狀態以此次緊貼寫入前的讀取為準；移列重定位後亦以最新快照重新判定
+      var check = sheet.getRange(target.rowIndex, 1, 1, 7).getValues()[0];
+      var finalStatus = String(check[6] == null ? "" : check[6]).trim();
       if (String(check[0]) !== String(courseId) || String(check[1] == null ? "" : check[1]) !== courseName) {
-        target = findRow(); // 列已移動：重新定位一次
+        target = findRow(); // 列已移動：重新定位一次（含最新課名與狀態）
         if (!target || target.name !== courseName) {
           return ContentService.createTextOutput(JSON.stringify({
             status: "course_changed",
@@ -236,6 +238,19 @@ function doGet(e) {
             message: "課程內容已更新，請重新許願"
           })).setMimeType(ContentService.MimeType.JSON);
         }
+        finalStatus = target.status;
+      }
+
+      // 寫入前狀態再確認：已開課／已結束即拒收（不計票、不記已投、不占限流）
+      // 殘餘取捨：本讀取與 2.10 setValue 分屬兩次 API 呼叫，中間極小空窗在 Apps Script 下無法原子化
+      if (finalStatus === "已開課" || finalStatus === "已結束") {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "course_closed",
+          course_id: courseId,
+          course_name: target.name,
+          course_status: finalStatus, // 附實際狀態值，供前端即時把卡片轉為停投或下架
+          message: finalStatus === "已開課" ? "此課程已開課，感謝您的支持！" : "此課程許願已結束，感謝您的支持！"
+        })).setMimeType(ContentService.MimeType.JSON);
       }
 
       // 2.10 執行寫入：只更新 D 欄（真實票數），絕不覆蓋業主設定之 C 欄底數
@@ -301,6 +316,7 @@ function doGet(e) {
 - [x] **Step 3（開發）**：前端實作 v2 設計（template、hooks、`data-course-name`、`syncFromSheet`、`createCard`、`applyStyle`、認名字＋綁定投票、回應先比對再分支、`course_changed` 處理、GA4）——2026-10-02 完成（DEC-038；上線前審查修正 DEC-039~041）
 - [x] **Step 4（開發）**：欄位調整前端實作——G 欄 status 接上 UI 作手動下架開關（`applyStatus` 統一管理 display、`is-closed` 按鈕態、`vote()` 守衛）、I 欄 category → price（掛勾 `wish-price`、SSR 六門課 `price` 留空不虛構）——2026-10-07 完成（DEC-050），`npm run build` 已通過
 - [x] **Step 4 補充（開發，DEC-053）**：程式碼審查 P1 修正——vote 鎖內新增 G 欄狀態檢查，`已開課`／`已結束` 回傳 `course_closed`（附 `course_status`）不計票、不記已投、不占限流；前端 `vote()` 新增 `course_closed` 分支即時把卡片轉停投或下架——2026-10-07 完成，`npm run build` 已通過；**業主需貼上第三節新版程式碼並部署 Apps Script 新版本（Web App 網址不變、`.env` 不變）**
+- [x] **Step 4 補充 2（開發，DEC-054）**：審查第二輪 P1——2.9 寫入前核對由讀 A、B 兩欄改為讀 A~G，G 欄狀態以緊貼寫入前的讀取為準再拒收一次（涵蓋 2.6 判定後業主收票的毫秒級空窗、移列重定位後未再判定狀態兩個缺口）；前端零改動——2026-10-07 完成，`npm run build` 已通過；與 DEC-053 一併部署新版本即可
 - [x] **Step 5（業主）**：試算表 I1 標題由 `category` 改為 `price`（程式依欄位位置讀取，改標題不影響運作）——2026-10-07 完成
 - [ ] **Step 6（業主）**：I 欄填入各課預定價格（自由文字，如「4 堂 2,000 元」；留空的課程不顯示標籤）
 - [ ] **Step 7（業主）**：Apps Script **整段取代**為第三節現行版程式碼（`get_all` 的 JSON key `category` → `price`，仍讀第 9 欄）→ 部署為**新版本**（Web App 網址不變，`.env` 不用改）
