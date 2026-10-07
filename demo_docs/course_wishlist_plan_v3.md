@@ -1,15 +1,15 @@
 # 星靈織語 Starwoven — 課程許願池規格書 v3：全面試算表驅動
 
-> **文件狀態**：v3.0 定稿（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049、050）
-> **建立日期**：2026-10-07（v3.0 整併定稿；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
-> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0。
+> **文件狀態**：v3.1（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~052）
+> **建立日期**：2026-10-07（v3.0 整併定稿；v3.1 骨架卡改造 DEC-052；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
+> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）。
 > **核心目標**：Google 試算表成為許願池的**單一資料來源（SSOT）**——業主在手機上改試算表，網頁重整即更新，**不需要重新部署**。
 
 ---
 
 ## 一、 設計原則
 
-1. **試算表 SSOT（單一資料來源）**：許願池的課程清單、票數、門檻、講師、預定價格、圖示、配色、狀態與卡片排序全部由 Google 試算表驅動。`src/pages/wishlist.astro` 的 SSR 課程陣列僅為 **fallback**（首屏秒開、Demo 模式、API 失敗降級）。
+1. **試算表 SSOT（單一資料來源）**：許願池的課程清單、票數、門檻、講師、預定價格、圖示、配色、狀態與卡片排序全部由 Google 試算表驅動。`src/pages/wishlist.astro` 的 SSR **不寫死課程**（DEC-052：首屏骨架卡佔位、API 失敗顯示錯誤區塊；Demo 模式由元件內示範資料驅動）。
 2. **核心身份原則**：**一票只屬於「編號＋課名」這個組合**。訪客記憶（localStorage）、後端防重複（快取鍵含課名雜湊）、投票請求（必帶 `course_name`）、寫入核對（鎖內比對 A、B 欄），前後端全部綁定同一組合；**改名即新課**，A 欄編號格子（1~6）重用因此安全。
 3. **入帳原則**：**任何會讓前端重試的錯誤，都只能發生在票數寫入 D 欄之前**。D 欄入帳後的附屬寫入（flush、快取）失敗時，一律回傳成功——入帳後回傳錯誤反而**保證**前端重試、重複加票。
 4. **乾淨優先**：Apps Script 採全量重寫，前端不保留 v1 回應格式的相容層；計票定位為開課意向熱度參考（非金融級精確），不為追求零誤差增加業主操作負擔。
@@ -265,16 +265,16 @@ function doGet(e) {
 
 ## 四、 前端設計（摘要）
 
-> 實作細節以程式碼為準：`src/components/CourseWishlistCard.astro`（卡片版型＋全部互動邏輯）與 `src/pages/wishlist.astro`（頁面、SSR fallback 課程資料、`<template id="wish-card-template">`）。本節僅摘要關鍵機制。
+> 實作細節以程式碼為準：`src/components/CourseWishlistCard.astro`（卡片版型與樣式）、`src/scripts/wishlist.ts`（全部互動邏輯；由頁面層級 `<script>` 引入——元件僅被 `<template>` 使用時，Astro 會將元件腳本標籤插入 `<template>` 內成為 inert 永不執行，故不可放回元件）與 `src/pages/wishlist.astro`（頁面、骨架卡、`#wish-error`、`<template id="wish-card-template">`）。本節僅摘要關鍵機制。
 
-- **卡片同構**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，動態卡片一律 clone 此模板，與 SSR 卡片永遠同構（未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-price`（預定價格標籤）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`。
-- **進站同步 `syncFromSheet(list)`**：`get_all` 回應成功**且 `data` 為陣列**才執行；格式不符 → 整段略過、維持 SSR 顯示（防禦性檢查）。依列序逐列處理：既有卡片 `updateCardContent`、新列 `createCard`、每張以 `appendChild` 歸位（**DOM 順序 = 試算表列順序**）；不在清單中的卡片 `display: none` 隱藏（不刪除，重新出現時由 `applyStatus` 依 G 欄狀態決定是否還原）。同步請求以遞增序號 `syncSeq` 防較舊回應亂序覆寫。
+- **卡片單一版型來源**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，**所有課程卡片一律 clone 此模板動態建立**（SSR 不寫死課程，未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-price`（預定價格標籤）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`；頁面元素掛勾：`data-wish-skeleton`（SSR 骨架卡）／`#wish-error`＋`#wish-error-reload`（載入失敗錯誤區塊）。
+- **進站同步 `syncFromSheet(list)`**：`get_all` 回應成功**且 `data` 為陣列**才執行（請求有 12 秒逾時；逾時／失敗／格式異常且頁面尚無卡片 → 顯示 `#wish-error` 錯誤區塊，詳下「首屏骨架卡」條）。**首次成功同步先 `removeSkeletons()` 移除骨架卡**，再依列序逐列處理：既有卡片 `updateCardContent`、新列 `createCard`、每張以 `appendChild` 歸位（**DOM 順序 = 試算表列順序**）；不在清單中的卡片 `display: none` 隱藏（不刪除，重新出現時由 `applyStatus` 依 G 欄狀態決定是否還原）。同步請求以遞增序號 `syncSeq` 防較舊回應亂序覆寫。
 - **`updateCardContent` 欄位同步**：課名／講師／預定價格／圖示以 `textContent` 賦值（無 HTML 注入風險），**空字串 → 既有卡片保留原值不覆寫**；門檻為正整數才採用；票數受守衛保護（`data-pending`／`data-voted` 中的卡片不覆寫，**改名即新課時例外**直接套用新課票數）；配色 `applyStyle()` 走白名單（鍵值非法 → 既有卡片保留原樣、新卡片預設 `blue`）。
 - **G 欄 status 手動下架開關（`applyStatus`）**：每次同步將 `row.status` trim 後寫入 `data-wish-status` 並呼叫 `applyStatus`——`已結束`＝卡片 `display: none` 隱藏下架（清空即恢復上架）；`已開課`＝隱藏「✓ 達標籌備中」、按鈕停用顯示「✓ 已開課」（`is-closed` 綠色樣式 `#58A497`），且 `vote()` 入口有守衛禁止送票；其他值（含空白）＝募集中（還原達標標籤與按鈕正確態）。**卡片 display 統一由 `applyStatus` 管理**；`updateCardContent` 中須在 `renderCard` **之後**呼叫（避免達標標籤被重新顯示），`createCard` 中須在 `initCard` **之後**呼叫（蓋過已許願判定）。
 - **「認名字」投票記憶**：localStorage `starwoven_wish_{編號}` 存**課程名稱**；已許願判定 = 儲存值 === 卡片當前課名（根元素 `data-course-name` 為唯一來源）。判定時機：初始化、get_all 同步後、投票結束。投票請求帶 `course_name` 快照；回應抵達**先比對回應課名與卡片當前課名**，不一致（含後端主動回傳 `course_changed`）→ 回滾、清 pending、**不寫記憶、不鎖定**、重新同步後可對新課許願；一致才走 `success`／`already_voted` 分支，且只以後端確認過的課名寫入 localStorage。
 - **既有投票防護（v1 起沿用）**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙重鎖定、`data-voted` 記憶體旗標、8 秒逾時自動斷開。
-- **SSR fallback**：`wishlist.astro` 的 `wishlistCourses`（`id` 為 `'1'`~`'6'`）供首屏即時渲染、Demo 模式與 API 失敗降級；`price` 一律留空**不虛構**（標籤隱藏），待試算表 I 欄由 `get_all` 覆寫。**部署前把 `votes` 更新為當時試算表真實總票**，減少首屏跳動幅度。
-- **Demo 模式**：未設 `PUBLIC_WISHLIST_API_URL` 時純前端模擬（本機記票；認名字以 SSR 課名為準；SSR 無 status，下架開關僅在正式模式生效）。
+- **首屏骨架卡＋載入失敗錯誤區塊（DEC-052）**：SSR 不寫死課程——Grid 內為 6 張 `data-wish-skeleton` 灰階佔位卡（`animate-pulse`，雙主題），首次同步成功由 `removeSkeletons()` 移除；`get_all` 逾時（12 秒）／網路失敗／回應格式異常**且頁面尚無任何課程卡片**時，移除骨架卡並顯示 `#wish-error`（「許願池暫時連線異常」＋重新整理按鈕），另備 `<noscript>` 提示——**壞掉就明白顯示壞掉，不顯示過期內容**；已有卡片的背景再同步失敗則維持靜默。
+- **Demo 模式**：未設 `PUBLIC_WISHLIST_API_URL` 時純前端模擬——示範課程常數 `DEMO_COURSES`（寫於元件 script，內容為示意、不與試算表同步）經同一 `syncFromSheet` 建卡，本機記票；下架開關僅在正式模式生效。注意：正式 build 因 API 網址已編譯為非空字串，`!API_URL` 分支被 minifier 死碼移除，僅無環境變數的 build 含 Demo 資料。
 - **GA4**：`course_wish_click` 事件參數 `{ course_id, course_name, mode }`；`mode` 值含 `demo`／`live`／`already_voted`／`course_changed`。GA 後台如需以 `course_name` 出報表，需另於 GA4 自訂維度登錄（選配，不影響功能）。
 
 ---
@@ -305,6 +305,9 @@ function doGet(e) {
   - [ ] 超長課名（100 字以上）不影響投票與防重複（後端拒收；正常長度課名的快取鍵為固定長度雜湊）
   - [ ] 程式審閱確認：D 欄 `setValue` 之後的 `flush` 與快取寫入均在獨立 try/catch 中，失敗仍回傳 `success`
   - [ ] 既有功能回歸：投票 +1、鎖定、重新整理維持已許願、鍵盤 Enter/Space 連按不穿透
+  - [ ] 首屏顯示骨架卡（不見任何寫死課程）→ `get_all` 成功後骨架卡消失、全部卡片動態建立且外觀一致（DEC-052）
+  - [ ] 模擬 API 失敗（斷網或暫改 `.env` 網址為無效值後 build 預覽）→ 骨架卡消失、顯示「許願池暫時連線異常」錯誤區塊，重新整理按鈕可動
+  - [ ] Demo 模式回歸（無 API 網址 build）→ 示範課程建卡、投票 +1、重整後票數累計正常
 
 ### 部署順序說明
 
@@ -319,9 +322,9 @@ function doGet(e) {
 
 ## 六、 已知取捨（非問題）
 
-- **首屏短暫顯示 SSR 舊值**：get_all 需 1~3 秒，此為純靜態架構的固有特性；v1 即如此。
+- **首屏顯示骨架卡**：get_all 需 1~3 秒，此為純靜態架構的固有特性；SSR 不寫死課程（DEC-052），改以骨架卡佔位，避免顯示過期內容。
 - **「改名 = 新課」**：募集中改課名（含修錯字）會讓已許願者可再投一次。票數本身不減少；若在意，業主可用 C 欄底數微調。本功能定位為開課意向熱度參考，此失真可接受。
 - **A 欄改數字編號的一次性重置**（2026-10-02 已執行）：舊許願記憶已失效，全體訪客可重新許願一次；D 欄票數不受影響。
-- **移除卡片的隱藏依賴 API 成功**：get_all 失敗時 fallback 為 SSR 清單原樣顯示（寧可多顯示，不可空白）。
+- **API 失敗即明白顯示失敗**：get_all 初始載入失敗時不再降級顯示寫死清單，改顯示「許願池暫時連線異常」錯誤區塊（DEC-052；壞掉就顯示壞掉，不拿過期資訊充數）。已有卡片的背景再同步失敗仍靜默維持現狀。
 - **殘餘寫入窗口（誠實版）**：ScriptLock 鎖不住業主的試算表 UI 操作；「寫入前核對」（第三節 2.8）與實際寫入之間仍存在極小窗口，**無法完全歸零**。發生時的結果：多數情況投票安全失敗（訪客看到可重試提示，重試即成功）；極低機率一票寫錯列，業主在試算表手動修正即可。此為意向熱度參考功能之可接受誤差，不再加機制（如暫停開關）防堵。
 - **入帳後附屬寫入失敗的降級**：`setValue` 本身失敗會拋錯，此時尚未入帳，回傳錯誤讓前端重試是安全的；入帳後的 `flush`／快取失敗則靜默略過、照常回傳成功（`flush` 未套用者由 Apps Script 於指令碼結束時自動補寫）。代價：極端情況下該裝置 6 小時防重複與該次限流計數暫時失效，同一訪客可能多投一票——屬可接受誤差，優於誤判失敗造成確定的重複加票。

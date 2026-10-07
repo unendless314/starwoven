@@ -921,3 +921,19 @@
   2. **刪除 `demo_docs/course_wishlist_plan_v2.md`**。
   3. **引用更新**：`demo_docs/spec.md` 第 6 節預留銜接點表中許願池的「詳見 `course_wishlist_plan.md`」更新為 `course_wishlist_plan_v3.md`（原指向已被取代的 v1）；本檔 DEC-034/038/050 等歷史條目對 v1/v2 檔名的引用**保持原樣**（歷史紀錄不改寫）。其餘非歷史文件（`AGENTS.md`、`content_inventory.md`、`development_roadmap.md`、`known_issues/README.md`）經 grep 確認本無 plan 檔引用，無需更動。
 - **後續待辦（業主側，依 v3 第五節）**：I 欄填入各課預定價格 → Apps Script 貼上第三節現行版程式碼並部署**新版本** → build 上傳 VPS → Step 9 瀏覽器驗收。
+
+---
+
+## 2026-10-07 — DEC-052：許願池 SSR fallback 改為骨架卡＋載入失敗錯誤區塊（移除寫死課程）
+
+- **背景**：
+  - 部署驗收期間業主同步更新試算表，課程由 6 門擴為 8 門且課名全面更新，使 `wishlist.astro` 寫死的 6 門 SSR fallback 首屏即過期（known_issues 第 5 項）。
+  - 討論後定調：動態建卡路徑（clone `<template>`）已實證可行，與其反覆追同步寫死內容，不如讓「壞掉就真的顯示壞掉」，避免讀者被過期資訊誤導。
+- **決策與執行**：
+  1. **SSR 移除寫死課程**：刪除 `wishlist.astro` 的 `WishlistCourse` interface 與 `wishlistCourses` 陣列；Grid 改渲染 6 張骨架卡（`data-wish-skeleton`，`animate-pulse` 灰階佔位塊，等比例仿卡片版型，深淺雙主題）。
+  2. **同步路徑單一化**：所有課程卡片一律由 `createCard` clone 模板建立（單一版型來源）；`syncFromSheet` 首次成功時以 `removeSkeletons()` 移除骨架卡（重複呼叫無害）。
+  3. **載入失敗錯誤區塊**：新增 `#wish-error`（預設隱藏，「許願池暫時連線異常」文案＋重新整理按鈕）與 `<noscript>` 提示；`refreshFromSheet` 加 12 秒逾時（Apps Script 冷啟動可達 10 秒級）。逾時／網路錯誤／回應格式異常**且頁面尚無任何課程卡片**時才顯示錯誤區塊；已有卡片的背景再同步失敗仍靜默維持現狀。
+  4. **Demo 模式資料搬入元件 script**：示範課程常數 `DEMO_COURSES`（沿用原 SSR 六門內容，僅未設 API 網址時使用）經同一 `syncFromSheet` 建卡。正式 build 因 `PUBLIC_WISHLIST_API_URL` 已編譯為非空字串，`!API_URL` 分支被 minifier 死碼移除——已分別驗證「無環境變數 build」（demo 資料進 bundle）與「正式 build」（無 demo 資料、含 API 網址）。
+  5. **文件同步**：`course_wishlist_plan_v3.md` 第一節設計原則、第四節前端設計（SSR fallback 條目改寫為骨架卡＋錯誤區塊、Demo 模式條目改寫、掛勾補 `data-wish-skeleton`／`#wish-error`）、第五節 Step 9 驗收增列三項、第六節已知取捨兩項改寫；`known_issues/README.md` 第 5 項改標 ✅ 已解決。
+- **備註**：純前端變更，Apps Script 與試算表零改動。驗證：`npm run build` 通過（11 頁）；`dist/wishlist/index.html` 含 6 張骨架卡與 `#wish-error`、不再含舊課名；正式 bundle 含 API 網址且不含 demo 資料。
+- **踩坑紀錄（同批修正）**：初版本地預覽只剩骨架卡不動——Astro 會把元件 `<script>` 標籤插在元件首次使用處；元件僅被 `<template>` 使用時，腳本落入 `<template>` 內成為 inert 永不執行（此前因 SSR 實體卡片存在，腳本標籤位於模板外而倖免）。修正：互動邏輯原樣抽出為 `src/scripts/wishlist.ts`，由 `wishlist.astro` 頁面層級 `<script>` 引入；已驗證打包後 script 標籤位於模板外、`<template>` 內無 script。

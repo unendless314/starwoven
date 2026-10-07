@@ -3,7 +3,7 @@
 ## Repo state
 
 This repo contains the **fully built Astro static site** (initial commit `000b083`),
-iterated through **DEC-001 ~ DEC-050** in `decisions.md`. The original Demo deadline
+iterated through **DEC-001 ~ DEC-052** in `decisions.md`. The original Demo deadline
 (2026-09-23) has passed; the site is feature-complete and under continuous content/UI
 iteration. This file was rewritten on 2026-10-06 — the previous version described a
 pre-build planning repo and is obsolete.
@@ -56,7 +56,8 @@ pre-build planning repo and is obsolete.
   dark/light toggle (persisted to `localStorage["starwoven_theme"]`).
 - `CTAButton.astro` — variants `nav` / `hero` / `primary`; the LINE URL is fixed
   (see below).
-- `CourseWishlistCard.astro` — 許願池投票卡片；demo/live 雙模式，live mode 由
+- `CourseWishlistCard.astro` — 許願池卡片版型與樣式（互動邏輯在
+  `src/scripts/wishlist.ts`，由頁面層級 script 引入）；demo/live 雙模式，live mode 由
   `PUBLIC_WISHLIST_API_URL` 驅動（Google Apps Script → 試算表 SSOT，DEC-038）。
 - `CategoryIcon.astro`、`GoogleAnalytics.astro`（GA4 `G-27D79HXXF5`，可用
   `PUBLIC_GA_ID` 覆寫；內建 LINE／地圖／iOpen Mall 轉換事件監聽）。
@@ -101,7 +102,7 @@ pre-build planning repo and is obsolete.
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-052).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-053).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
