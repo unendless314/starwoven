@@ -1,0 +1,327 @@
+# 星靈織語 Starwoven — 課程許願池規格書 v3：全面試算表驅動
+
+> **文件狀態**：v3.0 定稿（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049、050）
+> **建立日期**：2026-10-07（v3.0 整併定稿；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
+> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0。
+> **核心目標**：Google 試算表成為許願池的**單一資料來源（SSOT）**——業主在手機上改試算表，網頁重整即更新，**不需要重新部署**。
+
+---
+
+## 一、 設計原則
+
+1. **試算表 SSOT（單一資料來源）**：許願池的課程清單、票數、門檻、講師、預定價格、圖示、配色、狀態與卡片排序全部由 Google 試算表驅動。`src/pages/wishlist.astro` 的 SSR 課程陣列僅為 **fallback**（首屏秒開、Demo 模式、API 失敗降級）。
+2. **核心身份原則**：**一票只屬於「編號＋課名」這個組合**。訪客記憶（localStorage）、後端防重複（快取鍵含課名雜湊）、投票請求（必帶 `course_name`）、寫入核對（鎖內比對 A、B 欄），前後端全部綁定同一組合；**改名即新課**，A 欄編號格子（1~6）重用因此安全。
+3. **入帳原則**：**任何會讓前端重試的錯誤，都只能發生在票數寫入 D 欄之前**。D 欄入帳後的附屬寫入（flush、快取）失敗時，一律回傳成功——入帳後回傳錯誤反而**保證**前端重試、重複加票。
+4. **乾淨優先**：Apps Script 採全量重寫，前端不保留 v1 回應格式的相容層；計票定位為開課意向熱度參考（非金融級精確），不為追求零誤差增加業主操作負擔。
+
+---
+
+## 二、 試算表結構（Wishlist 工作表）
+
+### 1. 欄位總表
+
+| 欄 | 名稱 | 誰可以改 | 說明 |
+| :--- | :--- | :--- | :--- |
+| A | `編號` | 業主（僅開課／換課時） | 數字 1~6，程式以此對應卡片；**募集中勿改** |
+| B | `課程名稱` | 業主 | ⚠️ **募集中勿改（含修正錯字）**：改名 = 新課程，所有人可重新許願。建議 30 字內（後端拒收 100 字以上） |
+| C | `底數` | 業主隨時 | 手動墊底數字（新課程避免 0 人尷尬） |
+| D | `真實票數` | ❌ **程式專用** | 請勿手動修改 |
+| E | `總票數` | 公式 `=C+D` | 僅供業主查看，程式自行計算、不讀此欄 |
+| F | `開課門檻` | 業主 | 正整數才會被前端採用 |
+| G | `狀態` | 業主 | **手動下架開關**：填 `已結束`＝卡片隱藏下架（清空即恢復上架）、填 `已開課`＝卡片保留但停止投票；其他值（含空白）視同募集中。「✓ 達標籌備中」標籤仍由票數 ≥ 門檻自動推導 |
+| H | `講師` | 業主 | 卡片顯示「企劃講師｜XXX」 |
+| I | `預定價格` | 業主 | 自由文字（如「4 堂 2,000 元」），顯示於卡片左上角標籤；留空則新卡片不顯示標籤 |
+| J | `圖示` | 業主 | 意象區 Emoji（如 🃏 📖 👐 💫 🪙 🔢）；留空則新卡片預設 ✦ |
+| K | `配色` | 業主 | 卡片漸層**鍵值**，僅限下表白名單；填錯或留空 → `blue` |
+
+### 2. `配色` 白名單鍵值（前端映射既有 Tailwind 漸層，避免動態 class 被 purge）
+
+| 鍵值 | 漸層色 | 目前使用課程 |
+| :--- | :--- | :--- |
+| `pink` | #F3D9E4 → #E3B7CC | 托特塔羅高階 |
+| `blue` | #D9E9F6 → #B3D2EA | 阿卡西深度工作坊 |
+| `teal` | #D5EDE7 → #A8D8CC | 靈氣大師班 |
+| `purple` | #E4DDF0 → #C4B4DC | 占星合盤 |
+| `gold` | #FBEBC8 → #F5D98D | 金錢靈氣 |
+| `orange` | #F8E0CD → #EFC09C | 靈數流年 |
+
+### 3. 業主操作規則（可原樣貼到試算表的說明分頁）
+
+1. **改內容**：直接改對應格子，網頁重整後幾秒內生效。
+2. **調順序**：整列剪下、貼到想要的位置，網頁卡片順序就會跟著變。
+3. **換新課（格子重用）**：改 B 欄課名 → C 欄填新底數、D 欄清零 → 更新 F~K 欄內容。改名瞬間所有人都能重新許願。
+4. **募集中請勿**：改 B 欄課名（錯字也不行）、改 A 欄編號、動 D 欄數字。
+5. **想少幾門課**：整列刪除（或清空 A 欄編號）即可；之後想加回來，補一列並使用 1~6 中目前沒在用的編號。
+6. **排版建議**：電腦版一排 3 張卡片，課程數為 3、6、9 門時畫面最整齊；其他數量也能正常顯示。
+7. **想下架或標記已開課（G 欄狀態）**：填 `已結束`＝整張卡片從網頁消失（資料不清除，清空該格即恢復上架）；填 `已開課`＝卡片保留但停止投票（按鈕顯示「✓ 已開課」）。⚠️ 值必須與關鍵字**完全一致**（含「已」字，前後勿加空白或其他字），填其他內容一律視同募集中。
+
+---
+
+## 三、 Apps Script（現行版，整段取代）
+
+> 業主操作：Apps Script 編輯器內**全選舊程式碼刪除、貼上以下完整內容**，然後「部署 → 管理部署作業 → ✏️ 編輯 → 版本：新增版本 → 部署」。**Web App 網址不變**，`.env` 無需修改。
+
+```javascript
+/**
+ * 星靈織語 Starwoven — 課程許願池 Google Apps Script（現行版）
+ *
+ * 核心原則：
+ * A. 一票綁定「編號＋課名」——改名即新課。
+ * B. 任何會讓前端重試的錯誤，都只能發生在票數寫入 D 欄之前；
+ *    D 欄入帳後的附屬寫入（flush、快取）失敗時，一律回傳成功。
+ *
+ * 功能摘要：
+ * 1. get_all 依「列順序」回傳陣列，並附 G 欄狀態（前端手動下架開關：
+ *    已結束=隱藏、已開課=停止投票）與 H~K 欄卡片內容（講師/預定價格/圖示/配色）
+ * 2. A 欄編號支援純數字（1~6），一律以字串比對
+ * 3. vote 請求必帶 course_name：後端鎖內確認 A、B 欄仍匹配才收票，
+ *    不符回傳 course_changed；防重複快取鍵納入課名雜湊（改名即新課）
+ * 4. vote 寫入前再次核對目標列的編號與課名，防止業主移列/改名瞬間寫錯課
+ * 5. 課名以 SHA-256 雜湊後才進快取鍵（CacheService key 上限 250 字元）
+ * 6. D 欄入帳後的附屬寫入（flush、快取）以獨立 try/catch 保護，失敗仍回傳成功（見原則 B）
+ */
+
+// 課名 SHA-256 雜湊：無論課名多長，快取鍵都是固定長度
+function nameHash(s) {
+  var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8);
+  return digest.map(function (b) { return ("0" + ((b + 256) % 256).toString(16)).slice(-2); }).join("");
+}
+
+function doGet(e) {
+  var action = e.parameter.action;
+  var courseId = e.parameter.course_id;
+  var courseName = e.parameter.course_name; // 訪客投票時看到的課名（版本綁定用）
+  var clientId = e.parameter.client_id;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Wishlist");
+  var cache = CacheService.getScriptCache();
+
+  // 1. get_all：依列序回傳全部課程卡片資料（陣列順序 = 網頁卡片顯示順序）
+  if (action === "get_all") {
+    var rows = sheet.getDataRange().getValues();
+    var list = [];
+    for (var i = 1; i < rows.length; i++) {
+      var id = String(rows[i][0] == null ? "" : rows[i][0]).trim();
+      if (!id) continue; // A 欄空白的列直接跳過（不顯示於網頁）
+      var base = Number(rows[i][2]) || 0;
+      var real = Number(rows[i][3]) || 0;
+      list.push({
+        id: id,                                                   // A 欄：編號（1~6）
+        name: String(rows[i][1] == null ? "" : rows[i][1]),       // B 欄：課程名稱
+        base_votes: base,                                         // C 欄：底數
+        real_votes: real,                                         // D 欄：真實票數
+        total_votes: base + real,                                 // 總票數（程式自算，不讀 E 欄）
+        threshold: Number(rows[i][5]) || 0,                       // F 欄：開課門檻
+        status: String(rows[i][6] == null ? "" : rows[i][6]),     // G 欄：狀態（手動下架開關：已結束=隱藏、已開課=停止投票）
+        teacher: String(rows[i][7] == null ? "" : rows[i][7]),    // H 欄：講師
+        price: String(rows[i][8] == null ? "" : rows[i][8]),        // I 欄：預定價格
+        icon: String(rows[i][9] == null ? "" : rows[i][9]),       // J 欄：圖示
+        style: String(rows[i][10] == null ? "" : rows[i][10])     // K 欄：配色
+      });
+    }
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", data: list }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  // 2. vote：單一課程許願 +1（全流程排他鎖保護）
+  if (action === "vote" && courseId) {
+    // 2.1 驗證 client_id 格式與長度（長度 <= 64，避免 Cache key 過長造成寫入例外）
+    if (!clientId || clientId.length > 64 || !/^[a-zA-Z0-9\-_]+$/.test(clientId)) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "error",
+        code: "INVALID_CLIENT_ID",
+        message: "訪客裝置識別碼無效"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2.2 驗證 course_name：必帶且長度合理（投票綁定「編號＋課名」）
+    if (!courseName || courseName.length > 100) {
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "error",
+        code: "INVALID_COURSE_NAME",
+        message: "課程資訊有誤，請重新整理頁面"
+      })).setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // 2.3 獲取排他鎖（最多等待 10 秒）
+    var lock = LockService.getScriptLock();
+    try {
+      var hasLock = lock.tryLock(10000);
+      if (!hasLock) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "error",
+          code: "SERVER_BUSY",
+          message: "伺服器忙碌中，請稍候重試"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 2.4 鎖內定位課程列（A 欄字串比對：試算表中的數字 1 與網址參數 "1" 可正確對上）
+      // 抽出為函式，供 2.8 寫入前核對失敗時重新定位
+      function findRow() {
+        var d = sheet.getDataRange().getValues();
+        for (var r = 1; r < d.length; r++) {
+          if (String(d[r][0]) === String(courseId)) {
+            return {
+              rowIndex: r + 1,
+              name: String(d[r][1] == null ? "" : d[r][1]),
+              base: Number(d[r][2]) || 0
+            };
+          }
+        }
+        return null;
+      }
+      var target = findRow();
+      if (!target) {
+        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "找不到指定課程" }))
+          .setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 2.5 版本核對：訪客投票時看到的課名 ≠ 試算表目前課名 → 課程已換，安全失敗（可重試、不計票、不記已投）
+      if (target.name !== courseName) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "course_changed",
+          course_id: courseId,
+          course_name: target.name, // 附目前課名，供前端即時更新卡片
+          message: "課程內容已更新，請重新許願"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 2.6 【鎖內檢查 1】裝置防重複：快取鍵納入課名雜湊
+      // 格子改名重用後，舊課的快取鍵（含舊課名雜湊）不再命中，訪客可對新課許願
+      var cacheKey = "voted_" + courseId + "_" + nameHash(target.name) + "_" + clientId;
+      if (cache.get(cacheKey)) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "already_voted",
+          course_id: courseId,
+          course_name: target.name, // 後端確認過的課名，前端只記這個
+          message: "您已經為此課程許願過囉！"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 2.7 【鎖內檢查 2】全域滑動視窗防暴衝（單課 10 秒上限 10 票；鍵含課名雜湊，換課後重新計算）
+      var rateKey = "rate_limit_" + courseId + "_" + nameHash(target.name);
+      var currentRate = Number(cache.get(rateKey)) || 0;
+      if (currentRate >= 10) {
+        return ContentService.createTextOutput(JSON.stringify({
+          status: "error",
+          code: "RATE_LIMITED",
+          message: "當前許願人數熱烈，系統保護中，請稍候 10 秒再試！"
+        })).setMimeType(ContentService.MimeType.JSON);
+      }
+
+      // 2.8 寫入前核對：一次讀取目標列 A、B 兩欄，須仍等於請求的（編號, 課名）
+      // 防止業主移列／改名瞬間，快照列號已指向別門課
+      var check = sheet.getRange(target.rowIndex, 1, 1, 2).getValues()[0];
+      if (String(check[0]) !== String(courseId) || String(check[1] == null ? "" : check[1]) !== courseName) {
+        target = findRow(); // 列已移動：重新定位一次
+        if (!target || target.name !== courseName) {
+          return ContentService.createTextOutput(JSON.stringify({
+            status: "course_changed",
+            course_id: courseId,
+            course_name: target ? target.name : "",
+            message: "課程內容已更新，請重新許願"
+          })).setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+
+      // 2.9 執行寫入：只更新 D 欄（真實票數），絕不覆蓋業主設定之 C 欄底數
+      // setValue 若真的失敗會自行拋錯 → 落入外層 catch 回傳 error（此時尚未入帳，前端重試是安全的）
+      // ★ setValue 成功後即視為入帳，之後任何附屬失敗都必須回傳 success（見頭部原則 B）
+      var currentRealVotes = Number(sheet.getRange(target.rowIndex, 4).getValue()) || 0;
+      var newRealVotes = currentRealVotes + 1;
+      sheet.getRange(target.rowIndex, 4).setValue(newRealVotes);
+
+      // 2.10 入帳後附屬寫入（flush＋快取，獨立 try/catch）：失敗仍回傳 success
+      // flush 抖動時寫入幾乎確定已成立（未定案者由 Apps Script 於指令碼結束時自動套用）；
+      // 快取失敗僅暫時弱化防重複與限流——兩者若回傳 error，前端誤判重試反而保證重複加票
+      try {
+        SpreadsheetApp.flush(); // 即刻套用寫入
+        cache.put(cacheKey, "true", 21600); // 該裝置對「此編號的此課名」6 小時內不重複累加
+        cache.put(rateKey, String(currentRate + 1), 10); // 10 秒滑動視窗計數
+      } catch (postCommitErr) {
+        // 靜默略過：本票已成立，以 success 回應為準
+      }
+
+      return ContentService.createTextOutput(JSON.stringify({
+        status: "success",
+        course_id: courseId,
+        course_name: target.name, // 後端確認過的課名，前端只記這個
+        votes: target.base + newRealVotes
+      })).setMimeType(ContentService.MimeType.JSON);
+
+    } catch (err) {
+      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
+        .setMimeType(ContentService.MimeType.JSON);
+    } finally {
+      lock.releaseLock();
+    }
+  }
+
+  return ContentService.createTextOutput(JSON.stringify({ status: "invalid_action" }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+```
+
+---
+
+## 四、 前端設計（摘要）
+
+> 實作細節以程式碼為準：`src/components/CourseWishlistCard.astro`（卡片版型＋全部互動邏輯）與 `src/pages/wishlist.astro`（頁面、SSR fallback 課程資料、`<template id="wish-card-template">`）。本節僅摘要關鍵機制。
+
+- **卡片同構**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，動態卡片一律 clone 此模板，與 SSR 卡片永遠同構（未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-price`（預定價格標籤）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`。
+- **進站同步 `syncFromSheet(list)`**：`get_all` 回應成功**且 `data` 為陣列**才執行；格式不符 → 整段略過、維持 SSR 顯示（防禦性檢查）。依列序逐列處理：既有卡片 `updateCardContent`、新列 `createCard`、每張以 `appendChild` 歸位（**DOM 順序 = 試算表列順序**）；不在清單中的卡片 `display: none` 隱藏（不刪除，重新出現時由 `applyStatus` 依 G 欄狀態決定是否還原）。同步請求以遞增序號 `syncSeq` 防較舊回應亂序覆寫。
+- **`updateCardContent` 欄位同步**：課名／講師／預定價格／圖示以 `textContent` 賦值（無 HTML 注入風險），**空字串 → 既有卡片保留原值不覆寫**；門檻為正整數才採用；票數受守衛保護（`data-pending`／`data-voted` 中的卡片不覆寫，**改名即新課時例外**直接套用新課票數）；配色 `applyStyle()` 走白名單（鍵值非法 → 既有卡片保留原樣、新卡片預設 `blue`）。
+- **G 欄 status 手動下架開關（`applyStatus`）**：每次同步將 `row.status` trim 後寫入 `data-wish-status` 並呼叫 `applyStatus`——`已結束`＝卡片 `display: none` 隱藏下架（清空即恢復上架）；`已開課`＝隱藏「✓ 達標籌備中」、按鈕停用顯示「✓ 已開課」（`is-closed` 綠色樣式 `#58A497`），且 `vote()` 入口有守衛禁止送票；其他值（含空白）＝募集中（還原達標標籤與按鈕正確態）。**卡片 display 統一由 `applyStatus` 管理**；`updateCardContent` 中須在 `renderCard` **之後**呼叫（避免達標標籤被重新顯示），`createCard` 中須在 `initCard` **之後**呼叫（蓋過已許願判定）。
+- **「認名字」投票記憶**：localStorage `starwoven_wish_{編號}` 存**課程名稱**；已許願判定 = 儲存值 === 卡片當前課名（根元素 `data-course-name` 為唯一來源）。判定時機：初始化、get_all 同步後、投票結束。投票請求帶 `course_name` 快照；回應抵達**先比對回應課名與卡片當前課名**，不一致（含後端主動回傳 `course_changed`）→ 回滾、清 pending、**不寫記憶、不鎖定**、重新同步後可對新課許願；一致才走 `success`／`already_voted` 分支，且只以後端確認過的課名寫入 localStorage。
+- **既有投票防護（v1 起沿用）**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙重鎖定、`data-voted` 記憶體旗標、8 秒逾時自動斷開。
+- **SSR fallback**：`wishlist.astro` 的 `wishlistCourses`（`id` 為 `'1'`~`'6'`）供首屏即時渲染、Demo 模式與 API 失敗降級；`price` 一律留空**不虛構**（標籤隱藏），待試算表 I 欄由 `get_all` 覆寫。**部署前把 `votes` 更新為當時試算表真實總票**，減少首屏跳動幅度。
+- **Demo 模式**：未設 `PUBLIC_WISHLIST_API_URL` 時純前端模擬（本機記票；認名字以 SSR 課名為準；SSR 無 status，下架開關僅在正式模式生效）。
+- **GA4**：`course_wish_click` 事件參數 `{ course_id, course_name, mode }`；`mode` 值含 `demo`／`live`／`already_voted`／`course_changed`。GA 後台如需以 `course_name` 出報表，需另於 GA4 自訂維度登錄（選配，不影響功能）。
+
+---
+
+## 五、 實施與驗收清單
+
+- [x] **Step 1（業主）**：試算表 A2:A7 改為數字 `1`~`6`（對應現有列序）；H1:K7 貼上講師／分類（後改為價格）／圖示／配色——2026-10-02 完成（已透過 API 實測確認欄位正確）
+- [x] **Step 2（業主）**：Apps Script **整段取代**為 v2 全量版 → 部署——2026-10-02 完成。實際執行時為「刪除舊部署後重新部署」，**Web App 網址已更換**，`.env` 的 `PUBLIC_WISHLIST_API_URL` 已同步更新（注意：VPS 上的 `.env` 需另行更新後再 build）；已實測 get_all 陣列格式、INVALID_COURSE_NAME 拒收、course_changed 回應、真實投票寫入 D 欄均正常
+- [x] **Step 3（開發）**：前端實作 v2 設計（template、hooks、`data-course-name`、`syncFromSheet`、`createCard`、`applyStyle`、認名字＋綁定投票、回應先比對再分支、`course_changed` 處理、GA4）——2026-10-02 完成（DEC-038；上線前審查修正 DEC-039~041）
+- [x] **Step 4（開發）**：欄位調整前端實作——G 欄 status 接上 UI 作手動下架開關（`applyStatus` 統一管理 display、`is-closed` 按鈕態、`vote()` 守衛）、I 欄 category → price（掛勾 `wish-price`、SSR 六門課 `price` 留空不虛構）——2026-10-07 完成（DEC-050），`npm run build` 已通過
+- [x] **Step 5（業主）**：試算表 I1 標題由 `category` 改為 `price`（程式依欄位位置讀取，改標題不影響運作）——2026-10-07 完成
+- [ ] **Step 6（業主）**：I 欄填入各課預定價格（自由文字，如「4 堂 2,000 元」；留空的課程不顯示標籤）
+- [ ] **Step 7（業主）**：Apps Script **整段取代**為第三節現行版程式碼（`get_all` 的 JSON key `category` → `price`，仍讀第 9 欄）→ 部署為**新版本**（Web App 網址不變，`.env` 不用改）
+- [ ] **Step 8（開發）**：`npm run build` → 上傳 `dist/` 至 VPS
+- [ ] **Step 9（瀏覽器驗收）**：
+  - [ ] G 欄填 `已結束` → 重整後該卡片消失；清空該格 → 重整後恢復顯示
+  - [ ] G 欄填 `已開課` → 卡片保留，按鈕變「✓ 已開課」綠色且不可點、「✓ 達標籌備中」標籤隱藏；清空 → 按鈕與標籤恢復正常
+  - [ ] I 欄填入預定價格 → 重整後左上標籤原樣顯示該文字；留空的課程（新卡片）不顯示標籤
+  - [ ] Apps Script 尚未部署新版本前（前端仍收不到 `price` key）：既有卡片標籤保留現值、不壞畫面
+  - [ ] 改 B 欄課名 → 重整許願池頁面已更新
+  - [ ] 改 F 欄門檻 → 進度條分母與比例更新
+  - [ ] 新增一列測試課程 → 重整後依列序出現新卡片，且可正常投票
+  - [ ] 刪除該列 → 重整後卡片消失
+  - [ ] 整列剪下貼上移動 → 卡片順序跟著變
+  - [ ] 格子重用：1 號改名＋D 清零 → 投過舊課的瀏覽器可重新許願（前端「認名字」放行，後端快取亦不因舊課阻擋）
+  - [ ] 改名瞬間投票：以 mock／手動方式讓投票撞上業主改名 → 回傳 `course_changed`、前端回滾不鎖定、卡片自動更新為新課、可重新許願
+  - [ ] 投票等待期間 `get_all` 先抵達並換名卡片 → 舊課的 `success`／`already_voted` 回應抵達時**不鎖定新課**、卡片重新同步、可對新課許願
+  - [ ] 超長課名（100 字以上）不影響投票與防重複（後端拒收；正常長度課名的快取鍵為固定長度雜湊）
+  - [ ] 程式審閱確認：D 欄 `setValue` 之後的 `flush` 與快取寫入均在獨立 try/catch 中，失敗仍回傳 `success`
+  - [ ] 既有功能回歸：投票 +1、鎖定、重新整理維持已許願、鍵盤 Enter/Space 連按不穿透
+
+### 部署順序說明
+
+**目前網站尚未正式上線，無過渡期問題**：Step 1~8 全部完成、Step 9 驗收通過後再一次公開即可，無需任何相容層。
+
+備考（僅供日後「網站已上線」時做類似改版參考，本次不適用）：
+
+1. 先更新 Apps Script——其字串比對同時認得英文舊編號與數字新編號，舊前端投票完全不受影響，僅 `get_all` 因格式變更而暫停同步（舊前端會整段略過，畫面維持原值，不壞）。注意：此備考假設該版本前端的 vote 請求已帶 `course_name`；若否，後端會回 `INVALID_COURSE_NAME`，屬預期之安全失敗。
+2. 再挑低流量時段，「試算表改編號」與「新前端部署」前後腳完成；切換的幾分鐘內投票會失敗，但訪客僅看到「連線稍候，點此重試」，重試即成功，無白屏或錯誤畫面。
+
+---
+
+## 六、 已知取捨（非問題）
+
+- **首屏短暫顯示 SSR 舊值**：get_all 需 1~3 秒，此為純靜態架構的固有特性；v1 即如此。
+- **「改名 = 新課」**：募集中改課名（含修錯字）會讓已許願者可再投一次。票數本身不減少；若在意，業主可用 C 欄底數微調。本功能定位為開課意向熱度參考，此失真可接受。
+- **A 欄改數字編號的一次性重置**（2026-10-02 已執行）：舊許願記憶已失效，全體訪客可重新許願一次；D 欄票數不受影響。
+- **移除卡片的隱藏依賴 API 成功**：get_all 失敗時 fallback 為 SSR 清單原樣顯示（寧可多顯示，不可空白）。
+- **殘餘寫入窗口（誠實版）**：ScriptLock 鎖不住業主的試算表 UI 操作；「寫入前核對」（第三節 2.8）與實際寫入之間仍存在極小窗口，**無法完全歸零**。發生時的結果：多數情況投票安全失敗（訪客看到可重試提示，重試即成功）；極低機率一票寫錯列，業主在試算表手動修正即可。此為意向熱度參考功能之可接受誤差，不再加機制（如暫停開關）防堵。
+- **入帳後附屬寫入失敗的降級**：`setValue` 本身失敗會拋錯，此時尚未入帳，回傳錯誤讓前端重試是安全的；入帳後的 `flush`／快取失敗則靜默略過、照常回傳成功（`flush` 未套用者由 Apps Script 於指令碼結束時自動補寫）。代價：極端情況下該裝置 6 小時防重複與該次限流計數暫時失效，同一訪客可能多投一票——屬可接受誤差，優於誤判失敗造成確定的重複加票。

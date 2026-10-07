@@ -10,7 +10,7 @@ interface WishlistCourse {
   id: string;           // 對應 Google 試算表 A 欄「編號」（數字格子 1~6，可重用；改名即新課）
   title: string;
   teacher: string;
-  category: string;
+  price: string;        // 預定價格（自由文字；留空則標籤隱藏，待試算表 I 欄 get_all 覆寫）
   votes: number;        // 初始票數（正式模式上線後由試算表 get_all 覆寫）
   threshold: number;    // 達標開課人數
   icon: string;         // 意象區符號（未來可替換為課程圖片）
@@ -22,7 +22,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '1',
     title: '托特塔羅・高階解盤專題',
     teacher: '學長老師',
-    category: '塔羅進階',
+    price: '',
     votes: 7,
     threshold: 10,
     icon: '🃏',
@@ -32,7 +32,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '2',
     title: '阿卡西靈魂藍圖深度工作坊',
     teacher: '古古老師',
-    category: '阿卡西紀錄',
+    price: '',
     votes: 3,
     threshold: 8,
     icon: '📖',
@@ -42,7 +42,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '3',
     title: '臼井靈氣三階・大師班',
     teacher: '學長老師',
-    category: '靈氣研修',
+    price: '',
     votes: 11,
     threshold: 12,
     icon: '👐',
@@ -52,7 +52,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '4',
     title: '占星合盤・關係星圖對話',
     teacher: '皮皮老師',
-    category: '占星專題',
+    price: '',
     votes: 5,
     threshold: 10,
     icon: '💫',
@@ -62,7 +62,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '5',
     title: '金錢靈氣・豐盛顯化工作坊',
     teacher: '黎夢老師',
-    category: '靈氣專題',
+    price: '',
     votes: 9,
     threshold: 10,
     icon: '🪙',
@@ -72,7 +72,7 @@ const wishlistCourses: WishlistCourse[] = [
     id: '6',
     title: '生命靈數・流年藍圖專題',
     teacher: '皮皮老師',
-    category: '生命靈數',
+    price: '',
     votes: 2,
     threshold: 8,
     icon: '🔢',
@@ -136,7 +136,7 @@ const wishlistCourses: WishlistCourse[] = [
         id="0"
         title="課程載入中"
         teacher=""
-        category=""
+        price=""
         votes={0}
         threshold={1}
         icon="✦"

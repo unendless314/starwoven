@@ -889,3 +889,35 @@
   3. **主導航（`src/components/Navbar.astro`）**：`navLinks` 新增 `{ name: '課程許願池', href: '/wishlist' }`（位於「活動與課程」與「星靈專欄」之間），桌面版與行動版選單自動同步；經估算 5 個項目在 1024px 斷點仍可單行容納，間距維持 `gap-6 xl:gap-8` 不變。
   4. **文件同步**：更新 `AGENTS.md`（路由表、nav 清單、元件說明）、`demo_docs/spec.md` 第 3 節 IA、`known_issues/README.md` 第 3 項（首頁行數與拆分現況）、`demo_docs/content_inventory.md`（新增第 8 節登錄 `/wishlist` 全頁文案與 SSR fallback 課程資料，並於 1.7 登錄首頁入口連結文案；審查回饋後補登）。
 - **備註**：許願池 Google 試算表後端、`PUBLIC_WISHLIST_API_URL`、localStorage 計票 key 皆為 origin 層級，遷移頁面無需任何後端或環境變數調整；若日後需再拆分（如獨立子路由），屆時另記 DEC。
+
+
+---
+
+## 2026-10-07 — DEC-050：課程許願池欄位調整（G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格）
+
+- **背景**：
+  - 業主盤點許願池試算表欄位後確認兩項調整：G 欄 `status` 原僅供內部管理，需接上 UI 作為手動下架開關（募集結束的課想暫時下架、已開課的課想停止集氣）；I 欄 `category`（分類標籤）實際用不到，改為 `price`（預定價格）自由文字，原樣顯示於卡片左上角標籤。
+  - K 欄 `style`（卡片配色）功能確認正常，本次維持不變。
+- **決策與執行**：
+  1. **G 欄 status 手動下架開關（純前端實作，Apps Script 的 status 部分零改動——`get_all` 本來就有回傳）**：
+     - `已結束`（trim 後完全一致比對）→ 卡片 `display: none` 隱藏下架；不清除任何資料，**清空該格即恢復上架**。
+     - `已開課` → 卡片保留顯示，但按鈕停用並顯示「✓ 已開課」（`BtnState` 新增 `'closed'`、`is-closed` 綠色樣式 `#58A497` 白字）、隱藏「✓ 達標籌備中」標籤、`vote()` 入口加守衛禁止送票。
+     - 空白或其他值 → 視同募集中，「✓ 達標籌備中」仍由票數 ≥ 門檻自動推導。
+     - 關鍵值以常數 `STATUS_OPENED`／`STATUS_ENDED` 定義於 `CourseWishlistCard.astro` script；新增 `applyStatus(card)` 統一管理卡片 display 與按鈕態——`syncFromSheet` 不再直接還原顯示（已結束卡片即使仍在清單中也維持隱藏）；`updateCardContent` 於 `renderCard` **之後**呼叫（避免達標標籤被重新顯示），`createCard` 於 `initCard` **之後**呼叫（closed 狀態蓋過 `refreshVotedState` 的按鈕判定）。
+  2. **I 欄 category → price（預定價格）**：自由文字原樣顯示（如「4 堂 2,000 元」），取代卡片左上角原分類標籤（同位置同深色膠囊樣式，掛勾 class `wish-category` 改名 `wish-price`）；留空 → 新卡片隱藏標籤、既有卡片保留原值（沿用既有「空字串不覆寫」同步慣例）。SSR fallback 六門課 `price` 一律留空**不虛構**，SSR 標籤以 `class:list` 條件隱藏，待業主在試算表 I 欄填入後由 `get_all` 覆寫。
+  3. **Apps Script key 改名（需業主部署新版本）**：`get_all` 的 JSON key `category` → `price`（仍讀第 9 欄），其餘程式碼零更動；Web App 網址不變、`.env` 不用改。部署前後短暫不一致期間，前端收不到 `price` key → 既有卡片標籤保留現值、不壞畫面。
+  4. **文件同步**：`demo_docs/course_wishlist_plan_v2.md` 加 v2.6 修訂沿革、欄位總表 G／I 欄說明、業主操作規則第 7 條（status 關鍵值須完全一致）、H~K 貼上區塊標題列改 `price`、Apps Script 程式碼 key 改名、第四節前端設計補 status 行為說明、第五節新增 Step 7（業主操作）與 Step 8（驗收）；`demo_docs/content_inventory.md` §8.4 表格「分類」欄改為「預定價格（試算表 I 欄）」，6 列標示（待業主填入）。
+- **業主側待辦**：① 試算表 I1 標題由 `category` 改為 `price`（程式依欄位位置讀取，改標題不影響運作）；② I 欄填入各課預定價格（自由文字）；③ Apps Script 貼上規劃書第三節新版程式碼並部署**新版本**；完成後依規劃書第五節 Step 7／8 驗收。
+
+---
+
+## 2026-10-07 — DEC-051：許願池規格書整併為 v3.0（`course_wishlist_plan_v3.md` 取代 v2），試算表 I1 標題改名完成
+
+- **背景**：
+  - 業主已完成試算表 I1 標題由 `category` 改為 `price`（原 v2 規劃書 Step 7 的第一項；程式依欄位位置讀取，改標題不影響運作）。
+  - 業主指示文件整併：不再以增量修訂維護 `demo_docs/course_wishlist_plan_v2.md`，改以「當前基準規格書」`demo_docs/course_wishlist_plan_v3.md`（v3.0 定稿）直接取代；`course_wishlist_plan.md`（v1）保持不動。
+- **決策與執行**：
+  1. **新建 `demo_docs/course_wishlist_plan_v3.md`（v3.0 定稿）**：整併 v2 全部有效內容（含 v2.6 之 G 欄 status 手動下架開關、I 欄 price 預定價格）——設計原則（試算表 SSOT、一票綁定「編號＋課名」、入帳原則）→ 試算表結構（A~K 最新欄位總表、配色白名單、業主操作規則含 status 關鍵值）→ Apps Script 完整現行版程式碼（JSON key 為 `price`、status 註解為手動下架開關；已 diff 核對與 v2 版僅標頭註解之差，供業主直接複製部署新版本）→ 前端設計摘要（以 `CourseWishlistCard.astro`／`wishlist.astro` 為準，不全文複述）→ 實施與驗收清單（已標完成：v2 Step 1~3、DEC-050 前端、I1 改名；未完成：I 欄填價格、Apps Script 部署新版本、build 上傳 VPS、瀏覽器驗收含 status 開關四項）→ 已知取捨。v2「修訂沿革」不搬移（歷史見本檔），檔頭以一行沿革摘要帶過；已失效的一次性操作（H~K 貼上區塊、A2:A7 改編號）不再收錄；驗收措辭中的「首頁」一併更正為許願池頁面（DEC-049 遷移後的現況）。
+  2. **刪除 `demo_docs/course_wishlist_plan_v2.md`**。
+  3. **引用更新**：`demo_docs/spec.md` 第 6 節預留銜接點表中許願池的「詳見 `course_wishlist_plan.md`」更新為 `course_wishlist_plan_v3.md`（原指向已被取代的 v1）；本檔 DEC-034/038/050 等歷史條目對 v1/v2 檔名的引用**保持原樣**（歷史紀錄不改寫）。其餘非歷史文件（`AGENTS.md`、`content_inventory.md`、`development_roadmap.md`、`known_issues/README.md`）經 grep 確認本無 plan 檔引用，無需更動。
+- **後續待辦（業主側，依 v3 第五節）**：I 欄填入各課預定價格 → Apps Script 貼上第三節現行版程式碼並部署**新版本** → build 上傳 VPS → Step 9 瀏覽器驗收。

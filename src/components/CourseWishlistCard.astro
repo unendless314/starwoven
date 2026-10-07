@@ -1,7 +1,8 @@
 ---
 // ==========================================
 // 課程許願池卡片（敲碗開課）v2
-// - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、分類、圖示、配色、票數、門檻與卡片排序
+// - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、預定價格、圖示、配色、票數、門檻與卡片排序
+// - G 欄 status 為手動下架開關：「已結束」＝卡片隱藏下架（清空即恢復）、「已開課」＝卡片保留但停止投票
 // - 一票綁定「編號＋課名」：localStorage 記住的是課名，改名即新課、所有人可重新許願
 // - 動態卡片一律 clone 自 wishlist.astro 的 <template id="wish-card-template">，與 SSR 卡片永遠同構
 // - 未設定 PUBLIC_WISHLIST_API_URL 時為純前端 Demo 模式（localStorage 模擬計票）
@@ -10,14 +11,14 @@ interface Props {
   id: string;
   title: string;
   teacher: string;
-  category: string;
+  price: string;
   votes: number;
   threshold: number;
   icon: string;
   gradient: string;
 }
 
-const { id, title, teacher, category, votes, threshold, icon, gradient } = Astro.props;
+const { id, title, teacher, price, votes, threshold, icon, gradient } = Astro.props;
 const reached = votes >= threshold;
 const percent = Math.min(100, Math.round((votes / threshold) * 100));
 ---
@@ -30,14 +31,14 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   data-votes={votes}
   data-threshold={threshold}
 >
-  <!-- 意象區：漸層底色 + 分類標籤 + 許願人數膠囊 -->
+  <!-- 意象區：漸層底色 + 預定價格標籤 + 許願人數膠囊 -->
   <div data-wish-hero class:list={['relative w-full aspect-16/10 bg-gradient-to-br flex items-center justify-center overflow-hidden', gradient]}>
     <span class="absolute -top-6 -left-6 w-24 h-24 bg-white/25 rounded-full blur-2xl"></span>
     <span class="absolute bottom-2 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></span>
 
-    <!-- 分類標籤（左上） -->
-    <span class="wish-category absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm">
-      {category}
+    <!-- 預定價格標籤（左上；留空時隱藏，待試算表 I 欄 get_all 覆寫） -->
+    <span class:list={['wish-price absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm', { hidden: !price }]}>
+      {price}
     </span>
 
     <!-- 許願人數膠囊（右上） -->
@@ -119,6 +120,11 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     border: 1.5px solid #F5A623;
     box-shadow: none;
   }
+
+  .wish-btn.is-closed {
+    background-color: #58A497;
+    color: #fff;
+  }
 </style>
 
 <script>
@@ -138,17 +144,23 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     orange: 'from-[#F8E0CD] to-[#EFC09C]',
   };
 
-  // get_all 回傳的單列課程資料（對應試算表 A~K 欄）
+  // get_all 回傳的單列課程資料（對應試算表 A~K 欄；price 為 I 欄自由文字）
   interface SheetRow {
     id: string | number;
     name?: string;
     total_votes?: number;
     threshold?: number;
+    status?: string;
     teacher?: string;
-    category?: string;
+    price?: string;
     icon?: string;
     style?: string;
   }
+
+  // G 欄 status 手動下架開關（須與試算表填寫值完全一致）：
+  // 已結束＝卡片隱藏下架（清空即恢復）；已開課＝卡片保留但停止投票；其他值視同募集中
+  const STATUS_OPENED = '已開課';
+  const STATUS_ENDED = '已結束';
 
   let sessionClientId: string | null = null;
 
@@ -216,15 +228,15 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     if (tag) tag.classList.toggle('hidden', !reached);
   }
 
-  type BtnState = 'default' | 'pending' | 'voted' | 'retry';
+  type BtnState = 'default' | 'pending' | 'voted' | 'retry' | 'closed';
 
   function setBtn(card: HTMLElement, state: BtnState) {
     const btn = card.querySelector<HTMLButtonElement>('.wish-btn');
     const label = card.querySelector<HTMLElement>('.wish-btn-label');
     if (!btn || !label) return;
-    btn.classList.remove('is-pending', 'is-voted', 'is-retry');
+    btn.classList.remove('is-pending', 'is-voted', 'is-retry', 'is-closed');
     // 以 disabled 屬性鎖定，同時阻擋滑鼠、觸控與鍵盤（Enter/Space）觸發
-    btn.disabled = state === 'pending' || state === 'voted';
+    btn.disabled = state === 'pending' || state === 'voted' || state === 'closed';
     if (state === 'pending') {
       btn.classList.add('is-pending');
       label.textContent = '✦ 許願傳送中…';
@@ -234,6 +246,9 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     } else if (state === 'retry') {
       btn.classList.add('is-retry');
       label.textContent = '連線稍候，點此重試';
+    } else if (state === 'closed') {
+      btn.classList.add('is-closed');
+      label.textContent = '✓ 已開課';
     } else {
       label.textContent = '✦ 我想一起';
     }
@@ -261,6 +276,33 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     } else if (card.dataset.voted === '1') {
       // 改名 = 新課：清除記憶體旗標、按鈕解鎖回預設態，開放對新課許願
       //（localStorage 中的舊課名紀錄留作無害殘留，不主動清除）
+      delete card.dataset.voted;
+      setBtn(card, 'default');
+    }
+  }
+
+  // G 欄 status 手動下架開關：已結束＝隱藏（清空即恢復上架）；已開課＝保留卡片但停止投票；
+  // 其他值（含空白）＝募集中。卡片 display 統一由此管理（syncFromSheet 不再直接還原顯示）
+  function applyStatus(card: HTMLElement) {
+    const status = card.dataset.wishStatus || '';
+    if (status === STATUS_ENDED) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = '';
+    if (status === STATUS_OPENED) {
+      card.querySelector<HTMLElement>('.wish-reached')?.classList.add('hidden');
+      setBtn(card, 'closed');
+      return;
+    }
+    // 募集中：若先前為已開課，需還原達標標籤與按鈕正確態
+    delete card.dataset.wishStatus;
+    if (card.dataset.pending === '1') return; // 投票進行中不插手
+    renderCard(card); // 還原「達標」標籤（已開課期間被隱藏）
+    if (hasVoted(card) || card.dataset.voted === '1') {
+      card.dataset.voted = '1';
+      setBtn(card, 'voted');
+    } else {
       delete card.dataset.voted;
       setBtn(card, 'default');
     }
@@ -298,11 +340,11 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
       card.dataset.courseName = name;
     }
     if (typeof row.teacher === 'string' && row.teacher) setText(card, '.wish-teacher', row.teacher);
-    if (typeof row.category === 'string' && row.category) {
-      const catEl = card.querySelector<HTMLElement>('.wish-category');
-      if (catEl) {
-        catEl.textContent = row.category;
-        catEl.classList.remove('hidden');
+    if (typeof row.price === 'string' && row.price) {
+      const priceEl = card.querySelector<HTMLElement>('.wish-price');
+      if (priceEl) {
+        priceEl.textContent = row.price;
+        priceEl.classList.remove('hidden');
       }
     }
     if (typeof row.icon === 'string' && row.icon) setText(card, '.wish-icon', row.icon);
@@ -323,6 +365,10 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     }
 
     renderCard(card);
+
+    // G 欄 status 手動下架開關（須在 renderCard 之後，避免「達標」標籤被重新顯示）
+    card.dataset.wishStatus = typeof row.status === 'string' ? row.status.trim() : '';
+    applyStatus(card);
   }
 
   // 動態建立卡片：clone 模板保證與 SSR 卡片同構，再以 textContent 填值（無 HTML 注入風險）
@@ -339,15 +385,15 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
 
     setText(card, '.wish-title', card.dataset.courseName);
     setText(card, '.wish-teacher', typeof row.teacher === 'string' ? row.teacher : '');
-    // 分類留空 → 隱藏標籤
-    const catEl = card.querySelector<HTMLElement>('.wish-category');
-    const cat = typeof row.category === 'string' ? row.category : '';
-    if (catEl) {
-      if (cat) {
-        catEl.textContent = cat;
-        catEl.classList.remove('hidden');
+    // 預定價格留空 → 隱藏標籤
+    const priceEl = card.querySelector<HTMLElement>('.wish-price');
+    const price = typeof row.price === 'string' ? row.price : '';
+    if (priceEl) {
+      if (price) {
+        priceEl.textContent = price;
+        priceEl.classList.remove('hidden');
       } else {
-        catEl.classList.add('hidden');
+        priceEl.classList.add('hidden');
       }
     }
     setText(card, '.wish-icon', typeof row.icon === 'string' && row.icon ? row.icon : '✦');
@@ -356,7 +402,11 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     const styleKey = String(row.style || '');
     applyStyle(card, STYLE_MAP[styleKey] ? styleKey : 'blue');
 
+    // G 欄 status：initCard 前先寫入，initCard 之後才套用（closed 狀態須蓋過 refreshVotedState 的按鈕判定）
+    card.dataset.wishStatus = typeof row.status === 'string' ? row.status.trim() : '';
+
     initCard(card);
+    applyStatus(card);
     return card;
   }
 
@@ -379,7 +429,8 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
         card = createCard(row) || undefined;
       }
       if (card) {
-        card.style.display = ''; // 重新出現在清單中時還原顯示
+        // 卡片 display 統一由 applyStatus 管理（updateCardContent／createCard 內已呼叫）：
+        // 「已結束」卡片即使仍在清單中也維持隱藏，清空 G 欄重新上架時才還原顯示
         grid.appendChild(card); // 既有節點會被搬移，依列序歸位
       }
     });
@@ -409,6 +460,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   async function vote(card: HTMLElement) {
     const id = card.dataset.courseId;
     if (!id) return;
+    if (card.dataset.wishStatus === STATUS_OPENED) return; // 已開課：停止投票（正常情況按鈕已 disabled）
     // data-voted 為記憶體旗標：即使 localStorage 停用，本頁已投票的卡片也不會重複送票
     if (hasVoted(card) || card.dataset.voted === '1') {
       setBtn(card, 'voted');
