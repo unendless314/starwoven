@@ -13,7 +13,7 @@
   const DEMO_KEY = 'starwoven_wish_demo_votes';
   const voteKey = (id: string) => `starwoven_wish_${id}`;
 
-  // 配色白名單（K 欄鍵值 → Tailwind 漸層）：
+  // 配色白名單（L 欄鍵值 → Tailwind 漸層，共 8 色）：
   // 以完整 class 字串常駐於此，Tailwind v4 自動內容掃描保證收進 CSS bundle
   const STYLE_MAP: Record<string, string> = {
     pink: 'from-[#F3D9E4] to-[#E3B7CC]',
@@ -22,6 +22,8 @@
     purple: 'from-[#E4DDF0] to-[#C4B4DC]',
     gold: 'from-[#FBEBC8] to-[#F5D98D]',
     orange: 'from-[#F8E0CD] to-[#EFC09C]',
+    sage: 'from-[#E2EBD8] to-[#C3D9B5]',
+    sand: 'from-[#EFE9E1] to-[#DDD2C4]',
   };
 
   // get_all 回傳的單列課程資料（對應試算表 A~L 欄；duration 為 I 欄、price 為 J 欄自由文字）

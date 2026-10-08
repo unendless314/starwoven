@@ -164,6 +164,7 @@ interface Workshop {
   icon: string;
   highlights?: string[];
   suitableFor?: string;
+  youtubeId?: string;
 }
 
 // 主題體驗課程資料
@@ -182,6 +183,7 @@ const workshops: Workshop[] = [
     image: imgWorkshopMeihua,
     badge: '專業研修',
     icon: 'meihua',
+    youtubeId: 'pWMHtSA-h94',
   },
   {
     id: 'bazi',
@@ -214,11 +216,11 @@ const workshops: Workshop[] = [
     schedule: [
       {
         day: '11/08（日）Day 1',
-        topic: '第一天主題（主題即將公佈）',
+        topic: '宮位四化：看懂情緒、脾氣與價值觀',
       },
       {
         day: '11/15（日）Day 2',
-        topic: '第二天主題（主題即將公佈）',
+        topic: '星曜基礎：讀懂性格與特質',
       },
     ],
     image: imgWorkshopZiwei,
@@ -593,57 +595,69 @@ const workshops: Workshop[] = [
                 isReversed ? 'flex-row-reverse' : 'flex-row'
               ]}>
                 
-                <!-- 9:16 直式短影音佔位（IG Reels / YouTube Shorts 規格） -->
+                <!-- 9:16 直式短影音（IG Reels / YouTube Shorts 規格） -->
                 <div class="w-[40%] sm:w-[32%] md:w-[28%] lg:w-[24%] max-w-[280px] shrink-0 self-start lg:sticky lg:top-24">
-                  <div class="relative w-full aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#1E1B3A] via-[#2D264E] to-[#120F24] border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md group-hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-2.5 sm:p-4 text-white">
-                    
-                    {/* 背景：若有自訂海報/影片截圖 */}
-                    {w.image && (
-                      <img
-                        src={w.image}
-                        alt={`${w.title} 影片截圖`}
-                        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
-                      />
-                    )}
-
-                    {/* 微光暗部漸層疊層，確保字體清晰 */}
-                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/60 pointer-events-none"></div>
-
-                    <!-- 頂部資訊列：Badge + Shorts/Reels 標籤 -->
-                    <div class="relative z-10 flex items-center justify-between gap-1">
-                      <span class="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20 tracking-wider">
-                        {w.badge}
-                      </span>
-                      <span class="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur-md text-white font-medium shadow-xs">
-                        <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
-                          <polygon points="5 3 19 12 5 21 5 3" />
-                        </svg>
-                        <span class="hidden sm:inline">Shorts</span>
-                      </span>
+                  {w.youtubeId ? (
+                    <div class="relative w-full aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden bg-black border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md group-hover:shadow-xl transition-all duration-300">
+                      <iframe
+                        src={`https://www.youtube-nocookie.com/embed/${w.youtubeId}`}
+                        title={`${w.title} 介紹短影音`}
+                        class="w-full h-full border-0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen
+                        loading="lazy"
+                      ></iframe>
                     </div>
+                  ) : (
+                    <div class="relative w-full aspect-[9/16] rounded-2xl sm:rounded-3xl overflow-hidden bg-gradient-to-br from-[#1E1B3A] via-[#2D264E] to-[#120F24] border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md group-hover:shadow-xl transition-all duration-300 flex flex-col justify-between p-2.5 sm:p-4 text-white">
+                      {/* 背景：若有自訂海報/影片截圖 */}
+                      {w.image && (
+                        <img
+                          src={w.image}
+                          alt={`${w.title} 影片截圖`}
+                          class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-60"
+                        />
+                      )}
 
-                    <!-- 中央：影音佔位視覺標記（無假點擊暗示，真實標示籌備中） -->
-                    <div class="relative z-10 flex flex-col items-center justify-center my-auto py-2 text-center select-none">
-                      <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center text-white/90 shadow-md">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current translate-x-0.5 opacity-80" viewBox="0 0 24 24">
-                          <polygon points="6 4 20 12 6 20 6 4" />
-                        </svg>
+                      {/* 微光暗部漸層疊層，確保字體清晰 */}
+                      <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/60 pointer-events-none"></div>
+
+                      <!-- 頂部資訊列：Badge + Shorts/Reels 標籤 -->
+                      <div class="relative z-10 flex items-center justify-between gap-1">
+                        <span class="text-[10px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-white border border-white/20 tracking-wider">
+                          {w.badge}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-red-500/80 backdrop-blur-md text-white font-medium shadow-xs">
+                          <svg class="w-2.5 h-2.5 fill-current" viewBox="0 0 24 24">
+                            <polygon points="5 3 19 12 5 21 5 3" />
+                          </svg>
+                          <span class="hidden sm:inline">Shorts</span>
+                        </span>
                       </div>
-                      <span class="text-[10px] sm:text-xs text-white/85 font-medium tracking-wider mt-2">
-                        短影音籌備中
-                      </span>
-                      <span class="text-[9px] sm:text-[10px] text-white/50 hidden sm:inline mt-0.5">
-                        9:16 Reels / Shorts
-                      </span>
-                    </div>
 
-                    <!-- 底部：課程代碼與標籤 -->
-                    <div class="relative z-10 flex items-center justify-between text-[10px] sm:text-xs text-white/75 border-t border-white/10 pt-1.5">
-                      <span class="font-semibold truncate">{w.code}</span>
-                      <span class="text-[9px] sm:text-[10px] text-white/50 shrink-0">Reels</span>
-                    </div>
+                      <!-- 中央：影音佔位視覺標記（無假點擊暗示，真實標示籌備中） -->
+                      <div class="relative z-10 flex flex-col items-center justify-center my-auto py-2 text-center select-none">
+                        <div class="w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/15 backdrop-blur-md border border-white/30 flex items-center justify-center text-white/90 shadow-md">
+                          <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current translate-x-0.5 opacity-80" viewBox="0 0 24 24">
+                            <polygon points="6 4 20 12 6 20 6 4" />
+                          </svg>
+                        </div>
+                        <span class="text-[10px] sm:text-xs text-white/85 font-medium tracking-wider mt-2">
+                          短影音籌備中
+                        </span>
+                        <span class="text-[9px] sm:text-[10px] text-white/50 hidden sm:inline mt-0.5">
+                          9:16 Reels / Shorts
+                        </span>
+                      </div>
 
-                  </div>
+                      <!-- 底部：課程代碼與標籤 -->
+                      <div class="relative z-10 flex items-center justify-between text-[10px] sm:text-xs text-white/75 border-t border-white/10 pt-1.5">
+                        <span class="font-semibold truncate">{w.code}</span>
+                        <span class="text-[9px] sm:text-[10px] text-white/50 shrink-0">Reels</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 <!-- 課程詳細文案說明區塊 -->

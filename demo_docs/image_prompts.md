@@ -320,7 +320,10 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `首頁-A` | 塔羅牌・世界牌 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 舞者花環四大神獸白線 | 756252877462802 | 淘汰 (備查) | 移至 rejected | `home_a_tarot_world_v1.webp` |
 | `首頁-A` | 塔羅牌・世界牌 (v2) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 彩虹漸層舞者花環四大神獸 | 115754867374705 | 淘汰 (備查) | 移至 rejected | `home_a_tarot_world_v2.webp` |
 | `首頁-A` | 塔羅牌・世界牌 (v3) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 飽和彩虹光暈舞者花環神獸 | 1055348331508342 | 採用上架 | 轉 WebP Q85 | `home_a_tarot_world_v3.webp` |
+| `首頁-A` | 命運之輪 (v1) | 2026-10-08 | ComfyUI | 圓形天體命運之輪星盤白線 | 464187154494867 | 採用上架 | 轉 WebP Q85 (保留背景) | `home_a_wheel_of_fortune_v1.webp` |
+| `首頁-A` | 光之編織・星靈織語 (v1) | 2026-10-08 | ComfyUI | 玫瑰粉晶雙手編織心形星團絲線 | 475590790854527 | 採用上架 | 轉 WebP Q85 (保留背景) | `home_a_star_weaver_v1.webp` |
 | `首頁-B` | 十二星座星盤輪盤 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 3D透視十二星座星盤彩虹光 | 885617653962545 | 採用上架 | 轉 WebP Q85 (1:1) | `home_b_zodiac_wheel_v1.webp` |
+| `首頁-B` | 天體星盤儀與黃金星輪 (v1) | 2026-10-08 | ComfyUI | 天體星盤儀渾天儀日月同心星環金框 | 265829913854434 | 採用上架 | 轉 WebP Q85 (保留背景) | `home_b_celestial_astrolabe_v1.webp` |
 | `首頁-C` | 命理諮詢・行星星環 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 土星造型手繪細線條星芒 | 992106538623070 | 採用上架 | 去背 + 轉 WebP | `home_c_planet_stars_v1.webp` |
 | `首頁-D` | 課程學習・筆記本筆 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 翻開手帳筆記本與筆星芒 | 808022016837652 | 採用上架 | 去背 + 轉 WebP | `home_d_open_book_v1.webp` |
 | `首頁-E` | 實體活動・三人社群 | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈性夥伴圍坐聚會手繪星芒 | 1004066584927966 | 採用上架 | 去背 + 轉 WebP | `home_e_community_trio_v1.webp` |

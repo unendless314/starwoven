@@ -14,10 +14,17 @@ scripts/process_asset.py — 星靈織語 Starwoven 素材後製與 WebP 轉換�
 
 import os
 import sys
+import io
 import json
 import argparse
 from datetime import date
 from PIL import Image
+
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
 def extract_comfyui_metadata(img_path):
     seed = None
