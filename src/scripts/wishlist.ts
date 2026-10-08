@@ -57,6 +57,41 @@
 
   let sessionClientId: string | null = null;
 
+  // JSONP 傳輸（DEC-067）：Apps Script 的 ContentService 一律先 302 轉址到
+  // script.googleusercontent.com 才回傳內容；行動瀏覽器（iOS 全系列 WebKit、
+  // Android Chrome）對「跨網域＋302 轉址」的 fetch/CORS 處理會直接拒絕請求
+  // （桌面瀏覽器則正常跟隨）。<script> 標籤載入不受 CORS 管轄且自動跟隨轉址，
+  // 故 get_all／vote 一律改用 JSONP，全平台行為一致。
+  // 逾時以計時器實現；逾時後保留 noop 回呼讓遲到的回應靜默落地（不刪除以免
+  // 遲到腳本呼叫已刪除的全域函式而在 console 拋錯），成功／失敗時才清除。
+  let jsonpSeq = 0;
+  function jsonp<T>(url: string, timeoutMs: number): Promise<T> {
+    return new Promise((resolve, reject) => {
+      const cb = `__wishJsonp_${++jsonpSeq}`;
+      const win = window as unknown as Record<string, unknown>;
+      const script = document.createElement('script');
+      const timer = window.setTimeout(() => {
+        win[cb] = () => {}; // 逾時：遲到回應靜默落地
+        script.remove();
+        reject(new Error('JSONP_TIMEOUT'));
+      }, timeoutMs);
+      win[cb] = (data: T) => {
+        window.clearTimeout(timer);
+        delete win[cb];
+        script.remove();
+        resolve(data);
+      };
+      script.onerror = () => {
+        window.clearTimeout(timer);
+        delete win[cb];
+        script.remove();
+        reject(new Error('JSONP_ERROR'));
+      };
+      script.src = `${url}&callback=${cb}`;
+      document.head.appendChild(script);
+    });
+  }
+
   function generateUUID(): string {
     return (
       (crypto.randomUUID && crypto.randomUUID()) ||
@@ -366,19 +401,15 @@
     });
   }
 
-  // 進站與 course_changed 後共用：向試算表拉取最新全量資料
+  // 進站與 course_changed 後共用：向試算表拉取最新全量資料（JSONP，見上方說明）
   // 同步請求序號：初始同步與 course_changed 重新同步可能併發，回應順序不保證；
   // 只採用「最後一次發出」的回應，避免較舊回應亂序覆寫較新的課程資料。
   // 12 秒逾時：Apps Script 冷啟動偶有 10 秒級延遲；逾時／格式異常且頁面尚無卡片 → 錯誤區塊
   let syncSeq = 0;
   function refreshFromSheet() {
     const mySeq = ++syncSeq;
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 12000);
-    fetch(`${API_URL}?action=get_all`, { signal: controller.signal })
-      .then((r) => r.json())
+    jsonp<{ status?: string; data?: unknown }>(`${API_URL}?action=get_all`, 12000)
       .then((d) => {
-        window.clearTimeout(timer);
         if (mySeq !== syncSeq) return; // 已有更新的同步請求發出，忽略此過期回應
         if (!d || d.status !== 'success' || !Array.isArray(d.data)) {
           showLoadError(); // 回應格式異常：視同連線失敗
@@ -387,7 +418,6 @@
         syncFromSheet(d.data as SheetRow[]);
       })
       .catch(() => {
-        window.clearTimeout(timer);
         if (mySeq !== syncSeq) return;
         showLoadError();
       });
@@ -430,14 +460,16 @@
       return;
     }
 
-    // 正式模式：呼叫 Apps Script，8 秒逾時自動斷開
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), 8000);
+    // 正式模式：呼叫 Apps Script（JSONP，見上方說明），8 秒逾時自動斷開
     try {
       const url = `${API_URL}?action=vote&course_id=${encodeURIComponent(id)}&course_name=${encodeURIComponent(snapshotName)}&client_id=${encodeURIComponent(getClientId())}`;
-      const res = await fetch(url, { signal: controller.signal });
-      const data = await res.json();
-      window.clearTimeout(timer);
+      const data = await jsonp<{
+        status?: string;
+        code?: string;
+        course_name?: string;
+        course_status?: string;
+        votes?: number;
+      }>(url, 8000);
 
       const status: string = (data && data.status) || '';
       const responseName: string = data && typeof data.course_name === 'string' ? data.course_name : '';
@@ -507,7 +539,6 @@
         throw new Error((data && data.code) || 'VOTE_FAILED');
       }
     } catch {
-      window.clearTimeout(timer);
       delete card.dataset.pending;
       // 等待期間卡片已被 get_all 換成新課：不回填舊課票數快照、不進重試態，
       // 解除鎖定並重新同步，由新回應帶入新課的正確票數

@@ -1,8 +1,8 @@
 # 星靈織語 Starwoven — 課程許願池規格書 v3：全面試算表驅動
 
-> **文件狀態**：v3.4（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~055）
+> **文件狀態**：v3.5（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~055、067）
 > **建立日期**：2026-10-07（v3.0 整併定稿；v3.1 骨架卡改造 DEC-052；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
-> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）→ 2.9 寫入前核對改讀 A~G，收票瞬間與移列重定位後的狀態以緊貼寫入前的複查為準（DEC-054，v3.3）→ 新增 I 欄 duration 課程時數（price／icon／style 順延為 J／K／L），價格自意象區左上角標籤移至講師下方資訊區純文字行（DEC-055，v3.4）。
+> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）→ 2.9 寫入前核對改讀 A~G，收票瞬間與移列重定位後的狀態以緊貼寫入前的複查為準（DEC-054，v3.3）→ 新增 I 欄 duration 課程時數（price／icon／style 順延為 J／K／L），價格自意象區左上角標籤移至講師下方資訊區純文字行（DEC-055，v3.4）→ 前後端傳輸改為 JSONP，修復行動裝置（iOS／Android）fetch 被 Apps Script 302 跨網域轉址阻擋導致全滅的問題（DEC-067，v3.5）。
 > **核心目標**：Google 試算表成為許願池的**單一資料來源（SSOT）**——業主在手機上改試算表，網頁重整即更新，**不需要重新部署**。
 
 ---
@@ -84,12 +84,26 @@
  * 5. vote 寫入前再次核對目標列 A~G（編號、課名與 G 欄狀態一次讀取），防止業主移列/改名/收票瞬間寫錯課或收下已關閉的票
  * 6. 課名以 SHA-256 雜湊後才進快取鍵（CacheService key 上限 250 字元）
  * 7. D 欄入帳後的附屬寫入（flush、快取）以獨立 try/catch 保護，失敗仍回傳成功（見原則 B）
+ * 8. JSONP 支援：請求帶 callback 參數時回傳 JavaScript（callback(...)），
+ *    供前端以 <script> 標籤載入——繞開行動瀏覽器對 Apps Script 302 跨網域
+ *    轉址的 fetch/CORS 限制（DEC-067）；未帶 callback 時維持純 JSON 不變
  */
 
 // 課名 SHA-256 雜湊：無論課名多長，快取鍵都是固定長度
 function nameHash(s) {
   var digest = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s, Utilities.Charset.UTF_8);
   return digest.map(function (b) { return ("0" + ((b + 256) % 256).toString(16)).slice(-2); }).join("");
+}
+
+// 統一回應出口：有合法 callback 參數 → JSONP（JavaScript），否則純 JSON。
+// 參數 json 為已 JSON.stringify 的字串；callback 名以白名單格式驗證（識別字規則），避免注入任意 JavaScript。
+function respond(e, json) {
+  var cb = e && e.parameter ? e.parameter.callback : null;
+  if (cb && /^[a-zA-Z_$][a-zA-Z0-9_$]{0,98}$/.test(cb)) {
+    return ContentService.createTextOutput(cb + "(" + json + ");")
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+  return ContentService.createTextOutput(json).setMimeType(ContentService.MimeType.JSON);
 }
 
 function doGet(e) {
@@ -124,28 +138,27 @@ function doGet(e) {
         style: String(rows[i][11] == null ? "" : rows[i][11])     // L 欄：配色
       });
     }
-    return ContentService.createTextOutput(JSON.stringify({ status: "success", data: list }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return respond(e, JSON.stringify({ status: "success", data: list }));
   }
 
   // 2. vote：單一課程許願 +1（全流程排他鎖保護）
   if (action === "vote" && courseId) {
     // 2.1 驗證 client_id 格式與長度（長度 <= 64，避免 Cache key 過長造成寫入例外）
     if (!clientId || clientId.length > 64 || !/^[a-zA-Z0-9\-_]+$/.test(clientId)) {
-      return ContentService.createTextOutput(JSON.stringify({
+      return respond(e, JSON.stringify({
         status: "error",
         code: "INVALID_CLIENT_ID",
         message: "訪客裝置識別碼無效"
-      })).setMimeType(ContentService.MimeType.JSON);
+      }));
     }
 
     // 2.2 驗證 course_name：必帶且長度合理（投票綁定「編號＋課名」）
     if (!courseName || courseName.length > 100) {
-      return ContentService.createTextOutput(JSON.stringify({
+      return respond(e, JSON.stringify({
         status: "error",
         code: "INVALID_COURSE_NAME",
         message: "課程資訊有誤，請重新整理頁面"
-      })).setMimeType(ContentService.MimeType.JSON);
+      }));
     }
 
     // 2.3 獲取排他鎖（最多等待 10 秒）
@@ -153,11 +166,11 @@ function doGet(e) {
     try {
       var hasLock = lock.tryLock(10000);
       if (!hasLock) {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "error",
           code: "SERVER_BUSY",
           message: "伺服器忙碌中，請稍候重試"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.4 鎖內定位課程列（A 欄字串比對：試算表中的數字 1 與網址參數 "1" 可正確對上）
@@ -178,53 +191,52 @@ function doGet(e) {
       }
       var target = findRow();
       if (!target) {
-        return ContentService.createTextOutput(JSON.stringify({ status: "error", message: "找不到指定課程" }))
-          .setMimeType(ContentService.MimeType.JSON);
+        return respond(e, JSON.stringify({ status: "error", message: "找不到指定課程" }));
       }
 
       // 2.5 版本核對：訪客投票時看到的課名 ≠ 試算表目前課名 → 課程已換，安全失敗（可重試、不計票、不記已投）
       if (target.name !== courseName) {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "course_changed",
           course_id: courseId,
           course_name: target.name, // 附目前課名，供前端即時更新卡片
           message: "課程內容已更新，請重新許願"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.6 狀態檢查（手動下架開關的後端強制）：已開課／已結束不計票、不記已投、不占限流額度
       // 防呆情境：訪客分頁停留期間業主收票（舊分頁按鈕仍可點），或直接呼叫公開 vote 端點
       if (target.status === "已開課" || target.status === "已結束") {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "course_closed",
           course_id: courseId,
           course_name: target.name,
           course_status: target.status, // 附實際狀態值，供前端即時把卡片轉為停投或下架
           message: target.status === "已開課" ? "此課程已開課，感謝您的支持！" : "此課程許願已結束，感謝您的支持！"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.7 【鎖內檢查 1】裝置防重複：快取鍵納入課名雜湊
       // 格子改名重用後，舊課的快取鍵（含舊課名雜湊）不再命中，訪客可對新課許願
       var cacheKey = "voted_" + courseId + "_" + nameHash(target.name) + "_" + clientId;
       if (cache.get(cacheKey)) {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "already_voted",
           course_id: courseId,
           course_name: target.name, // 後端確認過的課名，前端只記這個
           message: "您已經為此課程許願過囉！"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.8 【鎖內檢查 2】全域滑動視窗防暴衝（單課 10 秒上限 10 票；鍵含課名雜湊，換課後重新計算）
       var rateKey = "rate_limit_" + courseId + "_" + nameHash(target.name);
       var currentRate = Number(cache.get(rateKey)) || 0;
       if (currentRate >= 10) {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "error",
           code: "RATE_LIMITED",
           message: "當前許願人數熱烈，系統保護中，請稍候 10 秒再試！"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.9 寫入前核對：一次讀取目標列 A~G 欄，（編號, 課名）須仍匹配、G 欄狀態須仍可投票
@@ -235,12 +247,12 @@ function doGet(e) {
       if (String(check[0]) !== String(courseId) || String(check[1] == null ? "" : check[1]) !== courseName) {
         target = findRow(); // 列已移動：重新定位一次（含最新課名與狀態）
         if (!target || target.name !== courseName) {
-          return ContentService.createTextOutput(JSON.stringify({
+          return respond(e, JSON.stringify({
             status: "course_changed",
             course_id: courseId,
             course_name: target ? target.name : "",
             message: "課程內容已更新，請重新許願"
-          })).setMimeType(ContentService.MimeType.JSON);
+          }));
         }
         finalStatus = target.status;
       }
@@ -248,13 +260,13 @@ function doGet(e) {
       // 寫入前狀態再確認：已開課／已結束即拒收（不計票、不記已投、不占限流）
       // 殘餘取捨：本讀取與 2.10 setValue 分屬兩次 API 呼叫，中間極小空窗在 Apps Script 下無法原子化
       if (finalStatus === "已開課" || finalStatus === "已結束") {
-        return ContentService.createTextOutput(JSON.stringify({
+        return respond(e, JSON.stringify({
           status: "course_closed",
           course_id: courseId,
           course_name: target.name,
           course_status: finalStatus, // 附實際狀態值，供前端即時把卡片轉為停投或下架
           message: finalStatus === "已開課" ? "此課程已開課，感謝您的支持！" : "此課程許願已結束，感謝您的支持！"
-        })).setMimeType(ContentService.MimeType.JSON);
+        }));
       }
 
       // 2.10 執行寫入：只更新 D 欄（真實票數），絕不覆蓋業主設定之 C 欄底數
@@ -275,23 +287,21 @@ function doGet(e) {
         // 靜默略過：本票已成立，以 success 回應為準
       }
 
-      return ContentService.createTextOutput(JSON.stringify({
+      return respond(e, JSON.stringify({
         status: "success",
         course_id: courseId,
         course_name: target.name, // 後端確認過的課名，前端只記這個
         votes: target.base + newRealVotes
-      })).setMimeType(ContentService.MimeType.JSON);
+      }));
 
     } catch (err) {
-      return ContentService.createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-        .setMimeType(ContentService.MimeType.JSON);
+      return respond(e, JSON.stringify({ status: "error", message: err.toString() }));
     } finally {
       lock.releaseLock();
     }
   }
 
-  return ContentService.createTextOutput(JSON.stringify({ status: "invalid_action" }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return respond(e, JSON.stringify({ status: "invalid_action" }));
 }
 ```
 
@@ -302,11 +312,12 @@ function doGet(e) {
 > 實作細節以程式碼為準：`src/components/CourseWishlistCard.astro`（卡片版型與樣式）、`src/scripts/wishlist.ts`（全部互動邏輯；由頁面層級 `<script>` 引入——元件僅被 `<template>` 使用時，Astro 會將元件腳本標籤插入 `<template>` 內成為 inert 永不執行，故不可放回元件）與 `src/pages/wishlist.astro`（頁面、骨架卡、`#wish-error`、`<template id="wish-card-template">`）。本節僅摘要關鍵機制。
 
 - **卡片單一版型來源**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，**所有課程卡片一律 clone 此模板動態建立**（SSR 不寫死課程，未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-duration`（課程時數行）／`wish-price`（課程費用行）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`；頁面元素掛勾：`data-wish-skeleton`（SSR 骨架卡）／`#wish-error`＋`#wish-error-reload`（載入失敗錯誤區塊）。時數／費用兩行的 `hidden` 掛在整行 `<p>` 上，腳本以 `closest('p')` 切換顯示。
+- **JSONP 傳輸（DEC-067）**：`get_all` 與 `vote` 一律以 `<script>` 標籤 JSONP 呼叫 Apps Script（帶 `callback` 參數，後端 `respond()` 包成 `callback(...)` 回傳 JavaScript；callback 名於後端以識別字白名單驗證防注入）。原因：Apps Script 一律先 302 轉址至 `script.googleusercontent.com` 才回傳內容，行動瀏覽器（iOS 全系列 WebKit、Android Chrome）對跨網域轉址的 fetch/CORS 會拒絕（桌面正常），導致手機／平板全滅顯示「許願池暫時連線異常」；`<script>` 載入不受 CORS 管轄且自動跟隨轉址。逾時以計時器實現（get_all 12 秒／vote 8 秒），逾時後保留 noop 回呼讓遲到回應靜默落地；未帶 callback 的純 JSON 呼叫（如 curl 測試）行為不變。
 - **進站同步 `syncFromSheet(list)`**：`get_all` 回應成功**且 `data` 為陣列**才執行（請求有 12 秒逾時；逾時／失敗／格式異常且頁面尚無卡片 → 顯示 `#wish-error` 錯誤區塊，詳下「首屏骨架卡」條）。**首次成功同步先 `removeSkeletons()` 移除骨架卡**，再依列序逐列處理：既有卡片 `updateCardContent`、新列 `createCard`、每張以 `appendChild` 歸位（**DOM 順序 = 試算表列順序**）；不在清單中的卡片 `display: none` 隱藏（不刪除，重新出現時由 `applyStatus` 依 G 欄狀態決定是否還原）。同步請求以遞增序號 `syncSeq` 防較舊回應亂序覆寫。
 - **`updateCardContent` 欄位同步**：課名／講師／課程時數／預定價格／圖示以 `textContent` 賦值（無 HTML 注入風險），**空字串 → 既有卡片保留原值不覆寫**；門檻為正整數才採用；票數受守衛保護（`data-pending`／`data-voted` 中的卡片不覆寫，**改名即新課時例外**直接套用新課票數）；配色 `applyStyle()` 走白名單（鍵值非法 → 既有卡片保留原樣、新卡片預設 `blue`）。
 - **G 欄 status 手動下架開關（`applyStatus`）**：每次同步將 `row.status` trim 後寫入 `data-wish-status` 並呼叫 `applyStatus`——`已結束`＝卡片 `display: none` 隱藏下架（清空即恢復上架）；`已開課`＝隱藏「✓ 達標籌備中」、按鈕停用顯示「✓ 已開課」（`is-closed` 綠色樣式 `#58A497`），且 `vote()` 入口有守衛禁止送票；其他值（含空白）＝募集中（還原達標標籤與按鈕正確態）。**卡片 display 統一由 `applyStatus` 管理**；`updateCardContent` 中須在 `renderCard` **之後**呼叫（避免達標標籤被重新顯示），`createCard` 中須在 `initCard` **之後**呼叫（蓋過已許願判定）。
 - **「認名字」投票記憶**：localStorage `starwoven_wish_{編號}` 存**課程名稱**；已許願判定 = 儲存值 === 卡片當前課名（根元素 `data-course-name` 為唯一來源）。判定時機：初始化、get_all 同步後、投票結束。投票請求帶 `course_name` 快照；回應抵達**先比對回應課名與卡片當前課名**，不一致（含後端主動回傳 `course_changed`）→ 回滾、清 pending、**不寫記憶、不鎖定**、重新同步後可對新課許願；一致才走 `success`／`already_voted` 分支，且只以後端確認過的課名寫入 localStorage；`course_closed`（等待期間業主收票，後端鎖內狀態檢查拒收）→ 回滾、清 pending、不記已投，依後端回報的 `course_status` 即時把卡片轉停投（已開課）或下架（已結束），未附狀態值時保守視同已開課。
-- **既有投票防護（v1 起沿用）**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙重鎖定、`data-voted` 記憶體旗標、8 秒逾時自動斷開。
+- **既有投票防護（v1 起沿用）**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙重鎖定、`data-voted` 記憶體旗標、8 秒逾時自動斷開（DEC-067 起由 JSONP 計時器實現，語義不變）。
 - **首屏骨架卡＋載入失敗錯誤區塊（DEC-052）**：SSR 不寫死課程——Grid 內為 6 張 `data-wish-skeleton` 灰階佔位卡（`animate-pulse`，雙主題），首次同步成功由 `removeSkeletons()` 移除；`get_all` 逾時（12 秒）／網路失敗／回應格式異常**且頁面尚無任何課程卡片**時，移除骨架卡並顯示 `#wish-error`（「許願池暫時連線異常」＋重新整理按鈕），另備 `<noscript>` 提示——**壞掉就明白顯示壞掉，不顯示過期內容**；已有卡片的背景再同步失敗則維持靜默。
 - **Demo 模式**：未設 `PUBLIC_WISHLIST_API_URL` 時純前端模擬——示範課程常數 `DEMO_COURSES`（寫於元件 script，內容為示意、不與試算表同步）經同一 `syncFromSheet` 建卡，本機記票；下架開關僅在正式模式生效。注意：正式 build 因 API 網址已編譯為非空字串，`!API_URL` 分支被 minifier 死碼移除，僅無環境變數的 build 含 Demo 資料。
 - **GA4**：`course_wish_click` 事件參數 `{ course_id, course_name, mode }`；`mode` 值含 `demo`／`live`／`already_voted`／`course_changed`／`course_closed`。GA 後台如需以 `course_name` 出報表，需另於 GA4 自訂維度登錄（選配，不影響功能）。
@@ -326,6 +337,7 @@ function doGet(e) {
 - [x] **Step 6（業主）**：試算表在 H（講師）與原 I（價格）之間**插入一欄**作為新 I 欄 `duration`（課程時數）——原 price／icon／style 順延為 J／K／L 欄（程式依欄位位置讀取，標題名稱不影響運作）；I 欄填入各課時數、J 欄填入各課預定價格（皆自由文字，如「4 堂 × 2 小時」、「4 堂 2,000 元」；留空的課程該行不顯示）——2026-10-08 完成（已透過 API 實測確認欄位對位正確）
 - [x] **Step 7（業主）**：Apps Script **整段取代**為第三節現行版程式碼（`get_all` 新增 `duration` key 讀第 9 欄，`price`／`icon`／`style` 改讀第 10／11／12 欄）→ 部署為**新版本**（Web App 網址不變，`.env` 不用改）——2026-10-08 完成（get_all 回應含 `duration` 且各欄對位正確；vote 端點驗證邏輯正常）
   - ⚠️ **Step 6 與 Step 7 屬單一維護窗口操作，須緊接執行**：欄位依**位置**讀取，「先插欄後部署」會讓舊腳本把時數當價格、價格當圖示顯示；「先部署後插欄」則反過來把價格當時數、配色鍵值當圖示——兩種順序都會錯位，不存在安全先後。本次網站尚未上線，窗口內僅業主自行測試會看到異常，影響可忽略；日後已上線再做類似插欄改版時，兩步須挑低流量時段前後腳完成（同 §五末「部署順序說明」備考精神）
+- [x] **Step 4 補充 4（開發，DEC-067）**：行動裝置全滅修復——Apps Script 新增 `respond()` 統一出口支援 JSONP（帶合法 `callback` 參數時回傳 JavaScript，否則純 JSON 不變）；前端 `wishlist.ts` 的 `get_all`／`vote` 由 fetch 改為 `<script>` 標籤 JSONP 傳輸（逾時、序號防亂序、回滾等防護語義不變）——2026-10-08 完成，`npm run build` 已通過；**業主需貼上第三節新版程式碼並部署 Apps Script**。⚠️ 部署新版後端**之前**若先部署新前端，手機會依然全滅且桌面也會壞（舊後端不認得 `callback` 參數、回傳純 JSON 無法執行）——**必須先部署 Apps Script，再上傳新 `dist/`**；舊前端搭配新後端不受影響（不帶 `callback` 維持純 JSON）。**執行紀錄**：業主採刪除重建方式部署，Web App 網址已更換，`.env` 已同步更新（2026-10-08，curl 實測 JSON／JSONP／拒收／callback 白名單全數通過）
 - [ ] **Step 8（開發）**：`npm run build` → 上傳 `dist/` 至 VPS
 - [ ] **Step 9（瀏覽器驗收）**：
   - [ ] G 欄填 `已結束` → 重整後該卡片消失；清空該格 → 重整後恢復顯示
@@ -348,6 +360,7 @@ function doGet(e) {
   - [ ] 首屏顯示骨架卡（不見任何寫死課程）→ `get_all` 成功後骨架卡消失、全部卡片動態建立且外觀一致（DEC-052）
   - [ ] 模擬 API 失敗（斷網或暫改 `.env` 網址為無效值後 build 預覽）→ 骨架卡消失、顯示「許願池暫時連線異常」錯誤區塊，重新整理按鈕可動
   - [ ] Demo 模式回歸（無 API 網址 build）→ 示範課程建卡、投票 +1、重整後票數累計正常
+  - [ ] 行動裝置實測（DEC-067）：Android Chrome 與 iPhone/iPad Safari 開啟 `/wishlist` → 骨架卡消失、課程卡片正常顯示（不再出現「連線異常」）；投票 +1 正常；桌面瀏覽器回歸正常
 
 ### 部署順序說明
 

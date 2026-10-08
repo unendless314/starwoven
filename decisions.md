@@ -1153,3 +1153,19 @@
      - 確保圓點被選中時維持穩定的高亮膠囊色，未選中圓點則持續享有半透明懸停反饋。
   2. **建置驗證**：
      - 執行 `npm run build` 確認 11 頁全數通過。
+
+---
+
+## 2026-10-08 — DEC-067：許願池前後端傳輸改為 JSONP（修復行動裝置全滅「連線異常」）
+
+- **背景**：
+  - 業主回報 `/wishlist` 在電腦端正常，但手機（Android）與 iPad 皆顯示「許願池暫時連線異常」。
+  - 實測 API 端點（curl）回應正常、資料正確，線上 JS bundle 亦為最新版——問題不在後端邏輯或部署版本。
+  - 根因：Apps Script 的 ContentService 一律先回 **302 轉址至 `script.googleusercontent.com`** 才輸出內容；行動瀏覽器（iOS 全系列 WebKit、Android Chrome）對「跨網域＋302 轉址」的 fetch/CORS 處理會直接拒絕請求（桌面 Chrome/Firefox/Edge 正常跟隨），外部亦有相同案例回報（2025，Stack Overflow）。前端 catch 到失敗即顯示錯誤區塊，造成行動裝置全滅。
+- **決策與執行**：
+  1. **前端（`src/scripts/wishlist.ts`）**：`get_all` 與 `vote` 由 `fetch` 改為 **JSONP**（`<script>` 標籤載入，不受 CORS 管轄且自動跟隨 302 轉址）。新增 `jsonp()` helper：逾時以計時器實現（get_all 12 秒／vote 8 秒，語義不變）；逾時後回呼換成 noop 讓遲到回應靜默落地（避免呼叫已刪除的全域函式拋錯）；成功／失敗時清除全域回呼與 script 節點。既有防護（序號防亂序、樂觀更新、回滾快照、雙重鎖定、課名比對分支）全部保留，僅替換傳輸層。
+  2. **Apps Script（`course_wishlist_plan_v3.md` 第三節，v3.5）**：新增統一回應出口 `respond(e, json)`——請求帶合法 `callback` 參數（識別字白名單正則驗證，防 JS 注入）時回傳 `callback(...)` JavaScript，否則維持純 JSON（curl 測試與舊前端行為不變）。全部 14 處回傳點改經 `respond()`。
+  3. **驗證**：`node --check` 通過新版 GAS 程式碼；`npm run build` 11 頁通過，bundle 確認含 JSONP 且無殘留 `fetch`；以模擬環境單元測試 `jsonp()` 成功／逾時／遲到回應／載入錯誤四路徑全數通過。
+  4. **文件同步**：v3 規格書沿革摘要（v3.5）、第三節程式碼與標頭功能摘要第 8 點、第四節前端設計（新增「JSONP 傳輸」條）、第五節 Step 4 補充 4 與 Step 9 驗收增列行動裝置實測項。
+- **業主側待辦（順序重要）**：① Apps Script 貼上第三節新版程式碼並部署；② 再上傳新 `dist/` 至 VPS。⚠️ **必須先部署後端**：舊後端不認得 `callback` 參數會回傳純 JSON，新前端 JSONP 無法執行，桌面端也會壞；反向順序（舊前端＋新後端）則完全相容。
+- **實際執行紀錄（2026-10-08 當日完成後端）**：業主採「刪除舊部署、重新建立」方式，**Web App 網址已更換**，本機 `.env` 的 `PUBLIC_WISHLIST_API_URL` 已同步更新；已透過 curl 實測確認——get_all 純 JSON 與 JSONP（`callback=__testCb`）皆正常、vote 驗證拒收（INVALID_COURSE_NAME）經 JSONP 包裝正常、非法 callback（`foo.bar`）降級純 JSON、含括號／尖括號的 callback 由 Google 層 400 拒絕。新前端已以新網址重新 build（bundle 確認含新網址、舊網址已移除）。⚠️ **注意**：在 `dist/` 上傳 VPS 前，線上舊版前端仍指向已刪除的舊部署網址，許願池在**所有裝置**（含桌面）都會顯示連線異常，屬預期的過渡狀態，上傳新 `dist/` 即恢復。

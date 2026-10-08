@@ -102,7 +102,7 @@ pre-build planning repo and is obsolete.
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-055).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-068).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
