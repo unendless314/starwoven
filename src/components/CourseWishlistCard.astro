@@ -12,6 +12,7 @@ interface Props {
   id: string;
   title: string;
   teacher: string;
+  duration: string;
   price: string;
   votes: number;
   threshold: number;
@@ -19,7 +20,7 @@ interface Props {
   gradient: string;
 }
 
-const { id, title, teacher, price, votes, threshold, icon, gradient } = Astro.props;
+const { id, title, teacher, duration, price, votes, threshold, icon, gradient } = Astro.props;
 const reached = votes >= threshold;
 const percent = Math.min(100, Math.round((votes / threshold) * 100));
 ---
@@ -32,15 +33,10 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   data-votes={votes}
   data-threshold={threshold}
 >
-  <!-- 意象區：漸層底色 + 預定價格標籤 + 許願人數膠囊 -->
+  <!-- 意象區：漸層底色 + 許願人數膠囊 -->
   <div data-wish-hero class:list={['relative w-full aspect-16/10 bg-gradient-to-br flex items-center justify-center overflow-hidden', gradient]}>
     <span class="absolute -top-6 -left-6 w-24 h-24 bg-white/25 rounded-full blur-2xl"></span>
     <span class="absolute bottom-2 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></span>
-
-    <!-- 預定價格標籤（左上；留空時隱藏，待試算表 I 欄 get_all 覆寫） -->
-    <span class:list={['wish-price absolute top-3 left-3 z-10 text-[11px] sm:text-xs font-bold px-2.5 py-1 rounded-full bg-[#2E2A4F]/85 text-white tracking-wider shadow-sm', { hidden: !price }]}>
-      {price}
-    </span>
 
     <!-- 許願人數膠囊（右上） -->
     <span class="absolute top-3 right-3 z-10 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full bg-[#FCE794] text-[#2E2A4F] tracking-wider shadow-md flex items-center gap-1">
@@ -58,6 +54,9 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     <div>
       <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide transition-colors">{title}</h3>
       <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
+      <!-- 課程時數／課程費用（試算表 I／J 欄自由文字；留空時整行隱藏，待 get_all 覆寫） -->
+      <p class:list={['text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !duration }]}>課程時數｜<span class="wish-duration">{duration}</span></p>
+      <p class:list={['text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !price }]}>課程費用｜<span class="wish-price">{price}</span></p>
     </div>
 
     <!-- 進度條 -->

@@ -1,15 +1,15 @@
 # 星靈織語 Starwoven — 課程許願池規格書 v3：全面試算表驅動
 
-> **文件狀態**：v3.1（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~052）
+> **文件狀態**：v3.4（當前基準規格書），取代 `course_wishlist_plan_v2.md`（v2 已併入本檔後移除；歷史決策沿革見 `decisions.md` DEC-034~041、049~055）
 > **建立日期**：2026-10-07（v3.0 整併定稿；v3.1 骨架卡改造 DEC-052；前身為 2026-10-02 之 v2.0 初稿，歷經 v2.1~v2.6 修訂）
-> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）→ 2.9 寫入前核對改讀 A~G，收票瞬間與移列重定位後的狀態以緊貼寫入前的複查為準（DEC-054，v3.3）。
+> **沿革摘要**：v1 純前端 Demo（DEC-034~037）→ v2 全面試算表驅動（DEC-038；上線前審查修正 DEC-039~041）→ 許願池自首頁獨立為 `/wishlist` 分頁（DEC-049）→ G 欄 status 接上 UI 作手動下架開關、I 欄 category 改為 price 預定價格（DEC-050）→ 整併為本檔 v3.0 → SSR 移除寫死課程、改骨架卡＋載入失敗錯誤區塊（DEC-052，v3.1）→ vote 鎖內檢查 G 欄狀態，已開課／已結束拒收並回傳 course_closed（DEC-053，v3.2）→ 2.9 寫入前核對改讀 A~G，收票瞬間與移列重定位後的狀態以緊貼寫入前的複查為準（DEC-054，v3.3）→ 新增 I 欄 duration 課程時數（price／icon／style 順延為 J／K／L），價格自意象區左上角標籤移至講師下方資訊區純文字行（DEC-055，v3.4）。
 > **核心目標**：Google 試算表成為許願池的**單一資料來源（SSOT）**——業主在手機上改試算表，網頁重整即更新，**不需要重新部署**。
 
 ---
 
 ## 一、 設計原則
 
-1. **試算表 SSOT（單一資料來源）**：許願池的課程清單、票數、門檻、講師、預定價格、圖示、配色、狀態與卡片排序全部由 Google 試算表驅動。`src/pages/wishlist.astro` 的 SSR **不寫死課程**（DEC-052：首屏骨架卡佔位、API 失敗顯示錯誤區塊；Demo 模式由元件內示範資料驅動）。
+1. **試算表 SSOT（單一資料來源）**：許願池的課程清單、票數、門檻、講師、課程時數、預定價格、圖示、配色、狀態與卡片排序全部由 Google 試算表驅動。`src/pages/wishlist.astro` 的 SSR **不寫死課程**（DEC-052：首屏骨架卡佔位、API 失敗顯示錯誤區塊；Demo 模式由元件內示範資料驅動）。
 2. **核心身份原則**：**一票只屬於「編號＋課名」這個組合**。訪客記憶（localStorage）、後端防重複（快取鍵含課名雜湊）、投票請求（必帶 `course_name`）、寫入核對（鎖內比對 A、B 欄），前後端全部綁定同一組合；**改名即新課**，A 欄編號格子（1~6）重用因此安全。
 3. **入帳原則**：**任何會讓前端重試的錯誤，都只能發生在票數寫入 D 欄之前**。D 欄入帳後的附屬寫入（flush、快取）失敗時，一律回傳成功——入帳後回傳錯誤反而**保證**前端重試、重複加票。
 4. **乾淨優先**：Apps Script 採全量重寫，前端不保留 v1 回應格式的相容層；計票定位為開課意向熱度參考（非金融級精確），不為追求零誤差增加業主操作負擔。
@@ -30,9 +30,10 @@
 | F | `開課門檻` | 業主 | 正整數才會被前端採用 |
 | G | `狀態` | 業主 | **手動下架開關**：填 `已結束`＝卡片隱藏下架（清空即恢復上架）、填 `已開課`＝卡片保留但停止投票；兩種關鍵值後端 vote 亦一律拒收（回傳 `course_closed`）不計票；其他值（含空白）視同募集中。「✓ 達標籌備中」標籤仍由票數 ≥ 門檻自動推導 |
 | H | `講師` | 業主 | 卡片顯示「企劃講師｜XXX」 |
-| I | `預定價格` | 業主 | 自由文字（如「4 堂 2,000 元」），顯示於卡片左上角標籤；留空則新卡片不顯示標籤 |
-| J | `圖示` | 業主 | 意象區 Emoji（如 🃏 📖 👐 💫 🪙 🔢）；留空則新卡片預設 ✦ |
-| K | `配色` | 業主 | 卡片漸層**鍵值**，僅限下表白名單；填錯或留空 → `blue` |
+| I | `課程時數` | 業主 | 自由文字（如「4 堂 × 2 小時」），顯示於講師下方「課程時數｜XXX」純文字行；留空則整行不顯示 |
+| J | `預定價格` | 業主 | 自由文字（如「4 堂 2,000 元」），顯示於時數下方「課程費用｜XXX」純文字行；留空則整行不顯示 |
+| K | `圖示` | 業主 | 意象區 Emoji（如 🃏 📖 👐 💫 🪙 🔢）；留空則新卡片預設 ✦ |
+| L | `配色` | 業主 | 卡片漸層**鍵值**，僅限下表白名單；填錯或留空 → `blue` |
 
 ### 2. `配色` 白名單鍵值（前端映射既有 Tailwind 漸層，避免動態 class 被 purge）
 
@@ -49,7 +50,7 @@
 
 1. **改內容**：直接改對應格子，網頁重整後幾秒內生效。
 2. **調順序**：整列剪下、貼到想要的位置，網頁卡片順序就會跟著變。
-3. **換新課（格子重用）**：改 B 欄課名 → C 欄填新底數、D 欄清零 → 更新 F~K 欄內容。改名瞬間所有人都能重新許願。
+3. **換新課（格子重用）**：改 B 欄課名 → C 欄填新底數、D 欄清零 → 更新 F~L 欄內容。改名瞬間所有人都能重新許願。
 4. **募集中請勿**：改 B 欄課名（錯字也不行）、改 A 欄編號、動 D 欄數字。
 5. **想少幾門課**：整列刪除（或清空 A 欄編號）即可；之後想加回來，補一列並使用 1~6 中目前沒在用的編號。
 6. **排版建議**：電腦版一排 3 張卡片，課程數為 3、6、9 門時畫面最整齊；其他數量也能正常顯示。
@@ -72,7 +73,7 @@
  *
  * 功能摘要：
  * 1. get_all 依「列順序」回傳陣列，並附 G 欄狀態（前端手動下架開關：
- *    已結束=隱藏、已開課=停止投票）與 H~K 欄卡片內容（講師/預定價格/圖示/配色）
+ *    已結束=隱藏、已開課=停止投票）與 H~L 欄卡片內容（講師/課程時數/預定價格/圖示/配色）
  * 2. A 欄編號支援純數字（1~6），一律以字串比對
  * 3. vote 請求必帶 course_name：後端鎖內確認 A、B 欄仍匹配才收票，
  *    不符回傳 course_changed；防重複快取鍵納入課名雜湊（改名即新課）
@@ -115,9 +116,10 @@ function doGet(e) {
         threshold: Number(rows[i][5]) || 0,                       // F 欄：開課門檻
         status: String(rows[i][6] == null ? "" : rows[i][6]),     // G 欄：狀態（手動下架開關：已結束=隱藏、已開課=停止投票）
         teacher: String(rows[i][7] == null ? "" : rows[i][7]),    // H 欄：講師
-        price: String(rows[i][8] == null ? "" : rows[i][8]),        // I 欄：預定價格
-        icon: String(rows[i][9] == null ? "" : rows[i][9]),       // J 欄：圖示
-        style: String(rows[i][10] == null ? "" : rows[i][10])     // K 欄：配色
+        duration: String(rows[i][8] == null ? "" : rows[i][8]),   // I 欄：課程時數
+        price: String(rows[i][9] == null ? "" : rows[i][9]),        // J 欄：預定價格
+        icon: String(rows[i][10] == null ? "" : rows[i][10]),     // K 欄：圖示
+        style: String(rows[i][11] == null ? "" : rows[i][11])     // L 欄：配色
       });
     }
     return ContentService.createTextOutput(JSON.stringify({ status: "success", data: list }))
@@ -297,9 +299,9 @@ function doGet(e) {
 
 > 實作細節以程式碼為準：`src/components/CourseWishlistCard.astro`（卡片版型與樣式）、`src/scripts/wishlist.ts`（全部互動邏輯；由頁面層級 `<script>` 引入——元件僅被 `<template>` 使用時，Astro 會將元件腳本標籤插入 `<template>` 內成為 inert 永不執行，故不可放回元件）與 `src/pages/wishlist.astro`（頁面、骨架卡、`#wish-error`、`<template id="wish-card-template">`）。本節僅摘要關鍵機制。
 
-- **卡片單一版型來源**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，**所有課程卡片一律 clone 此模板動態建立**（SSR 不寫死課程，未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-price`（預定價格標籤）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`；頁面元素掛勾：`data-wish-skeleton`（SSR 骨架卡）／`#wish-error`＋`#wish-error-reload`（載入失敗錯誤區塊）。
+- **卡片單一版型來源**：`wishlist.astro` 的卡片 Grid 容器帶 `data-wish-grid`；`<template>` 內嵌一份以佔位值實際渲染的卡片，**所有課程卡片一律 clone 此模板動態建立**（SSR 不寫死課程，未來調整外觀只需修改元件檔一處）。掛勾 class：`wish-title`／`wish-teacher`／`wish-duration`（課程時數行）／`wish-price`（課程費用行）／`wish-icon`／`wish-bar-fill`／`wish-progress-text`／`wish-pill-count`／`wish-reached`／`wish-btn`（＋`wish-btn-label`）／`data-wish-hero`；頁面元素掛勾：`data-wish-skeleton`（SSR 骨架卡）／`#wish-error`＋`#wish-error-reload`（載入失敗錯誤區塊）。時數／費用兩行的 `hidden` 掛在整行 `<p>` 上，腳本以 `closest('p')` 切換顯示。
 - **進站同步 `syncFromSheet(list)`**：`get_all` 回應成功**且 `data` 為陣列**才執行（請求有 12 秒逾時；逾時／失敗／格式異常且頁面尚無卡片 → 顯示 `#wish-error` 錯誤區塊，詳下「首屏骨架卡」條）。**首次成功同步先 `removeSkeletons()` 移除骨架卡**，再依列序逐列處理：既有卡片 `updateCardContent`、新列 `createCard`、每張以 `appendChild` 歸位（**DOM 順序 = 試算表列順序**）；不在清單中的卡片 `display: none` 隱藏（不刪除，重新出現時由 `applyStatus` 依 G 欄狀態決定是否還原）。同步請求以遞增序號 `syncSeq` 防較舊回應亂序覆寫。
-- **`updateCardContent` 欄位同步**：課名／講師／預定價格／圖示以 `textContent` 賦值（無 HTML 注入風險），**空字串 → 既有卡片保留原值不覆寫**；門檻為正整數才採用；票數受守衛保護（`data-pending`／`data-voted` 中的卡片不覆寫，**改名即新課時例外**直接套用新課票數）；配色 `applyStyle()` 走白名單（鍵值非法 → 既有卡片保留原樣、新卡片預設 `blue`）。
+- **`updateCardContent` 欄位同步**：課名／講師／課程時數／預定價格／圖示以 `textContent` 賦值（無 HTML 注入風險），**空字串 → 既有卡片保留原值不覆寫**；門檻為正整數才採用；票數受守衛保護（`data-pending`／`data-voted` 中的卡片不覆寫，**改名即新課時例外**直接套用新課票數）；配色 `applyStyle()` 走白名單（鍵值非法 → 既有卡片保留原樣、新卡片預設 `blue`）。
 - **G 欄 status 手動下架開關（`applyStatus`）**：每次同步將 `row.status` trim 後寫入 `data-wish-status` 並呼叫 `applyStatus`——`已結束`＝卡片 `display: none` 隱藏下架（清空即恢復上架）；`已開課`＝隱藏「✓ 達標籌備中」、按鈕停用顯示「✓ 已開課」（`is-closed` 綠色樣式 `#58A497`），且 `vote()` 入口有守衛禁止送票；其他值（含空白）＝募集中（還原達標標籤與按鈕正確態）。**卡片 display 統一由 `applyStatus` 管理**；`updateCardContent` 中須在 `renderCard` **之後**呼叫（避免達標標籤被重新顯示），`createCard` 中須在 `initCard` **之後**呼叫（蓋過已許願判定）。
 - **「認名字」投票記憶**：localStorage `starwoven_wish_{編號}` 存**課程名稱**；已許願判定 = 儲存值 === 卡片當前課名（根元素 `data-course-name` 為唯一來源）。判定時機：初始化、get_all 同步後、投票結束。投票請求帶 `course_name` 快照；回應抵達**先比對回應課名與卡片當前課名**，不一致（含後端主動回傳 `course_changed`）→ 回滾、清 pending、**不寫記憶、不鎖定**、重新同步後可對新課許願；一致才走 `success`／`already_voted` 分支，且只以後端確認過的課名寫入 localStorage；`course_closed`（等待期間業主收票，後端鎖內狀態檢查拒收）→ 回滾、清 pending、不記已投，依後端回報的 `course_status` 即時把卡片轉停投（已開課）或下架（已結束），未附狀態值時保守視同已開課。
 - **既有投票防護（v1 起沿用）**：樂觀更新、失敗回滾快照、`disabled`＋`data-pending` 雙重鎖定、`data-voted` 記憶體旗標、8 秒逾時自動斷開。
@@ -317,16 +319,19 @@ function doGet(e) {
 - [x] **Step 4（開發）**：欄位調整前端實作——G 欄 status 接上 UI 作手動下架開關（`applyStatus` 統一管理 display、`is-closed` 按鈕態、`vote()` 守衛）、I 欄 category → price（掛勾 `wish-price`、SSR 六門課 `price` 留空不虛構）——2026-10-07 完成（DEC-050），`npm run build` 已通過
 - [x] **Step 4 補充（開發，DEC-053）**：程式碼審查 P1 修正——vote 鎖內新增 G 欄狀態檢查，`已開課`／`已結束` 回傳 `course_closed`（附 `course_status`）不計票、不記已投、不占限流；前端 `vote()` 新增 `course_closed` 分支即時把卡片轉停投或下架——2026-10-07 完成，`npm run build` 已通過；**業主需貼上第三節新版程式碼並部署 Apps Script 新版本（Web App 網址不變、`.env` 不變）**
 - [x] **Step 4 補充 2（開發，DEC-054）**：審查第二輪 P1——2.9 寫入前核對由讀 A、B 兩欄改為讀 A~G，G 欄狀態以緊貼寫入前的讀取為準再拒收一次（涵蓋 2.6 判定後業主收票的毫秒級空窗、移列重定位後未再判定狀態兩個缺口）；前端零改動——2026-10-07 完成，`npm run build` 已通過；與 DEC-053 一併部署新版本即可
+- [x] **Step 4 補充 3（開發，DEC-055）**：卡片版型調整——預定價格自意象區左上角標籤移至講師下方資訊區，改為「課程費用｜…」純文字行；其上方新增「課程時數｜…」行（試算表新 I 欄 `duration` 自由文字）；兩行留空皆整行隱藏（`hidden` 掛整行 `<p>`，腳本以 `closest('p')` 切換）；骨架卡補兩行佔位對齊新版型——2026-10-08 完成，`npm run build` 已通過；Step 6（插欄填值）與 Step 7（部署 Apps Script 新版本）業主已於同日完成並經 API 實測確認（部署前過渡期間時數行維持隱藏、價格行保留舊值，不壞畫面）
 - [x] **Step 5（業主）**：試算表 I1 標題由 `category` 改為 `price`（程式依欄位位置讀取，改標題不影響運作）——2026-10-07 完成
-- [ ] **Step 6（業主）**：I 欄填入各課預定價格（自由文字，如「4 堂 2,000 元」；留空的課程不顯示標籤）
-- [ ] **Step 7（業主）**：Apps Script **整段取代**為第三節現行版程式碼（`get_all` 的 JSON key `category` → `price`，仍讀第 9 欄）→ 部署為**新版本**（Web App 網址不變，`.env` 不用改）
+- [x] **Step 6（業主）**：試算表在 H（講師）與原 I（價格）之間**插入一欄**作為新 I 欄 `duration`（課程時數）——原 price／icon／style 順延為 J／K／L 欄（程式依欄位位置讀取，標題名稱不影響運作）；I 欄填入各課時數、J 欄填入各課預定價格（皆自由文字，如「4 堂 × 2 小時」、「4 堂 2,000 元」；留空的課程該行不顯示）——2026-10-08 完成（已透過 API 實測確認欄位對位正確）
+- [x] **Step 7（業主）**：Apps Script **整段取代**為第三節現行版程式碼（`get_all` 新增 `duration` key 讀第 9 欄，`price`／`icon`／`style` 改讀第 10／11／12 欄）→ 部署為**新版本**（Web App 網址不變，`.env` 不用改）——2026-10-08 完成（get_all 回應含 `duration` 且各欄對位正確；vote 端點驗證邏輯正常）
+  - ⚠️ **Step 6 與 Step 7 屬單一維護窗口操作，須緊接執行**：欄位依**位置**讀取，「先插欄後部署」會讓舊腳本把時數當價格、價格當圖示顯示；「先部署後插欄」則反過來把價格當時數、配色鍵值當圖示——兩種順序都會錯位，不存在安全先後。本次網站尚未上線，窗口內僅業主自行測試會看到異常，影響可忽略；日後已上線再做類似插欄改版時，兩步須挑低流量時段前後腳完成（同 §五末「部署順序說明」備考精神）
 - [ ] **Step 8（開發）**：`npm run build` → 上傳 `dist/` 至 VPS
 - [ ] **Step 9（瀏覽器驗收）**：
   - [ ] G 欄填 `已結束` → 重整後該卡片消失；清空該格 → 重整後恢復顯示
   - [ ] G 欄填 `已開課` → 卡片保留，按鈕變「✓ 已開課」綠色且不可點、「✓ 達標籌備中」標籤隱藏；清空 → 按鈕與標籤恢復正常
   - [ ] 後端拒收（DEC-053）：G 欄填 `已開課` 後以**未重整的舊分頁**點許願（或直接 curl `?action=vote&course_id=…&course_name=…&client_id=…`）→ 回傳 `course_closed`、D 欄票數不增加、卡片即時轉「✓ 已開課」停用態；G 欄填 `已結束` 時直接投票同樣被拒、卡片即時隱藏
-  - [ ] I 欄填入預定價格 → 重整後左上標籤原樣顯示該文字；留空的課程（新卡片）不顯示標籤
-  - [ ] Apps Script 尚未部署新版本前（前端仍收不到 `price` key）：既有卡片標籤保留現值、不壞畫面
+  - [ ] J 欄填入預定價格 → 重整後講師下方「課程費用｜…」行原樣顯示該文字（不再出現於意象區左上角）；留空的課程（新卡片）整行不顯示
+  - [ ] I 欄填入課程時數 → 重整後講師下方「課程時數｜…」行原樣顯示該文字；留空的課程整行不顯示
+  - [ ] Apps Script 尚未部署新版本前（前端仍收不到 `duration`／`price` key）：既有卡片對應行保留現值、不壞畫面
   - [ ] 改 B 欄課名 → 重整許願池頁面已更新
   - [ ] 改 F 欄門檻 → 進度條分母與比例更新
   - [ ] 新增一列測試課程 → 重整後依列序出現新卡片，且可正常投票

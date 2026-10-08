@@ -1,6 +1,6 @@
 // ==========================================
 // 課程許願池互動邏輯（由 wishlist.astro 以頁面層級 <script> 引入，全頁一份）
-// - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、預定價格、圖示、配色、票數、門檻與卡片排序
+// - Google 試算表為唯一資料來源：進站 get_all 同步課程名稱、講師、課程時數、預定價格、圖示、配色、票數、門檻與卡片排序
 // - G 欄 status 為手動下架開關：「已結束」＝卡片隱藏下架（清空即恢復）、「已開課」＝卡片保留但停止投票
 // - 一票綁定「編號＋課名」：localStorage 記住的是課名，改名即新課、所有人可重新許願
 // - SSR 不寫死課程：首屏為骨架卡（data-wish-skeleton），同步成功後全部卡片 clone 自
@@ -24,7 +24,7 @@
     orange: 'from-[#F8E0CD] to-[#EFC09C]',
   };
 
-  // get_all 回傳的單列課程資料（對應試算表 A~K 欄；price 為 I 欄自由文字）
+  // get_all 回傳的單列課程資料（對應試算表 A~L 欄；duration 為 I 欄、price 為 J 欄自由文字）
   interface SheetRow {
     id: string | number;
     name?: string;
@@ -32,6 +32,7 @@
     threshold?: number;
     status?: string;
     teacher?: string;
+    duration?: string;
     price?: string;
     icon?: string;
     style?: string;
@@ -39,12 +40,12 @@
 
   // Demo 模式示範課程（僅未設定 API 網址時使用；內容為示意，不與試算表同步）
   const DEMO_COURSES: SheetRow[] = [
-    { id: '1', name: '托特塔羅・高階解盤專題', teacher: '學長老師', total_votes: 7, threshold: 10, icon: '🃏', style: 'pink' },
-    { id: '2', name: '阿卡西靈魂藍圖深度工作坊', teacher: '古古老師', total_votes: 3, threshold: 8, icon: '📖', style: 'blue' },
-    { id: '3', name: '臼井靈氣三階・大師班', teacher: '學長老師', total_votes: 11, threshold: 12, icon: '👐', style: 'teal' },
-    { id: '4', name: '占星合盤・關係星圖對話', teacher: '皮皮老師', total_votes: 5, threshold: 10, icon: '💫', style: 'purple' },
-    { id: '5', name: '金錢靈氣・豐盛顯化工作坊', teacher: '黎夢老師', total_votes: 9, threshold: 10, icon: '🪙', style: 'gold' },
-    { id: '6', name: '生命靈數・流年藍圖專題', teacher: '皮皮老師', total_votes: 2, threshold: 8, icon: '🔢', style: 'orange' },
+    { id: '1', name: '托特塔羅・高階解盤專題', teacher: '學長老師', duration: '6 堂 × 2 小時', total_votes: 7, threshold: 10, icon: '🃏', style: 'pink' },
+    { id: '2', name: '阿卡西靈魂藍圖深度工作坊', teacher: '古古老師', duration: '2 日密集工作坊', total_votes: 3, threshold: 8, icon: '📖', style: 'blue' },
+    { id: '3', name: '臼井靈氣三階・大師班', teacher: '學長老師', duration: '3 階共 24 小時', total_votes: 11, threshold: 12, icon: '👐', style: 'teal' },
+    { id: '4', name: '占星合盤・關係星圖對話', teacher: '皮皮老師', duration: '4 堂 × 1.5 小時', total_votes: 5, threshold: 10, icon: '💫', style: 'purple' },
+    { id: '5', name: '金錢靈氣・豐盛顯化工作坊', teacher: '黎夢老師', duration: '單日 6 小時', total_votes: 9, threshold: 10, icon: '🪙', style: 'gold' },
+    { id: '6', name: '生命靈數・流年藍圖專題', teacher: '皮皮老師', duration: '4 堂 × 2 小時', total_votes: 2, threshold: 8, icon: '🔢', style: 'orange' },
   ];
 
   // G 欄 status 手動下架開關（須與試算表填寫值完全一致）：
@@ -230,11 +231,20 @@
       card.dataset.courseName = name;
     }
     if (typeof row.teacher === 'string' && row.teacher) setText(card, '.wish-teacher', row.teacher);
+    // 課程時數／預定價格：非空才更新並顯示整行（既有卡片空字串保留原值不覆寫）；
+    // hidden 掛在整行 <p> 上，顯示時切換父層
+    if (typeof row.duration === 'string' && row.duration) {
+      const durationEl = card.querySelector<HTMLElement>('.wish-duration');
+      if (durationEl) {
+        durationEl.textContent = row.duration;
+        durationEl.closest('p')?.classList.remove('hidden');
+      }
+    }
     if (typeof row.price === 'string' && row.price) {
       const priceEl = card.querySelector<HTMLElement>('.wish-price');
       if (priceEl) {
         priceEl.textContent = row.price;
-        priceEl.classList.remove('hidden');
+        priceEl.closest('p')?.classList.remove('hidden');
       }
     }
     if (typeof row.icon === 'string' && row.icon) setText(card, '.wish-icon', row.icon);
@@ -275,15 +285,25 @@
 
     setText(card, '.wish-title', card.dataset.courseName);
     setText(card, '.wish-teacher', typeof row.teacher === 'string' ? row.teacher : '');
-    // 預定價格留空 → 隱藏標籤
+    // 課程時數／預定價格留空 → 整行隱藏（hidden 掛在整行 <p> 上）
+    const durationEl = card.querySelector<HTMLElement>('.wish-duration');
+    const duration = typeof row.duration === 'string' ? row.duration : '';
+    if (durationEl) {
+      if (duration) {
+        durationEl.textContent = duration;
+        durationEl.closest('p')?.classList.remove('hidden');
+      } else {
+        durationEl.closest('p')?.classList.add('hidden');
+      }
+    }
     const priceEl = card.querySelector<HTMLElement>('.wish-price');
     const price = typeof row.price === 'string' ? row.price : '';
     if (priceEl) {
       if (price) {
         priceEl.textContent = price;
-        priceEl.classList.remove('hidden');
+        priceEl.closest('p')?.classList.remove('hidden');
       } else {
-        priceEl.classList.add('hidden');
+        priceEl.closest('p')?.classList.add('hidden');
       }
     }
     setText(card, '.wish-icon', typeof row.icon === 'string' && row.icon ? row.icon : '✦');
