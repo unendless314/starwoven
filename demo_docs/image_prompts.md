@@ -237,16 +237,12 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ## 四、【關於我們】(About / starwovenpeople)
 
-### [關於]-[圖片 A]：品牌故事氛圍插圖（1張）
+### [關於]-[圖片 A]：品牌故事氛圍插圖（1張，已採用上線）
 
 - **版位用途**：關於我們頁面（`/about`）「我們從抱團取暖開始，現在我們想要傳承」區塊右側主視覺
-- **規格建議**：直式比例（約 4:5 或 3:4，Canva 原始規格為寬 447 × 高 517 px）。
-- **視覺重點**：雙手於深邃星空與星塵之中，輕柔托起或交織出發光的絲線與星辰網絡，象徵將知識、經驗與每一道光持續傳承。
-- **ComfyUI / SDXL 提示詞**：
-  ```text
-  spiritual cosmic illustration, glowing ethereal hands weaving threads of light across the night sky, intricate constellation patterns, stardust particles, soft pastel nebulae, sacred connection, gentle warm aura, magical celestial loom, artistic fantasy concept art, high resolution, soft cinematic lighting, deep indigo and golden starlight
-  ```
-- **對應檔案**：`about_a_brand_story.png`
+- **規格建議**：直式比例 447:517（Canva 原始規格為寬 447 × 高 517 px；原圖 1166 × 1349 px）。
+- **視覺重點**：星靈織語全體夥伴溫馨手繪水彩群像，襯托深邃星空、星座輪盤、塔羅牌、靈性白狐與光之織語，象徵「星靈織語，織起人與人的連結，也讓每一道光持續傳下去」。
+- **對應檔案**：`about_a_brand_story_v1.webp`（由 `demo_docs/raw-photos/team/介紹命理師封面.png` 轉換為 WebP Q85，檔案大小 388.4 KB，保留完整背景）。
 
 ---
 
@@ -351,8 +347,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `服務-D` | 八字命理 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 東方水墨水彩太極陰陽五行流轉 | 753048023136719 | 採用上架 | 去背 + 轉 WebP | `services_d_bazi_v1.webp` |
 | `服務-E` | 靈氣調頻 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托七脈輪彩虹能量光暈 | 950154034724132 | 採用上架 | 去背 + 轉 WebP | `services_e_reiki_v1.webp` |
 | `服務-F` | 阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂生命之樹金葉星塵水彩 | 877470136253271 | 採用上架 | 去背 + 轉 WebP | `services_f_akashic_v1.webp` |
-| `服務-G` | 毛孩溝通 (v1) | 2026-10-05 | OpenAI Playground | 貓狗毛孩心靈溝通光之絲線 | - | 採用上架 | 去背 + 轉 WebP | `services_g_pet_v1.webp` |
-| `關於-A` | 品牌故事插圖 | 2026-09-30 | ComfyUI | 兩手編織星空光之網絡 | | 待生成 | 447×517 | `about_a_brand_story.png` |
+| `關於-A` | 品牌故事氛圍插圖 (v1) | 2026-10-09 | 業主提供 (Canva) | 手繪全彩命理師團隊群像與星光織語 | - | 採用上架 | 轉 WebP Q85 (保留背景) | `about_a_brand_story_v1.webp` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_b_founder_yien_v1.webp` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_c_founder_pipi_v1.webp` |
 | `關於-D` | 達達 夥伴形象照 | 2026-10-02 | 業主實拍 | 夥伴個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_d_member_daxin_v1.webp` |

@@ -9,7 +9,7 @@ import CTAButton from '../components/CTAButton.astro';
 // ==========================================
 
 // 【1. 品牌故事氛圍插圖】
-const imgAboutBrand = '';       // 關於-A：品牌故事氛圍插圖（星空下織光網絡，Canva 原版 w=447, h=517）
+const imgAboutBrand = '/assets/about_a_brand_story_v1.webp'; // 關於-A：品牌故事氛圍插圖（Canva 原版 w=447, h=517，手繪命理師團隊與星靈織語）
 
 // 【2. 創辦人形象照（2位）】
 const imgFounderYien = '/assets/about_b_founder_yien_v1.webp';      // 關於-B：創辦人以恩形象照（Canva 原版 269×269 圓形頭像）
@@ -226,15 +226,19 @@ const members: Person[] = [
 
         <!-- 右側：品牌故事氛圍插圖（留圖槽 關於-A，Canva 原版 w=447, h=517） -->
         <div class="lg:col-span-5">
-          <div class="relative w-full aspect-[4/5] rounded-3xl overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md bg-gradient-to-br from-[#80A9D4]/15 via-[#B3C8E8]/10 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 flex flex-col items-center justify-center p-6 text-center group">
+          <div class="relative w-full aspect-[447/517] rounded-3xl overflow-hidden border-2 border-[#80A9D4]/30 dark:border-white/20 shadow-md bg-gradient-to-br from-[#80A9D4]/15 via-[#B3C8E8]/10 to-[#2E2A4F]/20 dark:from-[#2E2A4F]/60 dark:to-[#1F1938]/80 group">
             {imgAboutBrand ? (
               <img
                 src={imgAboutBrand}
-                alt="星靈織語品牌故事插圖"
+                alt="星靈織語品牌故事插圖：命理師團隊與星空織語"
                 class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                loading="lazy"
+                decoding="async"
+                width="1166"
+                height="1349"
               />
             ) : (
-              <div class="flex flex-col items-center justify-center space-y-4">
+              <div class="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
                 <!-- 精美靈性編織光芒 SVG -->
                 <div class="relative w-28 h-28 flex items-center justify-center">
                   <div class="absolute inset-0 rounded-full bg-[#80A9D4]/20 dark:bg-white/10 animate-pulse"></div>
@@ -261,11 +265,11 @@ const members: Person[] = [
                     Canva 規格 447 × 517 · 星空下編織的光芒網絡
                   </p>
                 </div>
+                <div class="absolute bottom-3 right-3 text-[10px] text-[#3A3A3A]/40 dark:text-white/40 font-mono">
+                  w=447 · h=517
+                </div>
               </div>
             )}
-            <div class="absolute bottom-3 right-3 text-[10px] text-[#3A3A3A]/40 dark:text-white/40 font-mono">
-              w=447 · h=517
-            </div>
           </div>
         </div>
       </div>

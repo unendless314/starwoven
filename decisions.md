@@ -1244,3 +1244,24 @@
      - 得益於既有資料驅動機制，首頁初始渲染時實習生海報自動取得預設作用中樣式（`opacity-100`, `z-10`, `loading="eager"`, `tabindex="0"`, `aria-hidden="false"`），導覽圓點（Dots）與無障礙標籤順序同步自動對齊。
   2. **建置驗證**：
      - 執行 `npm run build` 確認 11 頁全數編譯通過，`dist/index.html` 靜態輸出確認首張海報為星靈實習生，第二張為聖誕週年慶。
+
+---
+
+## 2026-10-09 — DEC-072：關於我們頁面「星靈緣起」品牌故事氛圍插圖上架與版面最佳化
+
+- **背景**：
+  - 關於我們頁面（`/about`）之「星靈緣起」區塊右側主視覺（素材代碼 `關於-A`）原為空字串，維持 SVG 編織光芒佔位符展示槽。
+  - 業主提供正式品牌插畫原檔 `demo_docs/raw-photos/team/介紹命理師封面.png`（1166×1349 px），呈現星靈織語全體夥伴溫馨手繪水彩群像、星盤、塔羅牌、靈性白狐與光之織語，其長寬比例精準對應 Canva 原始規格 447 × 517 px。
+- **決策與執行**：
+  1. **素材後製與 WebP 雙重歸檔**：
+     - 保留原始滿版星空水彩背景，以標準 WebP（Quality 85, method=6）最佳化壓縮，檔案大小為 388.4 KB。
+     - 雙重歸檔至封存目錄 `demo_docs/sd-assets/about_a_brand_story_v1.webp` 與生產環境 `public/assets/about_a_brand_story_v1.webp`。
+  2. **關於我們頁面排版最佳化 (`src/pages/about.astro`)**：
+     - 配置 `imgAboutBrand = '/assets/about_a_brand_story_v1.webp'`。
+     - 右側圖片卡片容器比例精準對齊為 `aspect-[447/517]`，消除邊界變形或留白。
+     - 修正真圖呈現時的內層 `p-6` 邊距與佔位尺寸水印，使插圖自然滿版填滿圓角容器（`w-full h-full object-cover rounded-3xl`），並保留細膩的 `group-hover:scale-105` 微動效。
+     - 加入 Core Web Vitals 屬性（`width="1166" height="1349" loading="lazy" decoding="async"`）。
+  3. **素材手冊與生成紀錄同步 (`demo_docs/image_prompts.md`)**：
+     - 於第四節「關於我們」與第六節「生成紀錄」更新 `關於-A` 條目為「採用上架」。
+  4. **建置驗證**：
+     - 執行 `npm run build` 確認 11 頁全數編譯通過。
