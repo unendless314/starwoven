@@ -1232,4 +1232,15 @@
   3. **建置驗證**：
      - 執行 `npm run build` 確保靜態頁面生成無誤。
 
+---
 
+## 2026-10-09 — DEC-071：首頁 Hero 輪播海報順序調整（實習生招募置於首位、聖誕週年慶調整為第二位）
+
+- **背景**：
+  - 業主最新指示，近期宣傳重點優先推廣「星靈實習生」招募計畫，要求首頁載入時的第一張預設主視覺改為實習生招募海報，聖誕週年慶活動海報則調整為第二張。
+- **決策與執行**：
+  1. **首頁 Hero 輪播資料陣列順序調整 (`src/pages/index.astro`)**：
+     - 將 `heroSlides` 陣列首項改為 `announcement-intern`（`home_announcement_202610_intern_v1.webp`），第二項改為 `announcement-christmas`（`home_announcement_202610_christmas_v1.webp`）。
+     - 得益於既有資料驅動機制，首頁初始渲染時實習生海報自動取得預設作用中樣式（`opacity-100`, `z-10`, `loading="eager"`, `tabindex="0"`, `aria-hidden="false"`），導覽圓點（Dots）與無障礙標籤順序同步自動對齊。
+  2. **建置驗證**：
+     - 執行 `npm run build` 確認 11 頁全數編譯通過，`dist/index.html` 靜態輸出確認首張海報為星靈實習生，第二張為聖誕週年慶。
