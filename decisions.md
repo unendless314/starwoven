@@ -1216,4 +1216,20 @@
   4. **建置驗證**：
      - 執行 `npm run build` 確認 11 頁全數編譯通過，產出 HTML 屬性與焦點設定皆符合預期。
 
+---
+
+## 2026-10-09 — DEC-070：活動與課程頁「八字體驗」內嵌官方 YouTube Shorts 直式短影音
+
+- **背景**：
+  - 活動與課程頁（`/courses`）「主題體驗課程」中，八字體驗（課程-I）原維持「短影音籌備中」佔位卡片。
+  - 業主提供官方 YouTube Shorts 網址：`https://www.youtube.com/shorts/4rnh1Rt8sgE`（星靈織語官方頻道，影片 ID：`4rnh1Rt8sgE`）。
+- **決策與執行**：
+  1. **活動與課程頁面 (`src/pages/courses.astro`)**：
+     - 八字體驗（課程-I）之 `workshops` 資料項配置 `youtubeId: '4rnh1Rt8sgE'`。
+     - 既有 9:16 直式短影音 iframe 容器動態生效，以 `youtube-nocookie.com/embed/4rnh1Rt8sgE` 呈現，自動支援全螢幕、Lazy Loading 與無障礙屬性。
+  2. **文案總清單同步 (`demo_docs/content_inventory.md`)**：
+     - 於第 3.4.2 節八字體驗項目登記影音介紹網址與 ID。
+  3. **建置驗證**：
+     - 執行 `npm run build` 確保靜態頁面生成無誤。
+
 
