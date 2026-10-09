@@ -43,3 +43,12 @@ demo_docs/raw-photos/**/*
 !demo_docs/raw-photos/**/
 !demo_docs/raw-photos/**/.gitkeep
 
+# Raw uncompressed announcement posters (Canva originals, high-res PNG/JPG)
+demo_docs/announcements/**/*
+!demo_docs/announcements/**/
+!demo_docs/announcements/**/.gitkeep
+!demo_docs/announcements/**/*.md
+!demo_docs/announcements/**/*.webp
+
+
+

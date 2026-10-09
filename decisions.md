@@ -1169,3 +1169,51 @@
   4. **文件同步**：v3 規格書沿革摘要（v3.5）、第三節程式碼與標頭功能摘要第 8 點、第四節前端設計（新增「JSONP 傳輸」條）、第五節 Step 4 補充 4 與 Step 9 驗收增列行動裝置實測項。
 - **業主側待辦（順序重要）**：① Apps Script 貼上第三節新版程式碼並部署；② 再上傳新 `dist/` 至 VPS。⚠️ **必須先部署後端**：舊後端不認得 `callback` 參數會回傳純 JSON，新前端 JSONP 無法執行，桌面端也會壞；反向順序（舊前端＋新後端）則完全相容。
 - **實際執行紀錄（2026-10-08 當日完成後端）**：業主採「刪除舊部署、重新建立」方式，**Web App 網址已更換**，本機 `.env` 的 `PUBLIC_WISHLIST_API_URL` 已同步更新；已透過 curl 實測確認——get_all 純 JSON 與 JSONP（`callback=__testCb`）皆正常、vote 驗證拒收（INVALID_COURSE_NAME）經 JSONP 包裝正常、非法 callback（`foo.bar`）降級純 JSON、含括號／尖括號的 callback 由 Google 層 400 拒絕。新前端已以新網址重新 build（bundle 確認含新網址、舊網址已移除）。⚠️ **注意**：在 `dist/` 上傳 VPS 前，線上舊版前端仍指向已刪除的舊部署網址，許願池在**所有裝置**（含桌面）都會顯示連線異常，屬預期的過渡狀態，上傳新 `dist/` 即恢復。
+
+---
+
+## 2026-10-09 — DEC-068：首頁 Hero 輪播整合最新公告海報（聖誕週年慶、實習生招募）與點擊跳轉支援
+
+- **背景**：
+  - 業主規劃將首頁 Hero 右側主視覺輪播作為重點活動與招募之「最新公告位」，依資訊優先順序要求置於輪播最前列：
+    1. 第一張：`聖誕節週年慶.png`（115/12/19 週年慶交換禮物活動）。
+    2. 第二張：`星靈實習生.png`（以技能換技能培訓招募）。
+- **決策與執行**：
+  1. **公告歸檔與 WebP 最佳化**：
+     - 於 `demo_docs/announcements/2026-10/` 建立年月歸檔目錄，保留原始 Canva PNG 原圖。
+     - 經 PIL 最佳化為標準 WebP（Q85，規格 896×1152，檔案大小分別為 178.6 KB 與 174.8 KB），部署至 `public/assets/`：
+       - `home_announcement_202610_christmas_v1.webp`
+       - `home_announcement_202610_intern_v1.webp`
+     - 同步更新 `.gitignore` 排除 `demo_docs/announcements/` 之原始未壓縮大圖。
+  2. **首頁 Hero 輪播架構升級 (`src/pages/index.astro`)**：
+     - `HeroSlide` 介面擴充 `link?: string` 與 `external?: boolean` 屬性。
+     - `heroSlides` 陣列前置兩張公告海報（預設導向官方 LINE 洽詢／報名），後續保留 4 張既有靈性藝術卡牌，輪播總數擴增為 6 張。
+     - 輪播標籤升級：具備 `link` 時動態渲染為語意化 `<a>` 標籤，並套用 `rounded-2xl` 圓角卡片樣式與鍵盤焦點環。
+     - 行動手勢最佳化：優化 `initHeroCarousel` 腳本，加入 `isSwiping` 旗標與 `click` 攔截，確保使用者在手機上觸控滑動翻頁時不會誤觸發 `<a>` 標籤跳轉。
+  3. **素材登錄與建置驗證**：
+     - 於 `demo_docs/image_prompts.md` 登錄「公告-202610-A」與「公告-202610-B」。
+     - 執行 `npm run build` 確認 11 頁全數通過，HTML 正確產出 6 張幻燈片與 6 顆導覽圓點。
+
+---
+
+## 2026-10-09 — DEC-069：代碼審查修復（首頁輪播手勢滑動計時器清理、非使用中連結 a11y 焦點隔離、公告 WebP 雙重歸檔）
+
+- **背景**：
+  - 外部 AI 針對 DEC-068 之首頁 Hero 公告海報輪播功能進行代碼審查，提出三項優化建議：
+    1. [P2] 手機端連續滑動時，前一次 `touchend` 的 120ms 計時器可能提前重設 `isSwiping` 旗標導致誤觸發點擊。
+    2. [P3] 非目前顯示之海報連結在 DOM 中仍保有 `tabindex="0"`，鍵盤與輔助技術可聚焦到隱藏海報。
+    3. [P3] 專案規範要求採用素材需於 `demo_docs/sd-assets/` 保留封存副本，並確保 Git 能追蹤最佳化之 WebP。
+- **決策與執行**：
+  1. **手勢滑動逾時計時器生命週期管理 (`src/pages/index.astro`)**：
+     - 新增 `swipeResetTimer` 變數保存計時器 ID。
+     - 於 `touchstart` 與啟動新計時器前呼叫 `clearTimeout(swipeResetTimer)`，徹底消除快速連滑時的競態條件。
+  2. **無障礙 a11y 與鍵盤焦點隔離 (`src/pages/index.astro`)**：
+     - 幻燈片容器初始渲染時，非當前頁配置 `tabindex="-1"` 與 `aria-hidden="true"`，僅當前作用中幻燈片配置 `tabindex="0"` 與 `aria-hidden="false"`。
+     - 於 `goTo()` 切換邏輯中同步動態更新 `tabindex` 與 `aria-hidden`，確保鍵盤 Tab 鍵順序與視覺呈現完全同步。
+  3. **素材雙重歸檔與 Git 版控同步**：
+     - 兩張最佳化公告 WebP（`home_announcement_202610_christmas_v1.webp` 與 `home_announcement_202610_intern_v1.webp`）同步歸檔至 `demo_docs/sd-assets/`。
+     - 更新 `.gitignore` 加入 `!demo_docs/announcements/**/*.webp`，使公告目錄下的 WebP 版本能正式進入 Git 追蹤。
+  4. **建置驗證**：
+     - 執行 `npm run build` 確認 11 頁全數編譯通過，產出 HTML 屬性與焦點設定皆符合預期。
+
+

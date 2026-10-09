@@ -374,6 +374,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `專欄-C` | 靈氣與七脈輪 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 冥想人體光影七脈輪彩虹能量 | 423006888875148 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_c_reiki_chakras_v1.webp` |
 | `專欄-D` | 日常能量急救包 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托翡翠綠粉金能量光晨光 | 965541644548421 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_d_reiki_healing_v1.webp` |
 | `專欄-E` | 塔羅心靈之鏡 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 古典靈性鏡面倒映塔羅牌星盤 | 188810271202554 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_e_tarot_mirror_v1.webp` |
+| `公告-202610-A` | 聖誕節交換禮物週年慶 (v1) | 2026-10-09 | Canva | 聖誕樹禮物塔羅牌週年慶活動海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_christmas_v1.webp` |
+| `公告-202610-B` | 星靈實習生招募 (v1) | 2026-10-09 | Canva | 星空月亮以技能換技能培訓招募海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_intern_v1.webp` |
+
 
 ---
 
