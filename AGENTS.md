@@ -118,8 +118,12 @@ pre-build planning repo and is obsolete.
   `/reiki` / `/akashic` 301s, static caching, gzip, security headers。Add as a
   new vhost only; never edit existing server blocks。
 - HTTPS via `certbot --nginx` with auto-renew。
-- 部署現況：vhost 配置檔已備妥；實際上傳 VPS、DNS 與憑證作業見
-  `development_roadmap.md` Phase 5 勾選狀態。
+- 部署現況（2026-10-20 確認）：網站已上線（HTTPS、直連未經 CDN）；VPS 即建置機，
+  repo 位於 `/root/.openclaw/workspace/starwoven/`，於該處 build 後 rsync 至
+  `/var/www/starwoven`。線上 vhost 目前與 repo 版分叉，DEC-073 實作時整併。
+- ⚠️ 線上抽卡功能（DEC-073）合併後，`dist/` 改為 `client/`＋`server/` 結構，
+  **舊指令 `rsync -a --delete dist/ /var/www/starwoven/` 不得再使用**，一律改用
+  `scripts/deploy.sh`（規格見 `demo_docs/tarot_plan.md` 第八節）。
 
 ## Environment variables (see `.env.example`)
 

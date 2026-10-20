@@ -41,3 +41,14 @@
 - **影響位置**：`src/pages/wishlist.astro`（原 `wishlistCourses` SSR fallback，已移除）
 - **說明**：2026-10-07 部署驗收時，試算表課程已由 6 門擴充為 8 門且課名全面更新（業主持續編輯中），SSR 寫死的 6 門 fallback 首屏即過期。
 - **處理結果**：不做追蹤同步，改從根本移除寫死內容——SSR 改為骨架卡佔位（`data-wish-skeleton`），課程卡片全部由前端 clone 模板動態建立；API 初始載入失敗時顯示「許願池暫時連線異常」錯誤區塊（`#wish-error`），不顯示過期資訊（DEC-052）。殘留：`demo_docs/course_wishlist_plan_v3.md` 內「1~6」編號敘述與配色白名單表「目前使用課程」欄仍為舊清單，待業主清單定稿後一併校訂。
+
+## 6. 網站無 404 頁面，nginx 以首頁作為錯誤網址 fallback；靜態資產長快取
+
+- **狀態**：後續優化（2026-10-20 VPS 現況調查發現，DEC-073）
+- **影響位置**：`src/pages/`（無 `404.astro`）、`nginx/starwoven.conf`（`location /`、靜態資產快取）
+- **說明**：
+  1. 線上 nginx 之 `location /` 為 `try_files $uri $uri/ /index.html`，任何錯誤網址皆回傳首頁且狀態碼 200（SEO 上屬 soft 404）。repo 原版為 `=404`，但網站沒有 404 頁，直接改回會顯示 nginx 預設錯誤頁。DEC-073 nginx 整併時刻意保留線上行為，避免於業主會議前改變既有頁面表現。
+  2. 線上靜態資產快取為 `expires 1y`＋`immutable`，套用於所有圖片（含檔名不帶 hash 之 `public/assets/`）。同名覆蓋時訪客最長一年看不到新圖——現行以素材版本號命名（`_v2`、`_v3`）規避，**換圖必須升版號**。
+- **處理方式**：
+  1. 新增品牌風格 `src/pages/404.astro`，nginx 改為 `try_files $uri $uri/ $uri/index.html =404;`＋`error_page 404 /404.html;`。
+  2. 評估將 `immutable` 長快取限縮至 `/_astro/`（檔名含 hash），`/assets/` 改為較短快取。

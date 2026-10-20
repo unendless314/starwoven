@@ -83,9 +83,9 @@
 
 - [x] `npm run build` 產生 `dist/`，本機驗證正式輸出無誤
 - [x] 以 **vhost（server block）** 撰寫新站配置（root 指向 `/var/www/starwoven`，`server_name starwoven.xyz www.starwoven.xyz`），配置檔收錄於 `nginx/starwoven.conf`；**切勿改動現有既有站台**，注意 port 衝突
-- [ ] 上傳 `dist/` 至 VPS（rsync / scp）⬅ 待執行
-- [ ] DNS A record（`@` 與 `www`）指向 `<YOUR_VPS_IP>` ⬅ 待執行（網域已定案 `starwoven.xyz`，DEC-003）
-- [ ] 以 certbot + Let's Encrypt 啟用 HTTPS（auto-renew）⬅ 待執行
+- [x] 上傳 `dist/` 至 VPS（rsync / scp）（2026-10-20 確認已上線；VPS 即建置機，加入抽卡功能後改用 `scripts/deploy.sh`，見 DEC-073）
+- [x] DNS A record（`@` 與 `www`）指向 `<YOUR_VPS_IP>`（2026-10-20 確認，直連未經 CDN）
+- [x] 以 certbot + Let's Encrypt 啟用 HTTPS（auto-renew）（2026-10-20 確認，憑證 `live/starwoven.xyz/`）
 - [x] 導入 Google Analytics 4 (GA4: `G-27D79HXXF5`) 與核心轉換事件埋點（LINE 預約、地圖導航、iOpen Mall 賣場）
 - [ ] 手機實機測試一次 ⬅ 待執行
 

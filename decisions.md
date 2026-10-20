@@ -1282,9 +1282,9 @@
   2. MVP **不加入主導航**、頁面加 `noindex`，以直接網址供業主評估；導航入口待業主決定後另立 DEC。
   3. 牌面圖片以佔位視覺處理；牌義關鍵字與系統提示詞為佔位內容，標示「待占卜師審定」。
   4. **部署架構變更**（`AGENTS.md`「pure static, no reverse proxy」與「never edit existing server blocks」之明文例外，由本 DEC 授權）：VPS 新增 Node.js 與 systemd 服務（僅監聽 `127.0.0.1`）；`nginx/starwoven.conf` 新增頂層 `limit_req_zone` 與 `location /api/` 反向代理；nginx root 維持 `/var/www/starwoven`（內容改為 `dist/client/`）。既有 301、快取、安全標頭規則不動。
-  5. 成本與濫用三層防線：AI 供應商月花費上限（上線前必設）＞應用層每日全站上限＞nginx IP 限流。問題與解讀內容不寫入任何 log 或儲存。
+  5. 成本與濫用三層防線：AI 供應商訂閱方案額度（見下方「AI 供應商選定」；原「供應商月花費上限，上線前必設」為選定訂閱金鑰前之規劃，已於規格書 v0.8 移除）＞應用層每日全站上限＞nginx IP 限流。問題與解讀內容不寫入任何 log 或儲存。
 - **共用表面影響（實作時）**：`astro.config.mjs`、`package.json`（新增轉接器）、`src/layouts/Layout.astro`（新增選用 `noindex` prop）、`nginx/starwoven.conf`、`.env.example`（新增 `TAROT_*` 伺服器端變數，不得以 `PUBLIC_` 開頭）、`AGENTS.md`（部署、路由表、環境變數段落）。
-- **狀態**：✅ 設計審查通過（2026-10-20，歷經五輪外部 AI 審查，第五輪 LGTM），規格書定稿 v0.7——本階段僅新增規格書與本紀錄，**未修改任何程式碼**。下一步：實作 → 程式碼審查 → 部署。AI 供應商與模型、成本試算、資料保留政策於選定時補記本條。
+- **狀態**：✅ 設計審查通過（2026-10-20，歷經五輪外部 AI 審查，第五輪 LGTM），規格書定稿 v0.7（v0.8 文件一致性修正）——本階段僅新增規格書與本紀錄，**未修改任何程式碼**。下一步：實作 → 程式碼審查 → 部署。AI 供應商與模型、成本試算、資料保留政策於選定時補記本條。
 - **第一輪設計審查（2026-10-20，規格書 v0.1 → v0.2）**：外部 AI 審查確認架構方向（`output: 'static'`＋單一 `prerender = false` 路由、Node standalone、`astro:env` server secret、共用牌資料隔離、`noindex`、反向代理分流）合理，提出 2 項 P1，經驗證判定成立並採納：
   1. **每日額度改為呼叫 AI 前同步保留**：原規格以「成功解讀次數」計數，AI 等待期間的併發請求皆可通過檢查，實際呼叫數會遠超上限。改為呼叫前於無 `await` 的同步區段內檢查並遞增全站與 IP 額度；AI 失敗時僅釋放 IP 額度，全站額度不釋放（失敗呼叫多半已計費，全站上限以成本控管為目的）——此釋放策略為採納時之補充設計。
   2. **nginx 限流明確設定 `limit_req_status 429;`**：nginx 預設拒絕碼為 503，會使前端落入一般服務錯誤。另補充前端以回應 body 是否為 JSON `DAILY_LIMIT` 區分應用層上限與 nginx 限流兩種 429。
@@ -1311,3 +1311,15 @@
   3. **[P1] systemd 未載入環境變數檔**：unit 補 `EnvironmentFile=`，並註明格式限制與 `restart`／`daemon-reload` 時機。
   - **環境變數檔配置**（開發者提問後補充）：本機維持單一 `.env`（Astro 僅自動載入 `.env`）；VPS 執行期檔案由 `tarot.env` 更名為 `/etc/starwoven/app.env`（以服務命名），只放 `TAROT_*`——`PUBLIC_*` 為 build 時內嵌，VPS 不需要；環境變數檔不得放入 nginx 對外目錄或 `dist/`。
 - **第五輪設計審查（2026-10-20，規格書 v0.7）**：LGTM——確認選填金鑰之 build 與 `DISABLED` 降級、`none` 哨兵值、systemd `EnvironmentFile`／權限／重啟規則，以及本機 `.env` 與 VPS `app.env` 分工皆成立，無新增 finding。
+- **文件一致性修正與模型變更（2026-10-20，規格書 v0.7 → v0.8，實作前）**：
+  1. 移除早期版本殘留之「AI 供應商每月花費上限（最終保險／上線前必設）」描述（規格書設計原則第 6 條、範疇表、第五節第 4 小節兩處及本 DEC 決策第 5 點），與「Demo 期間使用訂閱金鑰、不另做用量防護」之決定矛盾；成本防線改依實際機制（訂閱額度＞每日全站上限＞nginx 限流）描述。
+  2. **預設模型維持 `MiniMax-M3.1-Flash`**（開發者一度考慮改用 `MiniMax-M3`，同日以訂閱金鑰實測後決定採用 Flash）。實測（`reasoning_effort: "low"`、三張牌陣）：Flash 5～9 秒、約 370 completion tokens、JSON 3／3 可解析；M3 12～14 秒、約 900 tokens。
+  3. **實測發現（規格書補正）**：M3 之推理內容不在 `reasoning_content`，而是以 `<think>…</think>` 夾在 `content` 開頭——轉接器改為一律剝除 `<think>` 區塊後才擷取 JSON，切換模型時推理內容仍不外流。`AI_MAX_OUTPUT_TOKENS` 依實測訂為 2000。
+- **VPS 現況調查與部署規格改寫（2026-10-20，規格書 v0.8，雲端維運 agent 唯讀檢查回報）**：網站已上線（HTTPS、直連未經 CDN）；VPS 即建置機（repo 於 `/root/.openclaw/workspace/starwoven/`，於該處 build 後 rsync）；Node v24.14.0 已安裝於 `/usr/local/bin/node`；部署版 nginx vhost 與 repo 版分叉（部署版有 certbot 443 設定但缺安全標頭）；主機 `nginx.conf` 已有 `zone=api`。據此決定：
+  1. **新增 `scripts/deploy.sh`** 取代舊 `rsync -a --delete dist/` 指令——加入 Node 轉接器後 `dist/` 改為 `client/`＋`server/`，沿用舊指令將使全站失效並公開後端程式碼；腳本含結構檢查與重啟後冒煙請求。
+  2. `/opt/starwoven-app/` 須含 `package.json`、`package-lock.json` 並 `npm ci --omit=dev`（轉接器輸出執行期仍需 `node_modules`，原規格遺漏）。
+  3. **服務帳號改為專用系統帳號 `starwoven`**，不使用 `www-data`（其擁有網站根目錄，服務被攻破即可竄改網站）；`ExecStart` 路徑更正為 `/usr/local/bin/node`；systemd unit 正本收錄於 repo `systemd/`。
+  4. **nginx 以 repo 版為底改寫為完整版、整份替換部署版**：採部署版之 80→301、443／憑證、`location /`（首頁 fallback）與靜態資產長快取（本次不改變既有頁面行為），補回 repo 版安全標頭、charset、gzip；新增之限流 zone 命名 **`tarot_api`**（避免與 `zone=api` 衝突使 `nginx -t` 失敗）。
+  5. **改採 nginx JSON 錯誤頁**（推翻第二輪審查「不另設 nginx JSON 錯誤頁」之取捨）：同主機 exopolitics `/v1/` 已有驗證過之 `error_page` → named location 慣例可沿用，成本低；429／413／502／504 回傳 JSON，新增錯誤碼 `SERVICE_DOWN`（502）、`GATEWAY_TIMEOUT`（504）；前端改以 JSON `error` 代碼為準、解析失敗才依狀態碼降級；`/api/` 不得開啟 `proxy_intercept_errors`。
+  6. **更正 `validateSecrets` 驗證時機**：依 Astro 5.18 型別文件，該選項（位於 `env` 物件內）只於 `dev`／`build` 啟動時驗證，Node 服務執行期 secret 於讀取時才驗證、路由模組於首個請求才載入——`app.env` 填錯不會使服務啟動失敗；改由部署腳本冒煙請求提前觸發並檢查 log。
+  7. 不在範圍、僅告知：全域 `ssl_protocols` 仍含 TLSv1／1.1、同主機 openai-proxy 綁定 `0.0.0.0:3001/3002`——屬其他站台／全域設定，依 `AGENTS.md` 不由本功能修改。無 404 頁與靜態資產長快取記入 `known_issues` 第 6 項。
