@@ -1265,3 +1265,49 @@
      - 於第四節「關於我們」與第六節「生成紀錄」更新 `關於-A` 條目為「採用上架」。
   4. **建置驗證**：
      - 執行 `npm run build` 確認 11 頁全數編譯通過。
+
+---
+
+## 2026-10-20 — DEC-073：新增「線上塔羅抽卡（AI 解讀）」MVP 規劃——Astro on-demand API 路由＋VPS Node 服務（設計審查通過，待實作）
+
+- **背景**：
+  - 業主友人提議於網站新增線上抽卡分頁，並以雲端 AI API 提供牌義解讀。開發者決定先做出可操作的 MVP 上線，供業主評估 UI 與商業定位（免費引流／付費、是否與「離線文字占卜一題 300 元」衝突等，皆待業主決定）。
+  - 現況全站為純靜態（`output: 'static'`，nginx 直接提供 `dist/`），無任何後端；AI 金鑰不可置於前端，必須新增伺服器端元件。
+- **方案評估**：
+  1. **Google Apps Script＋試算表設定**（比照許願池）：不需動 VPS，業主可於試算表調參數；但受 DEC-067 限制只能走 JSONP（GET），問題須放在 URL 參數、無法取得訪客 IP 做限流、後端與 repo 分離維護。
+  2. **Astro on-demand API 路由＋VPS Node 服務（採用）**：程式碼集中於同一 repo、同網域 `fetch POST`（無 CORS／JSONP 問題）、本機 `npm run dev` 前後端一起開發、nginx 可依 IP 限流。
+  - 採用理由：解牌參數（牌義、提示詞、上限）屬**低頻變動**，與許願池課程需業主隨時上下架之性質不同，不需試算表 SSOT；改程式碼重新部署即可。
+- **決策（待審查通過後生效）**：
+  1. 新增 `/tarot` 靜態頁與唯一 on-demand 路由 `POST /api/tarot/reading`；安裝 `@astrojs/node`（standalone），`output` 維持 `'static'`，僅該 API 宣告 `prerender = false`。完整規格見 `demo_docs/tarot_plan.md`（v0.7）。
+  2. MVP **不加入主導航**、頁面加 `noindex`，以直接網址供業主評估；導航入口待業主決定後另立 DEC。
+  3. 牌面圖片以佔位視覺處理；牌義關鍵字與系統提示詞為佔位內容，標示「待占卜師審定」。
+  4. **部署架構變更**（`AGENTS.md`「pure static, no reverse proxy」與「never edit existing server blocks」之明文例外，由本 DEC 授權）：VPS 新增 Node.js 與 systemd 服務（僅監聽 `127.0.0.1`）；`nginx/starwoven.conf` 新增頂層 `limit_req_zone` 與 `location /api/` 反向代理；nginx root 維持 `/var/www/starwoven`（內容改為 `dist/client/`）。既有 301、快取、安全標頭規則不動。
+  5. 成本與濫用三層防線：AI 供應商月花費上限（上線前必設）＞應用層每日全站上限＞nginx IP 限流。問題與解讀內容不寫入任何 log 或儲存。
+- **共用表面影響（實作時）**：`astro.config.mjs`、`package.json`（新增轉接器）、`src/layouts/Layout.astro`（新增選用 `noindex` prop）、`nginx/starwoven.conf`、`.env.example`（新增 `TAROT_*` 伺服器端變數，不得以 `PUBLIC_` 開頭）、`AGENTS.md`（部署、路由表、環境變數段落）。
+- **狀態**：✅ 設計審查通過（2026-10-20，歷經五輪外部 AI 審查，第五輪 LGTM），規格書定稿 v0.7——本階段僅新增規格書與本紀錄，**未修改任何程式碼**。下一步：實作 → 程式碼審查 → 部署。AI 供應商與模型、成本試算、資料保留政策於選定時補記本條。
+- **第一輪設計審查（2026-10-20，規格書 v0.1 → v0.2）**：外部 AI 審查確認架構方向（`output: 'static'`＋單一 `prerender = false` 路由、Node standalone、`astro:env` server secret、共用牌資料隔離、`noindex`、反向代理分流）合理，提出 2 項 P1，經驗證判定成立並採納：
+  1. **每日額度改為呼叫 AI 前同步保留**：原規格以「成功解讀次數」計數，AI 等待期間的併發請求皆可通過檢查，實際呼叫數會遠超上限。改為呼叫前於無 `await` 的同步區段內檢查並遞增全站與 IP 額度；AI 失敗時僅釋放 IP 額度，全站額度不釋放（失敗呼叫多半已計費，全站上限以成本控管為目的）——此釋放策略為採納時之補充設計。
+  2. **nginx 限流明確設定 `limit_req_status 429;`**：nginx 預設拒絕碼為 503，會使前端落入一般服務錯誤。另補充前端以回應 body 是否為 JSON `DAILY_LIMIT` 區分應用層上限與 nginx 限流兩種 429。
+- **第二輪設計審查（2026-10-20，規格書 v0.2 → v0.3）**：確認上述 2 項 P1 修正正確（含「AI 失敗只退 IP、不退全站」之釋放策略與 429 區分做法），另提出 1 項 P2 並採納：
+  - **413 錯誤合約對齊**：nginx `client_max_body_size 2k` 會在請求到達 Node 前直接回傳 HTML 413，與合約宣告之 JSON `PAYLOAD_TOO_LARGE` 不一致。採「前端只依狀態碼 413 判斷、一律顯示同 400 提示」，不另設 nginx JSON 錯誤頁（正常操作受前端 120 字限制不會觸發）；端點保留同一上限檢查作本機開發防線。
+  - 審查結論：v0.3 可進入實作前的最後確認階段。
+- **AI 供應商選定（2026-10-20，規格書 v0.3 → v0.4）**：
+  - **MVP 採 MiniMax**（開發者既有帳號），走 **OpenAI 相容 Chat Completions** 協定（`https://api.minimax.io/v1`），預設模型 `MiniMax-M3.1-Flash`；不安裝 SDK，以內建 `fetch` 實作。
+  - **預留供應商銜接層**：定義 `ChatProvider` 介面，MVP 只實作 `openai-compatible` 轉接器；日後切換 OpenAI 原則上只改環境變數，其他供應商新增轉接器即可。供應商、端點、模型、推理強度、每日上限皆改為 `TAROT_*` 環境變數。
+  - **查證發現（MiniMax 官方文件，2026-10-20）**：① 推理一律開啟無法關閉、M3.1-Flash 預設 effort 為 `max`——規格明訂送出 `reasoning_effort: "low"`，且只取 `content`、推理內容不外流；② 官方未載明 JSON 模式——改以提示詞要求 JSON、轉接器擷取＋結構驗證；③ **訂閱方案金鑰（M Plan）官方定位為個人互動式開發工具使用，並建議正式環境採按量計費**，且訂閱有 5 小時／每週用量窗口。
+  - **金鑰類型（開發者決定）**：Demo 期間（含部署於正式 VPS）使用開發者既有之 **MiniMax 訂閱金鑰（Coding Plan，固定月費 10 USD）**。理由：功能免費、初期流量極低，屬商業可行性驗證，應用端無營收前以按量計費承擔驗證成本不符實務；條款灰色地帶之風險由開發者知情接受。日後業務量成長、具營收時再評估切換按量計費（僅換金鑰，不改程式）。
+  - **額度用盡行為**：撞到訂閱用量窗口即停止服務訪客，不做備援——供應商 429 對應新錯誤碼 `AI_BUSY`（503），前端顯示「星靈暫時休息中，請稍後再來」；應用層每日全站上限用途改為保護開發者自身開發工具額度。
+  - **暫不處理（開發者決定）**：MiniMax 資料保留／訓練使用政策查證、按量計費上限機制、單次成本試算——Demo 階段不列為上線前置條件。
+- **第三輪設計審查（2026-10-20，規格書 v0.4 → v0.5）**：確認 OpenAI 相容轉接器、`reasoning_effort: "low"`、`reasoning_content` 隔離與 `AI_BUSY` 合約一致；金鑰類型屬開發者知情接受之風險，未列為 finding。提出 1 項 P1、1 項 P2，經驗證判定成立並採納：
+  1. **[P1] 更正「額度用盡即停止服務」之假設**：MiniMax 官方 FAQ 說明訂閱窗口用盡後會預設續扣帳號內 Credit packs，原規格「成本天然封頂」描述不正確。開發者確認帳號現有 Credit packs 為官方贈送、未用亦會失效，**接受被網站流量扣用，不另做用量防護設計**；規格改為描述實際行為，並提醒日後自行購買 Credit packs 時網站會一併扣用。
+  2. **[P2] `AI_BUSY` 同時釋放全站與 IP 額度**：供應商 429 為請求被拒、未扣用；原規則僅釋放 IP 額度，供應商短暫限流期間跨 IP 請求即可耗盡全站上限，恢復後整天回 `DAILY_LIMIT`。改為 `AI_BUSY` 全站與 IP 皆釋放，`AI_FAILED`（已實際送出、可能扣用）維持只釋放 IP。
+- **參數管理規範（2026-10-20，規格書 v0.5 → v0.6）**：為避免實作後參數散落各檔、修改需到處搜尋，規格書新增第三節第 3 小節，定「單一來源」三層分類：
+  - **A 執行期設定**（環境變數，`astro.config.mjs` 之 `env.schema` 為唯一清單）：金鑰與營運上可能調整之值（開關、每日上限、供應商、模型、推理強度）；改檔重啟即生效。全部 `TAROT_*` 一律宣告為 `access: 'secret'`（Astro 官方文件：server public 變數會進入 server bundle，secret 才於執行期讀取），並啟用 `validateSecrets` 於啟動時驗證型別；後端統一經 `server-config.ts` 讀取。
+  - **B 程式常數**：`src/lib/tarot/config.ts` 為唯一常數檔（逾時、字數與 body 上限、逆位開關、溫度、輸出長度等），前後端共用；前端文案集中於 `copy.ts`。
+  - **C 基礎設施**：nginx 限流、body 上限、代理逾時留在 `nginx/starwoven.conf`，與 `config.ts` 對應常數以雙向註解連結，跨層大小關係（逾時 nginx ＞ 前端 ＞ 後端、body 上限一致）列表約束並於驗收核對。
+- **第四輪設計審查（2026-10-20，規格書 v0.6 → v0.7）**：確認 v0.5 之 Credit packs 描述與 `AI_BUSY` 釋放規則修正正確，並確認全部 `TAROT_*` 宣告為 secret 之方向正確；提出 3 項 P1，經驗證判定成立：
+  1. **[P1] 無金鑰時 build 失敗**：`TAROT_AI_API_KEY` 為唯一必填 secret，Astro 於 build 時驗證，無金鑰環境 build 會失敗。審查建議 build 時傳入 placeholder；**採替代方案**：金鑰改為選填，缺少時功能視同停用（`DISABLED`）並寫入錯誤 log、部署驗收檢查該 log 不存在。理由：本 repo 有多位協作者與 AI 僅需 build 靜態站，不應讓抽卡功能的金鑰成為全站建置前置條件。
+  2. **[P1] 推理強度「留空停用」無效**：Astro 將空字串視為未設定並套用預設 `low`。改以哨兵值 `none` 表示不送出參數（本系統自訂值，不轉送供應商），schema 以列舉限定合法值。
+  3. **[P1] systemd 未載入環境變數檔**：unit 補 `EnvironmentFile=`，並註明格式限制與 `restart`／`daemon-reload` 時機。
+  - **環境變數檔配置**（開發者提問後補充）：本機維持單一 `.env`（Astro 僅自動載入 `.env`）；VPS 執行期檔案由 `tarot.env` 更名為 `/etc/starwoven/app.env`（以服務命名），只放 `TAROT_*`——`PUBLIC_*` 為 build 時內嵌，VPS 不需要；環境變數檔不得放入 nginx 對外目錄或 `dist/`。
+- **第五輪設計審查（2026-10-20，規格書 v0.7）**：LGTM——確認選填金鑰之 build 與 `DISABLED` 降級、`none` 哨兵值、systemd `EnvironmentFile`／權限／重啟規則，以及本機 `.env` 與 VPS `app.env` 分工皆成立，無新增 finding。
