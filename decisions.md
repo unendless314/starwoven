@@ -1323,3 +1323,8 @@
   5. **改採 nginx JSON 錯誤頁**（推翻第二輪審查「不另設 nginx JSON 錯誤頁」之取捨）：同主機 exopolitics `/v1/` 已有驗證過之 `error_page` → named location 慣例可沿用，成本低；429／413／502／504 回傳 JSON，新增錯誤碼 `SERVICE_DOWN`（502）、`GATEWAY_TIMEOUT`（504）；前端改以 JSON `error` 代碼為準、解析失敗才依狀態碼降級；`/api/` 不得開啟 `proxy_intercept_errors`。
   6. **更正 `validateSecrets` 驗證時機**：依 Astro 5.18 型別文件，該選項（位於 `env` 物件內）只於 `dev`／`build` 啟動時驗證，Node 服務執行期 secret 於讀取時才驗證、路由模組於首個請求才載入——`app.env` 填錯不會使服務啟動失敗；改由部署腳本冒煙請求提前觸發並檢查 log。
   7. 不在範圍、僅告知：全域 `ssl_protocols` 仍含 TLSv1／1.1、同主機 openai-proxy 綁定 `0.0.0.0:3001/3002`——屬其他站台／全域設定，依 `AGENTS.md` 不由本功能修改。無 404 頁與靜態資產長快取記入 `known_issues` 第 6 項。
+- **雲端維運 agent 核對部署規格（2026-10-20，規格書 v0.8 補充）**：同意合併規則表、`deploy.sh` 設計（腳本不自行 `git pull`、結構檢查、冒煙請求）、`/opt` 安裝 `node_modules` 與專用服務帳號；並確認 certbot 採 webroot（`/var/www/starwoven`）、已有 nginx reload deploy hook。補充採納四項：
+  1. 一次性設定預先建立 `.well-known/acme-challenge/`（`www-data`），使 `rsync --exclude=.well-known` 有保留對象。
+  2. 合併後 80 port 須保留 `listen [::]:80;`（repo 原版缺 IPv6）。
+  3. starwoven 443 server 內新增 `ssl_protocols TLSv1.2 TLSv1.3;`，範圍僅限本站，全域設定另立 DEC；替換後以 `openssl s_client -tls1_1` 驗證（多站共用 443 時 server 層設定是否生效需實測，未生效亦無副作用）。
+  4. 憑證效期至 2026-12-23、約 11/23 起實際續期——上線後以 `certbot renew --dry-run` 驗證續期路徑。另註明 `@astrojs/node` 須列於 `dependencies`（VPS 以 `npm ci --omit=dev` 安裝）。
