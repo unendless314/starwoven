@@ -1,6 +1,6 @@
 # 星靈織語 Starwoven — 線上塔羅抽卡（AI 解讀）規格書 v0.8
 
-> **文件狀態**：v0.8 **設計審查通過，待實作**；第八節部署規格於 v0.8 依 VPS 現況改寫，**已經雲端維運 agent 逐項核對同意**（並補 ACME 目錄、`[::]:80`、`ssl_protocols`、續期驗證四項）（2026-10-20 第五輪外部 AI 審查 LGTM；歷經五輪審查，修正紀錄見沿革摘要與 `decisions.md` DEC-073）。對應決策 `decisions.md` DEC-073。
+> **文件狀態**：v0.8 **設計審查通過，待實作**；第八節部署規格於 v0.8 依 VPS 現況改寫，**已經雲端維運 agent 逐項核對同意**（並補 ACME 目錄、`[::]:80`、續期驗證；`ssl_protocols` 經實測為 no-op 不納入）（2026-10-20 第五輪外部 AI 審查 LGTM；歷經五輪審查，修正紀錄見沿革摘要與 `decisions.md` DEC-073）。對應決策 `decisions.md` DEC-073。
 > **沿革摘要**：v0.1 初稿（2026-10-20）→ 第一輪設計審查 2 項 P1 採納：每日額度改為呼叫 AI 前同步保留（防等待期間併發穿透上限）、nginx 限流明確設定 `limit_req_status 429`（v0.2）→ 第二輪審查 1 項 P2 採納：nginx `client_max_body_size` 先行拒絕之 HTML 413 與 JSON 合約對齊，前端以狀態碼 413 判斷（v0.3）→ AI 供應商暫定 MiniMax，新增第五節第 3 小節「AI 供應商與銜接層」、伺服器環境變數清單（v0.4）→ 第三輪審查 1 項 P1、1 項 P2 採納：更正「額度用盡即停止服務」之錯誤假設（訂閱額度用盡後會先扣 Credit packs，開發者知情接受）、`AI_BUSY` 改為同時釋放全站與 IP 額度（v0.5）→ 新增第三節第 3 小節「參數管理」：A 環境變數／B `config.ts`／C nginx 三層單一來源、全部 `TAROT_*` 宣告為 secret 以支援免 build 調整、跨層一致性約束（v0.6）→ 第四輪審查 3 項 P1 採納：`TAROT_AI_API_KEY` 改選填（缺少即視同停用，確保無金鑰亦可 build）、推理強度以 `none` 明確停用、systemd 以 `EnvironmentFile` 載入；伺服器環境變數檔更名 `/etc/starwoven/app.env` 並新增本機／伺服器環境變數檔配置說明（v0.7）→ 文件一致性修正：移除早期版本殘留之「供應商每月花費上限」描述（與訂閱金鑰決定矛盾），成本防線改依實際機制描述；預設模型經實測定為 `MiniMax-M3.1-Flash`、轉接器須剝除 `<think>` 區塊、`AI_MAX_OUTPUT_TOKENS` 依實測訂為 2000；依 VPS 現況調查（雲端維運 agent 回報）改寫第八節部署規格：VPS 即建置機、`scripts/deploy.sh`、`node_modules` 安裝、專用服務帳號、nginx 以 repo 版為底整份替換部署版並沿用主機既有 JSON 錯誤頁慣例、zone 改名 `tarot_api`；更正 `validateSecrets` 實際驗證時機（v0.8）。
 > **建立日期**：2026-10-20
 > **定位**：**MVP Demo**——由開發者先做出可實際操作的成品上線，供業主評估 UI、體驗與商業定位；業主決策前**不加入主導航**，所有商業面參數（牌陣、次數、語氣、是否收費）皆視為可調整之暫定值。
@@ -476,14 +476,10 @@ interface ChatProvider {
 | `/reiki`、`/akashic` 301 ×4 | 兩版相同 | — |
 | `location /` | **部署版**：`try_files $uri $uri/ /index.html` | 網站目前無 404 頁，改回 `=404` 會讓錯誤網址顯示 nginx 預設錯誤頁；本次不改變既有頁面行為，404 頁另列 `known_issues` 第 6 項 |
 | 靜態資產快取 | **部署版**：`expires 1y`＋`Cache-Control "public, immutable"` | 本次不改變既有行為。⚠️ `public/assets/` 檔名不含 hash，同名覆蓋時訪客最長一年看不到新圖——素材規範之版本號命名（`_v2`、`_v3`）可規避，**換圖必須升版號、不得同名覆蓋**；是否改為僅 `/_astro/` 長快取列 `known_issues` 第 6 項一併評估 |
-| `ssl_protocols` | **新增**：443 server 內 `ssl_protocols TLSv1.2 TLSv1.3;` | 全域 `nginx.conf` 仍開放 TLSv1／1.1（影響同主機 4 站，不在本次範圍）；本次既然整份重寫 starwoven vhost，以 server 層設定收斂，範圍僅限本站。⚠️ 多站共用 443 時，server 層 `ssl_protocols` 是否生效視 nginx／OpenSSL 對 SNI 切換之處理而定——以**替換前後對照**驗證（見下方「`ssl_protocols` 驗證方法」）；若未生效亦無副作用（與現況相同），保留此行並留待全域設定另立 DEC 處理 |
 | `limit_req_zone`、`location /api/` | 新增（見下） | 本功能 |
 
+- **不新增 `ssl_protocols`**（2026-10-21 維運實測）：全域 `nginx.conf` 雖宣告 `TLSv1 TLSv1.1 TLSv1.2 TLSv1.3`，但 VPS 之 OpenSSL 3.0.13 編譯期預設最低版本為 TLS 1.2，同主機三站以 TLS 1.1 連線皆遭伺服器拒絕——於 vhost 加入 `ssl_protocols TLSv1.2 TLSv1.3;` 為 no-op，不列入本次範圍，見 `known_issues` 第 7 項。
 - **certbot 續期現況（2026-10-20 維運確認）**：`authenticator = webroot`、`webroot_path = /var/www/starwoven`（`starwoven.xyz`、`www` 皆同）→ 部署腳本之 `rsync --delete` **必須排除 `.well-known/`**。已有 deploy hook `/etc/letsencrypt/renewal-hooks/deploy/reload-nginx.sh`（自動 `nginx -t`＋reload，不依賴本站專屬設定），替換 vhost 不影響續期機制。現行憑證效期至 **2026-12-23**，`certbot.timer` 約自 11/23 起實際嘗試續期——上線後須以 `certbot renew --dry-run` 驗證一次續期路徑，不等到真實續期才發現問題。
-- **`ssl_protocols` 驗證方法**（2026-10-21 維運回報：VPS 之 OpenSSL 3.0.13 直接執行 `openssl s_client -tls1_1` 會於**客戶端**報 `no protocols available`，替換前即「被拒」，屬假陽性，不得作為驗證依據）：
-  1. 指令加上 `-cipher 'DEFAULT@SECLEVEL=0'` 解除客戶端安全等級限制：`openssl s_client -connect starwoven.xyz:443 -servername starwoven.xyz -tls1_1 -cipher 'DEFAULT@SECLEVEL=0' </dev/null`
-  2. **替換前**執行，應**握手成功**（現行全域仍開放 TLS 1.1）——此為對照組，證明測試能偵測到 TLS 1.1；**替換後**再執行，應被**伺服器端**拒絕（握手失敗、非 `no protocols available`）。
-  3. 若替換前對照組即無法握手（客戶端仍無法送出 TLS 1.1），改以外部工具（SSL Labs）於上線後檢查；仍無法驗證時依上表退路處理。
 - **檔案頂層（`server {}` 之外）**新增 `limit_req_zone $binary_remote_addr zone=tarot_api:1m rate=3r/m;`——該指令只能位於 `http` context；本檔經 `sites-enabled` 被 include 於 `http {}` 內，故置於檔案頂層有效。**zone 名稱不得為 `api`**（已被同主機 exopolitics 佔用）。
 - 443 `server {}` 內新增 `location /api/`：
   - `limit_req zone=tarot_api burst=2 nodelay;`＋**`limit_req_status 429;`**（nginx 預設拒絕碼為 503）
@@ -527,7 +523,7 @@ interface ChatProvider {
 4. 錯誤路徑逐一實測：超長問題（400）、錯誤 Origin（403）、連續請求（nginx 429）、每日上限（暫調低為 2 驗證 `DAILY_LIMIT`）、`TAROT_ENABLED=false`（503）、停止 Node 服務（nginx 回 JSON 502 `SERVICE_DOWN`、前端顯示通用錯誤、其他頁面正常）、超大 body（nginx 回 JSON 413）；確認 nginx 429 與端點 `DAILY_LIMIT` 429 前端顯示不同訊息、AI 逾時（以極短逾時模擬 502）。
 5. 自傷關鍵字測試句命中關懷訊息、未呼叫 AI。
 6. 伺服器 log 抽查：無問題原文、無解讀內容、無完整 IP。
-7. 線上 `/tarot` 含 `noindex`、未出現在導覽列；既有頁面（含 `/reiki` 301、許願池）運作正常；nginx 替換後 80→443 轉址、憑證、錯誤網址回首頁、靜態資產快取標頭與替換前一致，回應新增安全標頭；`/var/www/starwoven/` 內**不存在** `server/`、`client/` 子目錄；IPv4／IPv6 之 80 皆轉址至 HTTPS；`ssl_protocols` 依第八節第 2 小節「替換前後對照」驗證（對照組無效或未生效時依該節退路處理）；`certbot renew --dry-run` 通過。
+7. 線上 `/tarot` 含 `noindex`、未出現在導覽列；既有頁面（含 `/reiki` 301、許願池）運作正常；nginx 替換後 80→443 轉址、憑證、錯誤網址回首頁、靜態資產快取標頭與替換前一致，回應新增安全標頭；`/var/www/starwoven/` 內**不存在** `server/`、`client/` 子目錄；IPv4／IPv6 之 80 皆轉址至 HTTPS；`certbot renew --dry-run` 通過。
 8. 部署後（冒煙請求之後）`journalctl -u starwoven-app` 無 `TAROT_AI_API_KEY missing` 錯誤；服務程序以 `starwoven` 帳號執行、只監聽 `127.0.0.1:4321`；在無 `.env` 的乾淨 clone 執行 `npm run build` 可通過。以 MiniMax 訂閱金鑰實測：`reasoning_effort: low` 下單次解讀延遲落在逾時設定內、回應不含推理內容；以模擬供應商 429 驗證前端顯示 `AI_BUSY` 提示。
 9. 參數管理：程式碼中除 `config.ts` 外搜尋不到寫死的逾時、字數、上限數值；第三節第 3 小節（4）跨層約束逐項核對通過；`TAROT_AI_REASONING_EFFORT=none` 時請求不含 `reasoning_effort` 參數；於 VPS 修改 `TAROT_DAILY_LIMIT` 並重啟服務（不重新 build）後新值生效；`dist/server/` 內搜尋不到金鑰與 `TAROT_*` 調整值。
 

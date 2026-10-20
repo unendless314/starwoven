@@ -52,3 +52,10 @@
 - **處理方式**：
   1. 新增品牌風格 `src/pages/404.astro`，nginx 改為 `try_files $uri $uri/ $uri/index.html =404;`＋`error_page 404 /404.html;`。
   2. 評估將 `immutable` 長快取限縮至 `/_astro/`（檔名含 hash），`/assets/` 改為較短快取。
+
+## 7. nginx 全域 `ssl_protocols` 宣告與實際行為不符
+
+- **狀態**：待全域設定清理時處理（非本站範圍；2026-10-21 維運實測，DEC-073）
+- **影響位置**：VPS `/etc/nginx/nginx.conf`（`http {}` 全域，影響同主機 4 個站台）
+- **說明**：全域宣告 `ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;`，看似開放 TLS 1.0／1.1；實測（`openssl s_client -tls1_1 -cipher 'DEFAULT@SECLEVEL=0'`）starwoven、exopolitics、noeticseeker 三站皆回 `alert protocol version` 遭伺服器拒絕——VPS 之 OpenSSL 3.0.13 編譯期預設最低版本為 TLS 1.2，nginx 宣告值實際無效。**安全性無虞（實際只提供 TLS 1.2／1.3）**，但設定檔具誤導性。
+- **處理方式**：日後整理全域設定時，將宣告改為 `TLSv1.2 TLSv1.3` 使文件與實際一致（影響全部站台，需另立 DEC 並經主機維運同意）。本站 vhost 不另行宣告（no-op）。

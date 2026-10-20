@@ -1333,3 +1333,4 @@
   2. **443 預設站為 noeticseeker.com**（無 `default_server`）：記入 VPS 現況，供日後排查。
   3. **rsync 部署空窗**：維運提出改為暫存目錄＋原子切換，評估後不採——rsync 本即以暫存檔＋改名寫入，不會出現 `index.html` 缺檔；改加 `--delay-updates --delete-after` 縮短新舊混雜視窗，不增加腳本複雜度。
   4. **首次上線前備份**網站根目錄與現行 vhost（首次上線順序新增步驟 ⓪），並補靜態站還原之回滾路徑。
+- **`ssl_protocols` 撤回（2026-10-21，規格書 v0.8 補充）**：維運以修正後之對照方法（`-tls1_1 -cipher 'DEFAULT@SECLEVEL=0'`）實測，替換前 starwoven 即遭**伺服器端**拒絕（`alert protocol version`），同主機三站皆同——VPS OpenSSL 3.0.13 編譯期預設最低版本為 TLS 1.2，全域 nginx 宣告之 TLSv1／1.1 實際無效。故前述「starwoven 443 新增 `ssl_protocols TLSv1.2 TLSv1.3;`」為 no-op，**撤回、不納入本次範圍**（採維運建議方案 A），一併移除對應驗收步驟；全域宣告與實際不符一事記入 `known_issues` 第 7 項。首次上線前備份已由維運完成（`/var/www/starwoven.bak-20261020/`、`sites-available/starwoven.bak-20261020`）。
