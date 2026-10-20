@@ -1328,3 +1328,8 @@
   2. 合併後 80 port 須保留 `listen [::]:80;`（repo 原版缺 IPv6）。
   3. starwoven 443 server 內新增 `ssl_protocols TLSv1.2 TLSv1.3;`，範圍僅限本站，全域設定另立 DEC；替換後以 `openssl s_client -tls1_1` 驗證（多站共用 443 時 server 層設定是否生效需實測，未生效亦無副作用）。
   4. 憑證效期至 2026-12-23、約 11/23 起實際續期——上線後以 `certbot renew --dry-run` 驗證續期路徑。另註明 `@astrojs/node` 須列於 `dependencies`（VPS 以 `npm ci --omit=dev` 安裝）。
+- **維運第二次核對（2026-10-21，規格書 v0.8 補充）**：維運 agent 確認四項補充皆正確寫入、規格可定案，另回報並經評估處理如下：
+  1. **TLS 1.1 驗證指令為假陽性**（成立）：VPS 之 OpenSSL 3.0.13 直接以 `-tls1_1` 連線即於客戶端失敗，與 nginx 設定無關。改為加上 `-cipher 'DEFAULT@SECLEVEL=0'` 並採**替換前後對照**（替換前應握手成功作為對照組，替換後應被伺服器拒絕）；對照組無效時改用 SSL Labs 或依退路處理。維運稱 server 層 `ssl_protocols` 依 SNI 必然生效——推論合理，以對照實測確認，不在文件中預設結論。
+  2. **443 預設站為 noeticseeker.com**（無 `default_server`）：記入 VPS 現況，供日後排查。
+  3. **rsync 部署空窗**：維運提出改為暫存目錄＋原子切換，評估後不採——rsync 本即以暫存檔＋改名寫入，不會出現 `index.html` 缺檔；改加 `--delay-updates --delete-after` 縮短新舊混雜視窗，不增加腳本複雜度。
+  4. **首次上線前備份**網站根目錄與現行 vhost（首次上線順序新增步驟 ⓪），並補靜態站還原之回滾路徑。
