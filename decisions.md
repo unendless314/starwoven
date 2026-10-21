@@ -1347,3 +1347,15 @@
   5. **[P2 採納]** 移除未使用、與 `SPREADS` key 重複之 `Spread.id`。
   6. **[P3 採納]** 移除未使用之 `TarotServerConfig` 型別匯出。
   - **型別檢查**：以 `npm install --no-save @astrojs/check typescript` 臨時安裝（不寫入 `package.json`）後執行 `astro check`，本功能檔案 0 錯誤；另發現既有 `src/components/Navbar.astro` 之 `<script>` 缺少結尾標籤（2 errors，build 不受影響）——經開發者同意補上 `</script>`，修正前後 `dist/client/` 產物逐檔比對完全相同，`astro check` 降為 0 errors。另移除 DEC-008 改用 `dark:` 變體後殘留之 Navbar 伺服器端 `isDark` 與無作用之 `theme` prop（`Layout.astro` 改為 `<Navbar />`），產物同樣逐檔相同，`astro check` 0 errors／0 warnings／0 hints。
+
+## 2026-10-21 — DEC-074：塔羅 AI 輸出格式由 JSON 改為標記式（修正結構驗證失敗率偏高）
+
+- **背景**：本機 dev 實測發現 `POST /api/tarot/reading` 常回 `AI_FAILED`（log：`reading failed structure validation`），開發者觀察到空白提問較常失敗。直接以正式提示詞呼叫 MiniMax 重現並保存原始輸出：HTTP 皆正常（`finish_reason: stop`、`base_resp` 0），失敗全數為**模型輸出之 JSON 無效**——`summary` 字串結尾誤寫成 `"]` 或 `"}`（模仿 `cards` 陣列收尾），導致無法解析或物件提早結束而缺少 `advice`。提示詞內容本身無誤。
+- **實測**（單張牌陣）：JSON＋Flash 空白提問 6／8 失敗、有提問 2／6 失敗；`temperature` 0.3 仍 5／10；`response_format: json_object` 8／10；改用 `MiniMax-M3` 2／10（同型錯誤）。改為標記式後 Flash／M3 × 單張／三張各 20 次，**格式錯誤 0／80**。完整數據見 `demo_docs/tarot_plan.md` 第五節第 3 小節（6）。
+- **決策**：
+  1. 系統提示詞【輸出格式】改為 `<card>…</card>`×牌數、`<summary>…</summary>`、`<advice>…</advice>`；`ai.ts` 以 `parseTaggedReading()` 取代 `extractFirstJsonObject()`，`validateReading()` 規則不變（牌數、非空字串、長度截斷）。
+  2. **API 回應合約與前端不變**（伺服器仍回傳 `reading.cards／summary／advice` JSON）。訪客提問之 `<`／`>` 既已轉為全形，無法偽造輸出標記。
+  3. **預設模型維持 `MiniMax-M3.1-Flash`**：格式修正後兩模型成功率無明顯差距，Flash 延遲明顯較低（三張牌陣 p50 11.2 秒 vs M3 18.6 秒，M3 10 次中 1 次逾時），且 token 用量約為 M3 的 1／3。若日後改用 M3，須同步調高 `AI_MAX_OUTPUT_TOKENS`（M3 三張實測最高 1580、曾 1 次撞 2000 上限截斷）並重新評估逾時。
+  4. 不加入自動重試（維持規格「失敗交由使用者手動重試」）。
+- **待觀察**：Flash 三張牌陣延遲變異大（6～21 秒，高併發下曾 1 次達 25 秒逾時），上線後依 log `ms` 觀察，必要時另立 DEC 調整逾時。規格書升為 v0.9。
+- **程式碼審查（2026-10-21，外部 AI 審查，無阻擋項目）**：採納兩項非阻擋建議——① 標記名稱集中為 `prompt.ts` 之 `OUTPUT_TAGS`，提示詞與 `parseTaggedReading()` 共用（產出之提示詞文字與修改前逐字相同）；② 規格書第三節（`AI_MAX_OUTPUT_TOKENS` 說明）、第五節第 3 小節（切換 OpenAI／其他供應商）殘留之「JSON 擷取／JSON 輸出」字樣更新，`config.ts` 註解同步；第十一節審查清單屬歷史紀錄，不改。

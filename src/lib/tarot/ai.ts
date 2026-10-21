@@ -1,10 +1,10 @@
 // ==========================================
 // AI 呼叫入口：對外只暴露 generateReading()
-// 依 TAROT_AI_PROVIDER 選擇轉接器，負責 JSON 擷取與結構驗證；失敗一律拋出 ProviderError。
+// 依 TAROT_AI_PROVIDER 選擇轉接器，負責解析標記式輸出與結構驗證；失敗一律拋出 ProviderError。
 // ⚠️ 伺服器專用：僅被 API 路由 import。
 // ==========================================
 import { AI_MAX_OUTPUT_TOKENS, AI_TEMPERATURE, READING_LENGTH, SERVER_AI_TIMEOUT_MS } from './config';
-import { SYSTEM_PROMPT, buildUserMessage, type DrawnCard } from './prompt';
+import { OUTPUT_TAGS, SYSTEM_PROMPT, buildUserMessage, type DrawnCard } from './prompt';
 import { createOpenAICompatibleProvider } from './providers/openai-compatible';
 import { ProviderError, type ChatProvider } from './providers/types';
 import { tarotServerConfig as cfg } from './server-config';
@@ -33,34 +33,15 @@ function getProvider(): ChatProvider {
   }
 }
 
-/** 擷取文字中第一個完整（括號平衡）的 JSON 物件；考慮字串內的括號與跳脫字元 */
-export function extractFirstJsonObject(text: string): unknown {
-  let start = text.indexOf('{');
-  while (start !== -1) {
-    let depth = 0;
-    let inString = false;
-    let escaped = false;
-    for (let i = start; i < text.length; i++) {
-      const ch = text[i];
-      if (inString) {
-        if (escaped) escaped = false;
-        else if (ch === '\\') escaped = true;
-        else if (ch === '"') inString = false;
-        continue;
-      }
-      if (ch === '"') inString = true;
-      else if (ch === '{') depth++;
-      else if (ch === '}' && --depth === 0) {
-        try {
-          return JSON.parse(text.slice(start, i + 1));
-        } catch {
-          break; // 平衡但無法解析 → 從下一個 { 再試
-        }
-      }
-    }
-    start = text.indexOf('{', start + 1);
-  }
-  return null;
+/**
+ * 解析標記式輸出（OUTPUT_TAGS：card×N、summary、advice）。
+ * 不採 JSON：實測 M3.1-Flash／M3 常把 summary 結尾誤寫成 `"]`／`"}`，使 JSON 失效（DEC-074）。
+ * 同名標記重複時 summary／advice 取第一個；缺少的欄位留空，交由 validateReading 判定。
+ */
+export function parseTaggedReading(text: string): { cards: string[]; summary?: string; advice?: string } {
+  const all = (tag: string) =>
+    Array.from(text.matchAll(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`, 'gi')), (m) => m[1].trim());
+  return { cards: all(OUTPUT_TAGS.card), summary: all(OUTPUT_TAGS.summary)[0], advice: all(OUTPUT_TAGS.advice)[0] };
 }
 
 /** 依 Unicode 字元截斷（不切斷代理對） */
@@ -99,7 +80,7 @@ export async function generateReading(spreadName: string, drawn: DrawnCard[], qu
       temperature: AI_TEMPERATURE,
       signal: controller.signal,
     });
-    const reading = validateReading(extractFirstJsonObject(text), drawn.length);
+    const reading = validateReading(parseTaggedReading(text), drawn.length);
     if (!reading) throw new ProviderError('failed', 'reading failed structure validation');
     return reading;
   } finally {

@@ -23,7 +23,7 @@ export const REVERSALS_ENABLED = true;
 /** MiniMax OpenAI 相容端點合法範圍 (0, 1] */
 export const AI_TEMPERATURE = 0.8;
 
-/** 須容納推理＋JSON 輸出；依 2026-10-20 實測（Flash 約 380、M3 約 950）取足夠餘裕 */
+/** 須容納推理＋解讀輸出；依 2026-10-20 實測（Flash 約 380、M3 約 950）取足夠餘裕 */
 export const AI_MAX_OUTPUT_TOKENS = 2000;
 
 /** 解讀長度：提示詞文字與結構驗證截斷引用同一組數值 */

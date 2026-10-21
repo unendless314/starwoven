@@ -14,6 +14,12 @@ export interface DrawnCard {
 
 const L = READING_LENGTH;
 
+/** AI 輸出標記名稱：提示詞與 ai.ts 解析器共用，只改一處會造成結構驗證失敗（DEC-074） */
+export const OUTPUT_TAGS = { card: 'card', summary: 'summary', advice: 'advice' } as const;
+
+const T = OUTPUT_TAGS;
+const wrap = (tag: string, body: string) => `<${tag}>${body}</${tag}>`;
+
 export const SYSTEM_PROMPT = `你是「星靈織語」的塔羅解讀者，依偉特塔羅為訪客解牌。
 
 【語氣】
@@ -36,11 +42,14 @@ export const SYSTEM_PROMPT = `你是「星靈織語」的塔羅解讀者，依�
 - 若沒有提問，請給出一般性的生活指引。
 
 【輸出格式】
-只輸出一個 JSON 物件，不得有任何其他文字、說明或 Markdown 標記：
-{"cards":["第 1 張牌的解讀", "…"],"summary":"整體訊息","advice":"一句溫柔的建議"}
-- cards：陣列長度必須等於牌數，順序與提供的牌相同；每張牌解讀 ${L.cardMin}～${L.cardMax} 字，結合該牌位置與提問。
-- summary：${L.summaryMin}～${L.summaryMax} 字，串連所有牌的整體訊息。
-- advice：一句話，${L.adviceMax} 字以內。`;
+只依下列標記輸出，不得有任何其他文字、說明或 Markdown 標記：
+${wrap(T.card, '第 1 張牌的解讀')}
+${wrap(T.card, '第 2 張牌的解讀（依牌數類推）')}
+${wrap(T.summary, '整體訊息')}
+${wrap(T.advice, '一句溫柔的建議')}
+- ${T.card}：每張牌一個區塊，數量必須等於牌數，順序與提供的牌相同；每張牌解讀 ${L.cardMin}～${L.cardMax} 字，結合該牌位置與提問。
+- ${T.summary}：${L.summaryMin}～${L.summaryMax} 字，串連所有牌的整體訊息。
+- ${T.advice}：一句話，${L.adviceMax} 字以內。`;
 
 export function buildUserMessage(spreadName: string, drawn: DrawnCard[], question: string): string {
   const lines = drawn.map((d, i) => {
