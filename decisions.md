@@ -1346,4 +1346,4 @@
   4. **[P2 撤回] API 回應之 `name` 欄位**：審查者撤回——該欄位為規格第四節第 2 小節既定成功回應合約，不因前端目前未讀取而移除。
   5. **[P2 採納]** 移除未使用、與 `SPREADS` key 重複之 `Spread.id`。
   6. **[P3 採納]** 移除未使用之 `TarotServerConfig` 型別匯出。
-  - **型別檢查**：以 `npm install --no-save @astrojs/check typescript` 臨時安裝（不寫入 `package.json`）後執行 `astro check`，本功能檔案 0 錯誤；另發現既有 `src/components/Navbar.astro` 之 `<script>` 缺少結尾標籤（2 errors，build 不受影響），非本功能範圍，未修改。
+  - **型別檢查**：以 `npm install --no-save @astrojs/check typescript` 臨時安裝（不寫入 `package.json`）後執行 `astro check`，本功能檔案 0 錯誤；另發現既有 `src/components/Navbar.astro` 之 `<script>` 缺少結尾標籤（2 errors，build 不受影響）——經開發者同意補上 `</script>`，修正前後 `dist/client/` 產物逐檔比對完全相同，`astro check` 降為 0 errors（餘 1 項既有 hint：`isDark` 未使用）。
