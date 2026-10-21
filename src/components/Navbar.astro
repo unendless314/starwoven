@@ -3,13 +3,10 @@ import CTAButton from './CTAButton.astro';
 
 interface Props {
   currentPath?: string;
-  theme?: 'dark' | 'light' | 'auto';
 }
 
-const { currentPath = Astro.url.pathname, theme = 'auto' } = Astro.props;
-
-// Determine if we should use dark navbar (for homepage) or light navbar (for inner pages)
-const isDark = theme === 'dark' || (theme === 'auto' && (currentPath === '/' || currentPath === ''));
+// 深淺配色由 <html> 的 .dark class（Layout.astro ＋主題初始化腳本）搭配 Tailwind dark: 變體決定，Navbar 不需自行判斷
+const { currentPath = Astro.url.pathname } = Astro.props;
 
 const normalizePath = (p: string) => {
   const stripped = p.replace(/\/$/, '');
