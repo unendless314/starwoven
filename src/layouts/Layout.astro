@@ -8,6 +8,8 @@ interface Props {
   description?: string;
   ogImage?: string;
   theme?: 'dark' | 'light' | 'auto';
+  /** 不供搜尋引擎索引（例：Demo 評估中之頁面，DEC-073） */
+  noindex?: boolean;
 }
 
 const {
@@ -15,6 +17,7 @@ const {
   description = '星靈織語提供命理與占卜服務，包含塔羅、占星、八字、靈氣調頻與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。',
   ogImage = '/assets/og-image.jpg',
   theme = 'auto',
+  noindex = false,
 } = Astro.props;
 
 const siteName = '星靈織語 Starwoven';
@@ -30,6 +33,7 @@ const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === 
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

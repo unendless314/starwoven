@@ -1,0 +1,32 @@
+# 星靈織語 Starwoven — Astro Node 服務（線上塔羅抽卡 API，DEC-073）
+# 安裝：cp systemd/starwoven-app.service /etc/systemd/system/ && systemctl daemon-reload && systemctl enable starwoven-app
+# 修改 /etc/starwoven/app.env 後：systemctl restart starwoven-app
+# 修改本檔後：systemctl daemon-reload && systemctl restart starwoven-app
+# 規格：demo_docs/tarot_plan.md 第八節第 1 小節
+
+[Unit]
+Description=Starwoven Astro Node service (tarot reading API)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=starwoven
+Group=starwoven
+WorkingDirectory=/opt/starwoven-app
+# TAROT_* ＋ HOST=127.0.0.1、PORT=4321（每行 KEY=value，不支援 export 與變數展開）
+EnvironmentFile=/etc/starwoven/app.env
+Environment=NODE_ENV=production
+# ⚠️ Node 為官方 tarball 安裝於 /usr/local/bin（誤寫 /usr/bin/node 會以 203/EXEC 失敗）
+ExecStart=/usr/local/bin/node /opt/starwoven-app/dist/server/entry.mjs
+Restart=on-failure
+RestartSec=3
+
+# 低成本加固（服務不寫入任何檔案，log 走 journald）
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

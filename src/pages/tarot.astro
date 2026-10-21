@@ -1,0 +1,420 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { QUESTION_MAX_CHARS } from '../lib/tarot/config';
+import { CARE_COPY, PAGE_META, PLACEHOLDER_NOTE, PRIVACY_NOTE, UI_TEXT } from '../lib/tarot/copy';
+import { SPREADS, SPREAD_IDS } from '../lib/tarot/spreads';
+
+// ==========================================
+// 線上塔羅抽卡（AI 解讀）MVP — DEC-073，規格 demo_docs/tarot_plan.md
+// 靜態頁（prerender）；互動邏輯在 src/scripts/tarot.ts（頁面層級 script 引入）。
+// Demo 期間不加入主導航、加 noindex，以直接網址供業主評估。
+// 狀態區塊：setup（選牌陣＋提問）→ pick（洗牌＋扇形選牌）→ result（翻牌＋解讀）／care／error
+// ==========================================
+const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
+---
+
+<Layout
+  title={PAGE_META.title}
+  description={PAGE_META.description}
+  theme="auto"
+  noindex
+>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24" data-tarot-root>
+
+    <!-- 頁頭 Header -->
+    <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-14 space-y-4">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#8FB8E8]/20 dark:bg-[#8FB8E8]/15 border border-[#80A9D4]/40 dark:border-[#8FB8E8]/30 text-[#2E2A4F]/85 dark:text-[#8FB8E8] text-xs sm:text-sm font-huninn tracking-widest transition-colors">
+        <span>✦</span>
+        <span>{UI_TEXT.badge}</span>
+        <span>✦</span>
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+        {UI_TEXT.heading}
+      </h1>
+      <p class="text-lg sm:text-xl text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+        {UI_TEXT.intro[0]}<br class="hidden sm:inline" />
+        {UI_TEXT.intro[1]}
+      </p>
+      <div class="w-20 h-1.5 bg-[#8FB8E8] mx-auto rounded-full mt-3 opacity-80"></div>
+    </header>
+
+    <!-- ① 選擇牌陣＋輸入問題 -->
+    <section data-step="setup" aria-labelledby="tarot-setup-title" class="tarot-panel">
+      <h2 id="tarot-setup-title" class="sr-only">{UI_TEXT.setupHeading}</h2>
+      <form id="tarot-form" class="space-y-8" novalidate>
+        <fieldset>
+          <legend class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white mb-4">
+            {UI_TEXT.spreadLegend}
+          </legend>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {SPREAD_IDS.map((id, i) => (
+              <label class="tarot-spread-option group relative cursor-pointer rounded-3xl border-2 p-5 sm:p-6 transition-all duration-200 bg-white/90 dark:bg-[#231f40]/90 border-gray-200/80 dark:border-white/15 hover:border-[#80A9D4] dark:hover:border-[#8FB8E8] has-[:checked]:border-[#80A9D4] dark:has-[:checked]:border-[#FCE794] has-[:checked]:shadow-lg has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[#80A9D4]">
+                <input type="radio" name="spread" value={id} checked={i === 0} class="sr-only" />
+                <span class="flex items-center gap-3 mb-2">
+                  <span class="flex gap-1" aria-hidden="true">
+                    {SPREADS[id].positions.map(() => (
+                      <span class="tarot-mini-back"></span>
+                    ))}
+                  </span>
+                  <span class="text-lg font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white">
+                    {SPREADS[id].name}
+                  </span>
+                </span>
+                <span class="block text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 leading-relaxed">
+                  {SPREADS[id].description}
+                </span>
+                <span class="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-[#80A9D4]/60 dark:border-white/30 flex items-center justify-center group-has-[:checked]:border-[#80A9D4] dark:group-has-[:checked]:border-[#FCE794]" aria-hidden="true">
+                  <span class="w-2.5 h-2.5 rounded-full bg-[#80A9D4] dark:bg-[#FCE794] opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div>
+          <label for="tarot-question" class="block text-lg sm:text-xl font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white mb-4">
+            {UI_TEXT.questionLabel}
+          </label>
+          <textarea
+            id="tarot-question"
+            name="question"
+            rows="3"
+            placeholder={UI_TEXT.questionPlaceholder}
+            aria-describedby="tarot-question-count tarot-privacy"
+            class="w-full rounded-2xl border px-4 py-3 text-base leading-relaxed resize-none transition-colors bg-white/95 dark:bg-[#231f40]/95 border-gray-200/80 dark:border-white/20 text-[#3A3A3A] dark:text-white placeholder:text-[#3A3A3A]/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-[#80A9D4] dark:focus:ring-[#8FB8E8]"
+          ></textarea>
+          <div class="flex flex-col-reverse sm:flex-row sm:items-start justify-between gap-2 mt-2 text-xs sm:text-sm">
+            <p id="tarot-privacy" class="text-[#3A3A3A]/65 dark:text-white/60 leading-relaxed">🔒 {PRIVACY_NOTE}</p>
+            <p id="tarot-question-count" class="shrink-0 text-[#3A3A3A]/60 dark:text-white/55 tabular-nums" aria-live="polite">
+              <span data-question-count>0</span> / {QUESTION_MAX_CHARS}
+            </p>
+          </div>
+        </div>
+
+        <div class="text-center">
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 bg-[#80A9D4] hover:bg-[#6b97c4] text-white px-10 py-3.5 rounded-full font-huninn font-bold tracking-widest text-lg shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            <span>✦</span>
+            <span>{UI_TEXT.startButton}</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- ② 洗牌＋扇形選牌（儀式性互動，不決定實際牌面） -->
+    <section data-step="pick" aria-labelledby="tarot-pick-status" class="tarot-panel" hidden>
+      <p id="tarot-pick-status" class="text-center text-lg sm:text-xl font-huninn tracking-wider text-[#2E2A4F] dark:text-white min-h-[1.75em]" aria-live="polite"></p>
+      <div class="tarot-fan mt-6" data-fan role="group" aria-label={UI_TEXT.fanLabel}></div>
+      <div class="tarot-waiting text-center mt-8" data-waiting hidden>
+        <span class="tarot-orbit" aria-hidden="true"><span></span><span></span><span></span></span>
+      </div>
+    </section>
+
+    <!-- ③ 翻牌＋解讀 -->
+    <section data-step="result" aria-labelledby="tarot-result-title" class="tarot-panel" hidden>
+      <h2 id="tarot-result-title" class="text-center text-2xl sm:text-3xl font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white mb-8" data-result-title></h2>
+      <div class="flex justify-center gap-3 sm:gap-6 mb-10" data-result-cards></div>
+      <div class="space-y-5" data-reading aria-live="polite"></div>
+    </section>
+
+    <!-- ③' 安全關懷（自傷相關提問：不抽牌、不呼叫 AI） -->
+    <section data-step="care" aria-labelledby="tarot-care-title" class="tarot-panel" hidden>
+      <div class="max-w-xl mx-auto rounded-3xl border p-6 sm:p-8 bg-white/95 dark:bg-[#231f40]/95 border-[#80A9D4]/40 dark:border-white/20 shadow-lg text-center space-y-5">
+        <p class="text-4xl" aria-hidden="true">🤍</p>
+        <h2 id="tarot-care-title" class="text-xl sm:text-2xl font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white">{CARE_COPY.title}</h2>
+        <p class="text-base leading-relaxed text-[#3A3A3A]/85 dark:text-white/85">{CARE_COPY.body}</p>
+        <ul class="space-y-2.5">
+          {CARE_COPY.hotlines.map((h) => (
+            <li>
+              <a href={`tel:${h.number}`} class="flex items-center justify-between gap-3 rounded-2xl px-5 py-3 bg-[#EAF3F8] dark:bg-white/10 text-[#2E2A4F] dark:text-white hover:bg-[#DFECF3] dark:hover:bg-white/15 transition-colors">
+                <span class="font-huninn tracking-wider">{h.name}{h.note && <span class="text-sm opacity-70">（{h.note}）</span>}</span>
+                <span class="text-xl font-bold tabular-nums tracking-widest">{h.number}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+          <a href={LINE_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-[#06C755] hover:bg-[#05b04c] text-white px-7 py-3 rounded-full font-huninn font-bold tracking-wider shadow-sm hover:shadow-md transition-all active:scale-95">
+            {CARE_COPY.lineCta}
+          </a>
+          <button type="button" data-action="again" class="tarot-secondary-btn">{UI_TEXT.again}</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 錯誤 -->
+    <section data-step="error" aria-labelledby="tarot-error-message" class="tarot-panel" hidden>
+      <div class="text-center py-10 sm:py-14 space-y-5" role="alert">
+        <p class="text-4xl" aria-hidden="true">☁️</p>
+        <p id="tarot-error-message" class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white" data-error-message></p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button type="button" data-action="retry" class="inline-flex items-center gap-1.5 bg-[#80A9D4] hover:bg-[#6b97c4] text-white px-7 py-2.5 rounded-full font-huninn font-bold tracking-widest shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer" hidden>
+            {UI_TEXT.retry}
+          </button>
+          <button type="button" data-action="again" class="tarot-secondary-btn">{UI_TEXT.again}</button>
+        </div>
+      </div>
+    </section>
+
+    <noscript>
+      <p class="text-center text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 font-huninn tracking-wide py-14">
+        {UI_TEXT.noscript}
+      </p>
+    </noscript>
+
+    <p class="text-center text-xs sm:text-sm text-[#3A3A3A]/60 dark:text-white/50 font-huninn tracking-wide transition-colors mt-12 sm:mt-16">
+      {PLACEHOLDER_NOTE}
+    </p>
+
+    <!-- 結果區：單張牌模板（前端 clone 填入；逆位時牌面旋轉 180° 並以文字標示） -->
+    <template id="tarot-card-template">
+      <figure class="tarot-result-card flex flex-col items-center gap-2.5">
+        <figcaption class="text-sm sm:text-base font-huninn tracking-wider text-[#80A9D4] dark:text-[#8FB8E8]" data-position></figcaption>
+        <div class="tarot-flip" data-flip>
+          <div class="tarot-flip-inner">
+            <div class="tarot-card-back tarot-flip-back" aria-hidden="true"></div>
+            <div class="tarot-card-face tarot-flip-front" data-face>
+              <span class="tarot-face-numeral" data-numeral></span>
+              <span class="tarot-face-symbol" data-symbol></span>
+              <span class="tarot-face-name" data-face-name></span>
+            </div>
+          </div>
+        </div>
+        <div class="text-center leading-snug">
+          <p class="font-bold font-huninn tracking-wider text-[#2E2A4F] dark:text-white" data-name-zh></p>
+          <p class="text-xs text-[#3A3A3A]/65 dark:text-white/60 font-['Quicksand']" data-name-en></p>
+          <p class="text-xs mt-1 inline-block px-2 py-0.5 rounded-full" data-orientation></p>
+        </div>
+      </figure>
+    </template>
+
+    <!-- 結果區：結尾（建議、告知、導流 CTA、再抽一次） -->
+    <template id="tarot-outro-template">
+      <div class="tarot-fade space-y-6">
+        <p class="text-xs sm:text-sm text-center text-[#3A3A3A]/60 dark:text-white/50" data-notice></p>
+        <div class="rounded-3xl p-6 sm:p-8 text-center space-y-4 bg-gradient-to-br from-[#2E2A4F] to-[#3D3A63] text-white shadow-xl">
+          <p class="text-xl sm:text-2xl font-bold font-huninn tracking-wider">{UI_TEXT.ctaTitle}</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <a href={LINE_URL} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-[#FCE794] hover:bg-[#F5D96A] text-[#2E2A4F] px-7 py-3 rounded-full font-huninn font-bold tracking-wider shadow-sm hover:shadow-md transition-all active:scale-95">
+              <span>✦</span><span>{UI_TEXT.ctaButton}</span>
+            </a>
+            <button type="button" data-action="again" class="inline-flex items-center gap-1.5 border-2 border-white/50 hover:border-white text-white px-7 py-2.5 rounded-full font-huninn font-bold tracking-wider transition-all active:scale-95 cursor-pointer">
+              {UI_TEXT.again}
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+
+  <script>
+    import '../scripts/tarot';
+  </script>
+</Layout>
+
+<style is:global>
+  .tarot-secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.625rem 1.75rem;
+    border-radius: 9999px;
+    border: 2px solid #80a9d4;
+    color: #80a9d4;
+    font-family: var(--font-huninn);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tarot-secondary-btn:hover { background: #80a9d4; color: #fff; }
+  .dark .tarot-secondary-btn { border-color: #8fb8e8; color: #8fb8e8; }
+  .dark .tarot-secondary-btn:hover { background: #8fb8e8; color: #2e2a4f; }
+
+  /* ---------- 牌背（品牌佔位視覺，CSS 繪製） ---------- */
+  .tarot-card-back,
+  .tarot-mini-back {
+    background:
+      radial-gradient(circle at 50% 50%, rgba(252, 231, 148, 0.35) 0 8%, transparent 9%),
+      radial-gradient(circle at 22% 18%, rgba(255, 255, 255, 0.7) 0 1.2%, transparent 1.6%),
+      radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.55) 0 1%, transparent 1.4%),
+      radial-gradient(circle at 30% 80%, rgba(143, 184, 232, 0.8) 0 1.2%, transparent 1.6%),
+      radial-gradient(circle at 70% 75%, rgba(255, 255, 255, 0.5) 0 0.9%, transparent 1.3%),
+      linear-gradient(160deg, #3d3a63 0%, #2e2a4f 55%, #1c1834 100%);
+    border: 2px solid rgba(252, 231, 148, 0.7);
+    box-shadow: inset 0 0 0 4px #2e2a4f, inset 0 0 0 5px rgba(252, 231, 148, 0.45), 0 6px 16px rgba(46, 42, 79, 0.25);
+  }
+  .tarot-mini-back {
+    display: inline-block;
+    width: 0.9rem;
+    height: 1.4rem;
+    border-radius: 0.2rem;
+    border-width: 1px;
+    box-shadow: none;
+  }
+  .tarot-card-back {
+    position: relative;
+    border-radius: 0.75rem;
+  }
+  .tarot-card-back::after {
+    content: '✦';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fce794;
+    font-size: 1.25rem;
+  }
+
+  /* ---------- 扇形牌堆 ---------- */
+  .tarot-fan {
+    --fan-spread: 26deg;
+    --card-w: 4.25rem;
+    --card-h: 6.75rem;
+    position: relative;
+    height: calc(var(--card-h) + 3.5rem);
+    max-width: 40rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (min-width: 640px) {
+    .tarot-fan { --fan-spread: 36deg; --card-w: 5.25rem; --card-h: 8.25rem; }
+  }
+  .tarot-fan-card {
+    position: absolute;
+    left: calc(50% - var(--card-w) / 2);
+    bottom: 0;
+    width: var(--card-w);
+    height: var(--card-h);
+    transform-origin: 50% 330%;
+    transform: rotate(calc(var(--fan-spread) * (var(--t) * 2 - 1)));
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), filter 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  .tarot-fan-card:disabled { cursor: default; }
+  .tarot-fan-card:not(:disabled):hover,
+  .tarot-fan-card:not(:disabled):focus-visible {
+    transform: rotate(calc(var(--fan-spread) * (var(--t) * 2 - 1))) translateY(-0.75rem);
+    outline: none;
+  }
+  .tarot-fan-card:focus-visible { box-shadow: 0 0 0 3px #80a9d4; }
+  .tarot-fan-card[aria-pressed='true'] {
+    transform: rotate(calc(var(--fan-spread) * (var(--t) * 2 - 1))) translateY(-1.75rem);
+    filter: drop-shadow(0 0 10px rgba(252, 231, 148, 0.9));
+  }
+  .tarot-fan.is-stacked .tarot-fan-card { transform: rotate(0deg); }
+  .tarot-fan.is-shuffling .tarot-fan-card:nth-child(odd) { animation: tarot-shuffle-left 0.45s ease-in-out 3; }
+  .tarot-fan.is-shuffling .tarot-fan-card:nth-child(even) { animation: tarot-shuffle-right 0.45s ease-in-out 3; }
+  .tarot-fan.is-waiting .tarot-fan-card[aria-pressed='true'] { animation: tarot-glow 1.6s ease-in-out infinite; }
+  .tarot-fan.is-waiting .tarot-fan-card:not([aria-pressed='true']) { opacity: 0.35; }
+
+  @keyframes tarot-shuffle-left {
+    50% { transform: translateX(-2.5rem) rotate(-6deg); }
+  }
+  @keyframes tarot-shuffle-right {
+    50% { transform: translateX(2.5rem) rotate(6deg); }
+  }
+  @keyframes tarot-glow {
+    50% { filter: drop-shadow(0 0 18px rgba(252, 231, 148, 1)); }
+  }
+
+  /* 等待動畫：三顆繞行的星點 */
+  .tarot-orbit {
+    position: relative;
+    display: inline-block;
+    width: 3rem;
+    height: 3rem;
+    animation: tarot-spin 2.4s linear infinite;
+  }
+  .tarot-orbit span {
+    position: absolute;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: #80a9d4;
+  }
+  .dark .tarot-orbit span { background: #fce794; }
+  .tarot-orbit span:nth-child(1) { top: 0; left: calc(50% - 0.25rem); }
+  .tarot-orbit span:nth-child(2) { bottom: 0.3rem; left: 0.2rem; opacity: 0.7; }
+  .tarot-orbit span:nth-child(3) { bottom: 0.3rem; right: 0.2rem; opacity: 0.45; }
+  @keyframes tarot-spin { to { transform: rotate(360deg); } }
+
+  /* ---------- 翻牌 ---------- */
+  .tarot-flip {
+    width: 5.5rem;
+    height: 8.75rem;
+    perspective: 900px;
+  }
+  @media (min-width: 640px) {
+    .tarot-flip { width: 8rem; height: 12.75rem; }
+  }
+  .tarot-result-card.is-single .tarot-flip { width: 8rem; height: 12.75rem; }
+  @media (min-width: 640px) {
+    .tarot-result-card.is-single .tarot-flip { width: 10rem; height: 16rem; }
+  }
+  .tarot-flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .tarot-flip.is-flipped .tarot-flip-inner { transform: rotateY(180deg); }
+  .tarot-flip-back,
+  .tarot-flip-front {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .tarot-flip-front { transform: rotateY(180deg); }
+
+  /* 佔位牌面：牌名、大小阿爾克那／花色符號 */
+  .tarot-card-face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.35rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(170deg, #ffffff 0%, #eaf3f8 100%);
+    border: 2px solid #80a9d4;
+    box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 5px rgba(128, 169, 212, 0.5), 0 6px 16px rgba(46, 42, 79, 0.2);
+    color: #2e2a4f;
+    text-align: center;
+  }
+  .dark .tarot-card-face {
+    background: linear-gradient(170deg, #3d3a63 0%, #231f40 100%);
+    border-color: #fce794;
+    box-shadow: inset 0 0 0 4px #231f40, inset 0 0 0 5px rgba(252, 231, 148, 0.45), 0 6px 16px rgba(0, 0, 0, 0.35);
+    color: #fff;
+  }
+  .tarot-card-face.is-reversed { transform: rotateY(180deg) rotate(180deg); }
+  .tarot-face-numeral { font-family: 'Quicksand', sans-serif; font-weight: 700; font-size: 0.75rem; letter-spacing: 0.1em; opacity: 0.7; }
+  .tarot-face-symbol { font-size: 2rem; line-height: 1; color: #80a9d4; }
+  .dark .tarot-face-symbol { color: #fce794; }
+  .tarot-face-name { font-family: var(--font-huninn); font-size: 0.8rem; letter-spacing: 0.05em; }
+  @media (min-width: 640px) {
+    .tarot-face-symbol { font-size: 3rem; }
+    .tarot-face-name { font-size: 0.95rem; }
+  }
+
+  .tarot-fade { animation: tarot-fade-in 0.7s ease-out both; }
+  @keyframes tarot-fade-in {
+    from { opacity: 0; transform: translateY(0.75rem); }
+    to { opacity: 1; transform: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tarot-fan-card,
+    .tarot-flip-inner { transition: none; }
+    .tarot-fan.is-shuffling .tarot-fan-card,
+    .tarot-fan.is-waiting .tarot-fan-card[aria-pressed='true'],
+    .tarot-orbit { animation: none; }
+    .tarot-fade { animation: tarot-fade-plain 0.4s ease-out both; }
+    @keyframes tarot-fade-plain { from { opacity: 0; } to { opacity: 1; } }
+  }
+</style>

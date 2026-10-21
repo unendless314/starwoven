@@ -1334,3 +1334,16 @@
   3. **rsync 部署空窗**：維運提出改為暫存目錄＋原子切換，評估後不採——rsync 本即以暫存檔＋改名寫入，不會出現 `index.html` 缺檔；改加 `--delay-updates --delete-after` 縮短新舊混雜視窗，不增加腳本複雜度。
   4. **首次上線前備份**網站根目錄與現行 vhost（首次上線順序新增步驟 ⓪），並補靜態站還原之回滾路徑。
 - **`ssl_protocols` 撤回（2026-10-21，規格書 v0.8 補充）**：維運以修正後之對照方法（`-tls1_1 -cipher 'DEFAULT@SECLEVEL=0'`）實測，替換前 starwoven 即遭**伺服器端**拒絕（`alert protocol version`），同主機三站皆同——VPS OpenSSL 3.0.13 編譯期預設最低版本為 TLS 1.2，全域 nginx 宣告之 TLSv1／1.1 實際無效。故前述「starwoven 443 新增 `ssl_protocols TLSv1.2 TLSv1.3;`」為 no-op，**撤回、不納入本次範圍**（採維運建議方案 A），一併移除對應驗收步驟；全域宣告與實際不符一事記入 `known_issues` 第 7 項。首次上線前備份已由維運完成（`/var/www/starwoven.bak-20261020/`、`sites-available/starwoven.bak-20261020`）。
+- **實作完成（2026-10-21，依規格書 v0.8）**：
+  - 新增 `@astrojs/node@^9.5.5`（`dependencies`）、`astro.config.mjs` 之 `adapter`＋`env.schema`（全部 `TAROT_*` 為 server secret、`validateSecrets: true`）；`src/lib/tarot/`（config／copy／cards／spreads／prompt／ai／guard／server-config／providers）、`src/pages/api/tarot/reading.ts`、`src/pages/tarot.astro`、`src/scripts/tarot.ts`；`Layout.astro` 新增選用 `noindex` prop；`nginx/starwoven.conf` 改寫為完整部署版；新增 `systemd/starwoven-app.service`、`scripts/deploy.sh`。
+  - **規格內之實作細節（非範疇變更）**：① MiniMax 若以 HTTP 200＋`base_resp.status_code` 回報業務錯誤，`1002`（RPM）、`1008`（餘額不足）、`1039`（TPM）視同供應商拒絕 → `AI_BUSY`（釋放全站與 IP 額度），其餘 → `AI_FAILED`；② 結構驗證截斷採 `READING_LENGTH` 上限 ×1.5（`truncateSlack`，避免模型字數略超即被硬切）；③ 問題中的 `<`／`>` 轉為全形，防止偽造 `<question>` 分隔標記；④ 靜態資產 `location` 因含 `add_header` 不繼承 server 層標頭，於該 location 重列四項安全標頭；⑤ 「再抽一次」保留已輸入之問題，`AI_FAILED` 重試直接重送請求（不重跑洗牌儀式）；⑥ 非 POST 方法回 405。
+  - **本機驗證**：`npm run build` 通過（`/tarot` 為第 12 頁）；`dist/client/` 無金鑰、供應商網域、提示詞；以不同 `TAROT_*` 值 build 後 `dist/` 內搜尋不到該值。dev 實測 MiniMax 兩次（三張／單張，6.5～7.5 秒，prompt injection 測試句仍只就牌面解讀）。正式 build（`node dist/server/entry.mjs`）以假供應商驗證：`AI_FAILED` 只釋放 IP 額度、`AI_BUSY` 全部釋放、`DAILY_LIMIT`、每 IP 上限、`DISABLED`（開關關閉／缺金鑰並寫入 log）、`<think>` 剝除與程式碼框 JSON 擷取、`none` 時不送 `reasoning_effort`、正式模式拒絕 localhost Origin、`app.env` 填錯時首個請求報 `EnvInvalidVariables`（由部署冒煙請求攔截）。
+  - **待辦**：瀏覽器實機視覺驗收（深淺模式、iOS Safari／Android Chrome）；VPS 部署與線上驗收（規格書第八、九節），nginx 替換前須以備份 `sites-available/starwoven.bak-20261020` diff 核對 443／certbot 段落（repo 版採 certbot 標準之 `options-ssl-nginx.conf`／`ssl-dhparams.pem` 寫法）。
+- **程式碼審查修正（2026-10-21，外部 AI 審查，無 P0／P1）**：屬既有範圍內修正，不另立 DEC。
+  1. **[P2 採納] 問題字數計算前後端一致**：移除 `<textarea maxlength>`（瀏覽器以 UTF-16 code unit 計算，emoji 約 60 個即被截斷），改由 `tarot.ts` 以 `Array.from()` 依 Unicode 字元截斷（含貼上），與後端驗證同一算法。
+  2. **[P2 採納] 前端文案集中**：頁首、表單標題、按鈕、牌堆與牌之 aria-label、頁面 title／description 移入 `copy.ts`（`PAGE_META`、`UI_TEXT`）；頁面與腳本不再散寫可見文案。
+  3. **[P2 部分採納] 動畫時長**：集中為 `tarot.ts` 的 `RITUAL_TIMING`（逐項註明對應 CSS），不移入 `config.ts`；規格書第三節第 3 小節（1）補明文例外——純視覺動畫時長可留於對應頁面腳本集中管理。
+  4. **[P2 撤回] API 回應之 `name` 欄位**：審查者撤回——該欄位為規格第四節第 2 小節既定成功回應合約，不因前端目前未讀取而移除。
+  5. **[P2 採納]** 移除未使用、與 `SPREADS` key 重複之 `Spread.id`。
+  6. **[P3 採納]** 移除未使用之 `TarotServerConfig` 型別匯出。
+  - **型別檢查**：以 `npm install --no-save @astrojs/check typescript` 臨時安裝（不寫入 `package.json`）後執行 `astro check`，本功能檔案 0 錯誤；另發現既有 `src/components/Navbar.astro` 之 `<script>` 缺少結尾標籤（2 errors，build 不受影響），非本功能範圍，未修改。

@@ -106,13 +106,15 @@
 
 **分層判斷規則**（新增參數時依序判斷）：① 是機密 → A；② 業主／營運者可能在不改程式的情況下要求調整 → A；③ 只有 nginx 能執行 → C；④ 其餘 → B。**不得**在 `config.ts` 以外的程式檔案中寫死數值常數。
 
+> **例外（2026-10-21 程式碼審查後補充）**：純視覺動畫時長（洗牌、展開、翻牌、淡入節奏）與頁面 CSS 動畫耦合，集中於對應頁面腳本之單一常數物件（`src/scripts/tarot.ts` 的 `RITUAL_TIMING`，逐項註明對應之 CSS），不移入 `config.ts`——放在 `config.ts` 反而與其耦合之 CSS 分處兩地。此例外僅限不影響行為與成本之視覺節奏；逾時、字數、上限等仍須位於 `config.ts`。
+
 > 不另設執行期讀取之 JSON／YAML 設定檔：A 層的環境變數檔已承擔「不重新 build 即可調整」的角色，再增加一個設定檔只會多一處需同步的來源。
 
 #### (2) B 層：`config.ts` 常數清單
 
 | 常數 | 預設值 | 使用方 | 說明 |
 | :--- | :--- | :--- | :--- |
-| `QUESTION_MAX_CHARS` | `120` | 前端（輸入框 `maxlength`、字數提示）＋後端（驗證） | 前後端引用同一常數，不得各自寫數字 |
+| `QUESTION_MAX_CHARS` | `120` | 前端（輸入字數限制／字數提示，依 Unicode 字元計）＋後端（驗證） | 前後端引用同一常數，不得各自寫數字 |
 | `REQUEST_BODY_MAX_BYTES` | `2048` | 後端（本機／nginx 遺漏時之防線） | 須與 C 層 `client_max_body_size 2k` 一致 |
 | `SERVER_AI_TIMEOUT_MS` | `25000` | 後端（`AbortController`） | 逾時大小關係見下方 (4) |
 | `CLIENT_REQUEST_TIMEOUT_MS` | `30000` | 前端 | 須大於 `SERVER_AI_TIMEOUT_MS` |

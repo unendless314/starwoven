@@ -11,7 +11,11 @@ pre-build planning repo and is obsolete.
 - Stack: **Astro ^5.18.2** (`output: 'static'`) + **Tailwind CSS v4** via
   `@tailwindcss/vite` (CSS-first config in `src/styles/global.css`; no
   `tailwind.config.*`). No JS framework, no CMS.
-- Commands: `npm run dev` · `npm run build` (→ `dist/`) · `npm run preview`
+- **`@astrojs/node` (standalone) adapter** since DEC-073: every page is still
+  prerendered; the only on-demand route is `POST /api/tarot/reading`
+  (`prerender = false`). Build output is `dist/client/`（static）＋`dist/server/`（Node）.
+- Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `TAROT_*`）· `npm run build`
+  (→ `dist/client/` + `dist/server/`) · `npm run preview`
 
 ## Canonical sources of truth (read these first, in order)
 
@@ -39,7 +43,14 @@ pre-build planning repo and is obsolete.
 /courses      courses.astro          固定課程（圖片常態外顯+手風琴詳情）/ 交流會 / 主題體驗工作坊
 /blog         blog/index.astro       星靈專欄列表（分類過濾 + 精選置頂）
 /blog/[slug]  blog/[...slug].astro   文章內頁（Content Collections，src/content/blog/ 共 5 篇）
+/tarot        tarot.astro            線上塔羅抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-073）
+POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（Node 服務）
 ```
+
+- 抽卡程式集中於 `src/lib/tarot/`（`config.ts` 唯一常數檔、`copy.ts` 前端文案、
+  `cards.ts`／`spreads.ts` 共用資料；`server-config.ts`／`ai.ts`／`prompt.ts`／`guard.ts`／
+  `providers/` 為伺服器專用，**不得被前端 import**）＋`src/scripts/tarot.ts`。
+  規格書：`demo_docs/tarot_plan.md`。牌義與提示詞為佔位內容，待占卜師審定。
 
 - Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
@@ -112,8 +123,10 @@ pre-build planning repo and is obsolete.
 ## Deployment (Hetzner NBG1, Ubuntu arm64, nginx)
 
 - Server IP: `<YOUR_VPS_IP>` · domain `starwoven.xyz`（A records for `@`/`www`）。
-- Deploy root `/var/www/starwoven`；pure static `dist/` served directly（no
-  reverse proxy）。
+- Deploy root `/var/www/starwoven`（內容為 `dist/client/`，nginx 直接提供）；
+  `/api/` 由 nginx 反向代理至 `127.0.0.1:4321` 的 systemd 服務 `starwoven-app`
+  （程式於 `/opt/starwoven-app`，unit 正本 `systemd/starwoven-app.service`，
+  執行期變數 `/etc/starwoven/app.env`）。
 - **`nginx/starwoven.conf` in this repo is the canonical vhost** — includes the
   `/reiki` / `/akashic` 301s, static caching, gzip, security headers。Add as a
   new vhost only; never edit existing server blocks。
@@ -130,3 +143,6 @@ pre-build planning repo and is obsolete.
 - `PUBLIC_GA_ID` — GA4 measurement id（未設定時 fallback 為 `G-27D79HXXF5`）。
 - `PUBLIC_WISHLIST_API_URL` — Apps Script web app URL；unset → 許願池以本機
   demo 模式運行（不發網路請求，票數存 localStorage）。
+- `TAROT_*` — 抽卡伺服器端變數（DEC-073）。**唯一清單為 `astro.config.mjs` 的
+  `env.schema`**，一律 server secret（執行期讀取、不進 bundle；VPS 改 `app.env` 重啟即生效）。
+  `TAROT_AI_API_KEY` 選填，缺少時抽卡停用、其餘頁面與 build 不受影響。
