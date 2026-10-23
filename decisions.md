@@ -1359,3 +1359,33 @@
   4. 不加入自動重試（維持規格「失敗交由使用者手動重試」）。
 - **待觀察**：Flash 三張牌陣延遲變異大（6～21 秒，高併發下曾 1 次達 25 秒逾時），上線後依 log `ms` 觀察，必要時另立 DEC 調整逾時。規格書升為 v0.9。
 - **程式碼審查（2026-10-21，外部 AI 審查，無阻擋項目）**：採納兩項非阻擋建議——① 標記名稱集中為 `prompt.ts` 之 `OUTPUT_TAGS`，提示詞與 `parseTaggedReading()` 共用（產出之提示詞文字與修改前逐字相同）；② 規格書第三節（`AI_MAX_OUTPUT_TOKENS` 說明）、第五節第 3 小節（切換 OpenAI／其他供應商）殘留之「JSON 擷取／JSON 輸出」字樣更新，`config.ts` 註解同步；第十一節審查清單屬歷史紀錄，不改。
+
+---
+
+## 2026-10-23 — DEC-075：官方 Instagram 帳號更新（@starwoven2026 → @starwoven27）
+
+- **背景**：
+  - 原官方 Meta/Instagram 帳號遭停權封禁，官方新開設並啟用 Instagram 帳號 `@starwoven27`（`https://www.instagram.com/starwoven27`），未來官方發文以該帳號為主。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - Instagram 圖示連結更新為 `https://www.instagram.com/starwoven27`。
+     - 按鈕標題 `title` 更新為 `Instagram: @starwoven27`。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 0.2 節官方社群 Favicon 連結之 Instagram 項目更新為 `https://www.instagram.com/starwoven27`（真實帳號 `starwoven27`）。
+
+---
+
+## 2026-10-23 — DEC-076：頁尾重新上架 Threads 官方社群圖示（@starwoven27）
+
+- **背景**：
+  - 先前於 DEC-047 撤下之 Threads 社群圖示，經業主確認新帳號 `@starwoven27` 已開通啟用，指示重新加回全站頁尾。
+- **連結與網域核實**：
+  - 經檢驗，Meta 現已同時支援 `threads.com` 與標準 `threads.net` 網域，兩者皆直接導向星靈織語個人檔案。本專案採 Meta/Instagram 標準官方網址格式 `https://www.threads.net/@starwoven27`。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - 重新加入 Threads 圓形微互動按鈕（位於 Facebook 之後、LINE 之前，保留原先定義之 Dark/Light hover 反色樣式）。
+     - 連結設為 `https://www.threads.net/@starwoven27`（`target="_blank"`、`rel="noopener noreferrer"`）。
+     - 無障礙標籤 `aria-label` 為「前往星靈織語 Threads 官方帳號」，提示 `title` 為「Threads: @starwoven27」。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 0.2 節官方社群 Favicon 連結之 Threads 項目更新為 `https://www.threads.net/@starwoven27`（官方帳號 `@starwoven27`）。
+     - 1.6 節頁尾工作室資訊同步更新社群圖標列納入 Threads，並移除已過期之封禁備註。

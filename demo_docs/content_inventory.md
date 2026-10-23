@@ -20,9 +20,9 @@
   - 開啟方式：另開新分頁（`target="_blank"`、`rel="noopener"`）
   - LINE 官方帳號 ID：`@347fucvj`
 - **官方社群 Favicon 連結（頁尾右側）**：
-  - **Instagram**：`https://www.instagram.com/starwoven2026`（真實帳號 `starwoven2026`）
+  - **Instagram**：`https://www.instagram.com/starwoven27`（真實帳號 `starwoven27`）
   - **Facebook**：`https://www.facebook.com`（平台首頁預留佔位）
-  - **Threads**：已依業主指示撤下（官方帳號封禁，頁尾暫不顯示圖示）
+  - **Threads**：`https://www.threads.net/@starwoven27`（官方帳號 `@starwoven27`）
   - **LINE 官方帳號**：`https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url`（真實帳號 `@347fucvj`）
   - **YouTube**：`https://www.youtube.com/channel/UCw30YbjMjchOx-lAYGfQUoQ`（官方頻道：星靈織語 Starwoven）
   - **TikTok**：`https://www.tiktok.com/@starwoven2026?_r=1&_t=ZS-9AH4nldT20a`（官方帳號 `@starwoven2026`）
@@ -106,7 +106,7 @@
 
 ### 1.6 頁尾工作室資訊（Footer）
 - **實體地址**：高雄市前金區河南二路140號2樓（近捷運前金站一號出口），點擊直通 Google Map 導航。
-- **社群圖標列**：Instagram（官方帳號）、Facebook（平台首頁）、LINE（官方帳號）、YouTube（官方頻道）、TikTok（官方帳號）、星靈選物（iOpen Mall 賣場）。（註：Threads 原列於此，已依業主指示因帳號封禁撤下）
+- **社群圖標列**：Instagram（官方帳號）、Facebook（平台首頁）、Threads（官方帳號）、LINE（官方帳號）、YouTube（官方頻道）、TikTok（官方帳號）、星靈選物（iOpen Mall 賣場）。
 
 ### 1.7 課程許願池入口連結（DEC-049，位於固定循環課程與學員心聲之間）
 - **異動備註**：原首頁「課程許願池」完整區塊已依 DEC-049 獨立為 `/wishlist` 分頁（詳見第 8 節），首頁僅保留下列小型膠囊入口連結。
