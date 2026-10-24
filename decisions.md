@@ -1389,3 +1389,17 @@
   2. **文案總清單 (`demo_docs/content_inventory.md`)**：
      - 0.2 節官方社群 Favicon 連結之 Threads 項目更新為 `https://www.threads.net/@starwoven27`（官方帳號 `@starwoven27`）。
      - 1.6 節頁尾工作室資訊同步更新社群圖標列納入 Threads，並移除已過期之封禁備註。
+
+---
+
+## 2026-10-24 — DEC-077：頁尾 Facebook 連結更新（由首頁佔位替換為官方 Facebook 貼文/專頁連結）
+
+- **背景**：
+  - 頁尾原 Facebook 圖示連結為首頁佔位（`https://www.facebook.com`），業主提供最新 Facebook 連結 `https://www.facebook.com/share/p/1FL9uy3CVE/`。
+- **決策與執行**：
+  1. **全站頁尾組件 (`src/layouts/Layout.astro`)**：
+     - Facebook 圖示連結更新為 `https://www.facebook.com/share/p/1FL9uy3CVE/`（`target="_blank"`、`rel="noopener noreferrer"`）。
+     - 無障礙標籤 `aria-label` 由「前往 Facebook（平台首頁）」更新為「前往星靈織語 Facebook」，提示 `title` 由「Facebook（平台首頁）」更新為「Facebook: 星靈織語」。
+  2. **文案總清單 (`demo_docs/content_inventory.md`)**：
+     - 0.2 節官方社群 Favicon 連結之 Facebook 項目更新為 `https://www.facebook.com/share/p/1FL9uy3CVE/`（官方專頁貼文）。
+     - 1.6 節頁尾工作室資訊同步將 Facebook 說明更新為「官方專頁/貼文」。
