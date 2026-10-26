@@ -59,3 +59,20 @@
 - **影響位置**：VPS `/etc/nginx/nginx.conf`（`http {}` 全域，影響同主機 4 個站台）
 - **說明**：全域宣告 `ssl_protocols TLSv1 TLSv1.1 TLSv1.2 TLSv1.3;`，看似開放 TLS 1.0／1.1；實測（`openssl s_client -tls1_1 -cipher 'DEFAULT@SECLEVEL=0'`）starwoven、exopolitics、noeticseeker 三站皆回 `alert protocol version` 遭伺服器拒絕——VPS 之 OpenSSL 3.0.13 編譯期預設最低版本為 TLS 1.2，nginx 宣告值實際無效。**安全性無虞（實際只提供 TLS 1.2／1.3）**，但設定檔具誤導性。
 - **處理方式**：日後整理全域設定時，將宣告改為 `TLSv1.2 TLSv1.3` 使文件與實際一致（影響全部站台，需另立 DEC 並經主機維運同意）。本站 vhost 不另行宣告（no-op）。
+
+## 8. 活動與課程頁深色模式切換過渡期白底白字與 WCAG AA 對比度未通過
+
+- **狀態**：待排期優化（2026-10-26 審查回饋發現）
+- **影響位置**：`src/pages/courses.astro`（活動與課程頁面）
+- **說明**：
+  1. **主題動態切換過渡（Transition Timing）**：
+     全站卡片配置了 `transition-all duration-300` / `transition-colors duration-300`。點擊 Navbar 主題切換按鈕的一瞬間（$t=0\text{ ms}$），`<html>` 即刻加入 `.dark` 類別，部分未具 transition 的文字瞬間轉為深色白字（如 `#ffffff`、`dark:text-white/85`），但卡片背景與頁面主背景仍在進行 300ms 平滑漸變（仍停留在淺色 `#EAF3F8` 與 `bg-white/85`）。此時自動化測試（如 axe、Playwright）或瞬間視線會捕捉到「白字疊在淺色背景上」，對比度低至 1.01:1。
+  2. **既有色彩對比度（WCAG AA 4.5:1）**：
+     即使等待 300ms 動畫結束（背景已轉為深紫夜空 `#2E2A4F`），axe 仍會回報約 31 處色彩對比度未達 WCAG AA 4.5:1 標準：
+     - 主題行動按鈕配白字：`bg-[#80A9D4] text-white`（對比度約 2.45:1，如「報名交流會」、「私訊報名」、「點選報名詢問」）。
+     - 週一至週六粉彩星期彩標：`#80A9D4`、`#9880B8`、`#58A497`、`#E08D5B` 等底色搭配白字（對比度約 2.5~3.5:1）。
+     - 深色次要文字：`dark:text-white/50`（對比度約 3.8:1，如「採包月小班制・滿班即止」）、`dark:text-[#8FB8E8]` 老師標籤等。
+- **處理方式**：
+  1. 切換主題時可暫時掛載 `disable-transitions` 類別（於主題切換腳本中暫時關閉過渡），避免自動化工具或快速切換時出現暫態白底白字。
+  2. 微調淡藍按鈕（`#80A9D4`）與各星期標籤的字體顏色（改採深色字體以達 4.5:1），或將深色模式下的按鈕背景適度調深。
+  3. 將深色次要弱化文字（`dark:text-white/50`）提升至 `dark:text-white/70` 以上，確保通過 WCAG AA 檢測。

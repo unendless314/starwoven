@@ -1403,3 +1403,23 @@
   2. **文案總清單 (`demo_docs/content_inventory.md`)**：
      - 0.2 節官方社群 Favicon 連結之 Facebook 項目更新為 `https://www.facebook.com/share/p/1FL9uy3CVE/`（官方專頁貼文）。
      - 1.6 節頁尾工作室資訊同步將 Facebook 說明更新為「官方專頁/貼文」。
+
+---
+
+## 2026-10-26 — DEC-078：活動與課程頁交流會場次更新、八字體驗過期下架與紫微斗數短影音上架
+
+- **背景**：
+  - `/courses`（活動與課程）之「實體交流會」既有場次過期，業主提供近期週六下午時段新場次。
+  - 「主題體驗課程」之「八字體驗」（10/24）已圓滿結業過期，指示下架移除。
+  - 「紫微斗數工作坊」短影音製作完成，業主提供官方 YouTube Shorts 網址：`https://www.youtube.com/shorts/qIQLaGWaDn8`（影片 ID：`qIQLaGWaDn8`）。
+- **決策與執行**：
+  1. **命理交流會場次更新 (`src/pages/courses.astro`)**：
+     - 更新 `meetupInfo.sessions` 為：`10/31（六）`、`11/14（六）`、`11/28（六）`（時段維持 `15:00 - 18:00`）。
+  2. **主題體驗課程下架與更新 (`src/pages/courses.astro`)**：
+     - 移除已過期之「八字體驗」（課程-I），主題體驗專區維持交錯排版（梅花易數與紫微斗數共 2 門）。
+     - 「紫微斗數工作坊」配置 `youtubeId: 'qIQLaGWaDn8'`，由原先之「短影音籌備中」佔位卡片自動切換為 9:16 YouTube-nocookie 直式播放器。
+  3. **文案總清單同步 (`demo_docs/content_inventory.md`)**：
+     - 第 3.3 節交流會場次紀錄同步更新。
+     - 第 3.4 節紫微斗數工作坊新增官方 YouTube Shorts 影音記錄，八字體驗轉入往期存檔紀錄。
+  4. **建置驗證**：
+     - 執行 `npm run build` 確認靜態編譯通過、無語法或排版錯誤。
