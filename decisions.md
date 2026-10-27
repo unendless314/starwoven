@@ -1423,3 +1423,24 @@
      - 第 3.4 節紫微斗數工作坊新增官方 YouTube Shorts 影音記錄，八字體驗轉入往期存檔紀錄。
   4. **建置驗證**：
      - 執行 `npm run build` 確認靜態編譯通過、無語法或排版錯誤。
+
+---
+
+## 2026-10-27 — DEC-079：AI 互動功能共用基礎設施抽出（第一階段：純重構，塔羅行為不變）——規劃（設計待審查）
+
+- **背景**：
+  - 業主欲新增「占星抽卡」小遊戲（行星 12 張、宮位 12 張、星座 12 張各抽一張，由 AI 組合解讀），目的與線上塔羅抽卡（DEC-073）相同，皆為引流。
+  - 塔羅之伺服器端程式（AI 供應商轉接器、逾時、標記解析、額度計數與釋放規則、輸入守門、端點請求檢查）與占星逐行相同。若整套複製，日後供應商、模型或輸出格式調整（如 DEC-074）須在兩處同步修改，易產生不一致。
+- **方案評估**：
+  1. **整套複製**：第一次開發最快、不碰已上線之塔羅；之後每次修改共用邏輯皆需改兩份。
+  2. **抽出伺服器端共用核心、前端各自獨立（採用）**：塔羅程式原本已依「伺服器專用／前後端共用」分檔並有 `ChatProvider` 介面，抽出多為搬移與參數化；代價為須重構已上線之塔羅並重跑驗收。
+  - 不做設定檔驅動之通用占卜引擎、不共用前端狀態機：兩功能之儀式互動差異大，只共用逐行相同之邏輯。
+- **決策（待審查通過後生效）**：
+  1. 新增共用規格書 `demo_docs/ai_platform_plan.md`（v0.1）：參數管理、AI 供應商與銜接層、防濫用與額度、輸入守門、API 慣例、Log 與隱私、部署等原屬 `tarot_plan.md` 之共用內容移入並依多功能改寫；`tarot_plan.md` 改版 v1.0，只保留塔羅專屬內容（審查沿革、實測紀錄保留）。
+  2. 程式目錄：`src/lib/ai/server/`（伺服器專用）與 `src/lib/ai/shared/`（可被前端 import），以目錄劃分 import 邊界；各功能保留 `src/lib/<feature>/`。
+  3. **額度與 nginx 限流各功能分開計算**（開發者決定）：每個功能一份記憶體計數（共用實作 `createDailyQuota`）、一個 nginx zone（`<feature>_api`）；每日 AI 呼叫最壞總量為各功能全站上限之和，新增功能時於其 DEC 核對。
+  4. 環境變數：供應商設定改為共用 `AI_PROVIDER`／`AI_BASE_URL`／`AI_MODEL`／`AI_API_KEY`／`AI_REASONING_EFFORT`（原 `TAROT_AI_*`，型別與預設值不變）；功能變數 `TAROT_ENABLED`／`TAROT_DAILY_LIMIT`／`TAROT_IP_DAILY_LIMIT` 不變。功能前綴不得使用 `ASTRO_`（Astro 自身使用，例如 `ASTRO_KEY`）。VPS 採新舊變數並存之遷移（規格書第九節第 4 小節）：部署與回滾皆不需同步編輯 `app.env`；部署重啟期間數秒之 502 `SERVICE_DOWN` 與現行相同，非零停機。
+  5. nginx：泛用 `location /api/` 改為逐功能 `location /api/tarot/`；named location `@tarot_*` 改名共用之 `@ai_*`；未登錄之 `/api/*` 不再轉送 Node。`scripts/deploy.sh` 冒煙請求改為端點陣列，log 檢查字串改為 `AI_API_KEY missing`。
+  6. **實作分兩階段**：第一階段（本 DEC）只重構塔羅，API 合約、頁面、文案、GA 事件不變（允許之可觀察差異僅三項：① log 新增 `feature` 欄位；② 缺金鑰之錯誤 log 字串由 `TAROT_AI_API_KEY missing; tarot disabled` 改為 `AI_API_KEY missing; AI features disabled`（`deploy.sh` 檢查字串同步更新）；③ 未登錄之 `/api/*` 不再轉送 Node，一般路徑 GET 回首頁 fallback、POST 回 nginx 405，符合靜態副檔名者回 404；請求中之未知欄位維持忽略），部署並驗收後才進入第二階段；第二階段（DEC-080，另立）新增占星抽卡，只新增檔案與設定區塊。
+- **共用表面影響（實作時）**：`astro.config.mjs`（`env.schema` 改名）、`.env.example`、`nginx/starwoven.conf`、`scripts/deploy.sh`、`systemd/starwoven-app.service`（僅註解）、`AGENTS.md`（抽卡程式位置、環境變數段落；並更正「next number」過期敘述）。
+- **狀態**：規格書草案完成；第一輪外部設計審查 7 項（P1×1、P2×3、P3×3）全數採納，`ai_platform_plan.md` 升 v0.2；第二輪 1 項（P2）採納，升 v0.3；第三輪 1 項（P2）採納，升 v0.4，待複審——本階段僅新增／改寫規格書與本紀錄，**未修改任何程式碼**。下一步：設計審查 → 實作 → 程式碼審查 → 部署（依規格書第九節第 5 小節順序）。
