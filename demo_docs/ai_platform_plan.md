@@ -1,6 +1,6 @@
 # 星靈織語 Starwoven — AI 互動功能共用基礎設施規格書 v0.5
 
-> **文件狀態**：v0.5 **設計審查通過；第一階段已實作**（2026-10-27），待程式碼審查與部署驗收。對應決策 `decisions.md` DEC-079。
+> **文件狀態**：v0.5 **設計審查通過；第一階段已上線（驗收通過）**（2026-10-27），可進入第二階段（DEC-080）。對應決策 `decisions.md` DEC-079。
 > **沿革**：v0.1 初稿 → 第一輪設計審查 7 項（P1×1、P2×3、P3×3）全數採納（v0.2）：遷移對照表補上呼叫端 import 規則（`tarot.astro` 之 `CARE_COPY` 等）；端點欄位驗證改為「未知欄位忽略」以維持 v0.9 合約；遷移改稱「新舊變數並存」並明載部署重啟數秒之 502 非零停機；回應標頭要求限定 Node 產生之回應；可觀察差異增列缺金鑰 log 字串；未登錄 `/api/*` 之回應依是否符合靜態副檔名分述；`tarot_plan.md` 殘留之 `/api/` 指引更正。→ 第二輪審查 1 項 P2 採納（v0.3）：呼叫端清單補上檔案內部引用（`tarot/copy.ts` 之 `ErrorCode` 型別、`tarot/config.ts` 之斷言），parity 驗收新增 `astro check` 0 errors（`npm run build` 不做型別檢查）。→ 第三輪審查 1 項 P2 採納（v0.4）：溫度範圍斷言明定為共用函式 `assertAiTemperature`，遷移清單補列 `tarot/config.ts` 之第三個斷言；另逐一盤點 `src/lib/tarot/` 全部 export 與內部引用，補明 `guard.ts` 之 `Reservation` 型別與內部依賴。→ 第四輪審查無新問題，設計審查通過。→ 第一階段實作（v0.5）：依實作補明兩處介面細節——`postReading` 新增第三參數 `isValid`（各功能成功回應結構檢查，原塔羅 `isValidReading` 之呼叫點）、`http.ts` 新增 `errorResponse(code)`（錯誤碼 → `ERROR_STATUS` 之 JSON 回應）；本機 parity 驗收結果見 DEC-079。
 > **定位**：線上塔羅抽卡（`tarot_plan.md`）與後續 AI 互動小遊戲（第一個為占星抽卡，規格另立 `astro_cards_plan.md`）共用之伺服器基礎設施——AI 供應商銜接、參數管理、防濫用與額度、輸入守門、API 慣例、nginx、部署。各功能規格書只寫該功能專屬內容（資料、提示詞、API 欄位、頁面），共用部分一律引用本文件。
 > **來源**：本文件第三、五～八節之內容原屬 `tarot_plan.md` v0.9（已經五輪外部審查與雲端維運 agent 核對），v0.1 搬移時依「多功能共用」改寫；搬移前之審查紀錄保留於 `tarot_plan.md` 沿革摘要與 `decisions.md` DEC-073／DEC-074，本文件不重複。

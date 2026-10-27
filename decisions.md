@@ -1426,7 +1426,7 @@
 
 ---
 
-## 2026-10-27 — DEC-079：AI 互動功能共用基礎設施抽出（第一階段：純重構，塔羅行為不變）——已實作（待程式碼審查與部署驗收）
+## 2026-10-27 — DEC-079：AI 互動功能共用基礎設施抽出（第一階段：純重構，塔羅行為不變）——已上線（驗收通過）
 
 - **背景**：
   - 業主欲新增「占星抽卡」小遊戲（行星 12 張、宮位 12 張、星座 12 張各抽一張，由 AI 組合解讀），目的與線上塔羅抽卡（DEC-073）相同，皆為引流。
@@ -1457,4 +1457,6 @@
   - `astro.config.mjs` `env.schema`、`.env.example` 改 `AI_*`；`nginx/starwoven.conf` 改 `location /api/tarot/`＋共用 `@ai_*`；`scripts/deploy.sh` 改 `SMOKE_PATHS` 陣列與 `AI_API_KEY missing` 檢查；`systemd/starwoven-app.service` 僅更新註解；`AGENTS.md` 同步（並更正 next number 為 DEC-080）。
   - 規格書介面細節補明（`ai_platform_plan.md` 升 v0.5）：`postReading` 新增第三參數 `isValid`（各功能成功回應結構檢查）；`http.ts` 新增 `errorResponse()`。
   - **本機 parity 驗收（規格書第九節第 3 小節第 1～6 項）**：`npm run build` 通過；`astro check` 0 errors；`dist/client/` 12 頁檔案清單與重構前相同，**12 頁 HTML（含 `/tarot`）忽略 `/_astro/` 雜湊後與重構前逐位元組一致**；前端 bundle 搜尋不到金鑰、`api.minimax.io`、`chat/completions`、系統提示詞、自傷關鍵字，`dist/server/` 無金鑰。以同一測試腳本對重構前（git worktree）與重構後之 `astro dev` 各跑 36 個請求（本機模擬供應商：成功／HTTP 500／HTTP 429），涵蓋錯誤 Origin、Content-Type、超大 body、非 JSON、陣列／null body、牌陣與問題驗證、問題 120／121 字、自傷中英文、單張與三張成功、未知欄位、GET 405、`TAROT_ENABLED=false`、缺金鑰、全站上限、`AI_FAILED`（IP 釋放、全站不釋放）、`AI_BUSY`（皆釋放）——**回應 body、HTTP 狀態、`Content-Type`、`Cache-Control` 全數一致**；伺服器 log 除允許之兩項差異（`feature` 欄位、缺金鑰字串）外逐行一致，且不含問題原文、解讀與 IP。另以模擬供應商延遲 40 秒驗證 25 秒逾時回 `AI_FAILED`；以實際 MiniMax 金鑰（`AI_API_KEY`）單張、三張各成功一次。程式碼搜尋（第 6 項）通過。
-  - **尚待**：瀏覽器實機操作（深淺模式、動畫流程，第 3 項）、程式碼審查、部署與線上驗收（第 7 項，依第九節第 5 小節順序；部署前須先於 VPS `app.env` 新增 `AI_*`）。
+  - **程式碼審查**：外部審查 LGTM，未發現問題（重構邊界、API 行為、前後端隔離、環境變數與 nginx／部署設定一致）。commit `08c7524`。
+  - **上線與驗收（2026-10-27）**：已部署 starwoven.xyz（VPS `app.env` 新增 `AI_*`、舊 `TAROT_AI_*` 暫留）；線上驗收（規格書第九節第 3 小節第 7 項）9 項全數通過（雲端維運 agent 回報）；開發者以瀏覽器實機確認深淺模式與抽卡動畫正常。**第一階段結案**，可進入第二階段（DEC-080）。
+  - 待辦：第二階段部署時刪除 VPS `app.env` 中之舊 `TAROT_AI_*`（規格書第九節第 4 小節第 3 步）。
