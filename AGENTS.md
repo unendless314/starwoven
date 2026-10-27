@@ -119,7 +119,7 @@ POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（N
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-080).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-081).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
