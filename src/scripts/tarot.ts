@@ -3,12 +3,13 @@
 // 狀態機：setup → pick（洗牌＋扇形選牌）→ 送出請求（等待動畫）→ result（依序翻牌＋逐段淡入）
 //         └→ care（自傷預檢命中）／error（錯誤碼對照 copy.ts）
 // - 牌由後端以 crypto 亂數抽出；前端選牌僅為儀式，翻牌在 API 回傳後才開始
-// - 錯誤一律以 JSON error 代碼為準；body 無法解析時才依狀態碼降級（規格書第四節第 3 小節）
+// - API 呼叫、錯誤碼判斷與降級規則見 src/lib/ai/shared/client.ts（ai_platform_plan.md 第四節第 4 小節）
 // - GA4 事件不含問題內容
 // ==========================================
+import { postReading, trackEvent } from '../lib/ai/shared/client';
 import { getCard, type TarotCard } from '../lib/tarot/cards';
-import { CLIENT_REQUEST_TIMEOUT_MS, FAN_CARD_COUNT, QUESTION_MAX_CHARS, READING_API_PATH } from '../lib/tarot/config';
-import { ERROR_MESSAGES, GENERIC_ERROR, UI_TEXT, isErrorCode, type ErrorCode } from '../lib/tarot/copy';
+import { FAN_CARD_COUNT, QUESTION_MAX_CHARS, READING_API_PATH } from '../lib/tarot/config';
+import { ERROR_MESSAGES, GENERIC_ERROR, UI_TEXT } from '../lib/tarot/copy';
 import { SPREADS, isSpreadId, type SpreadId } from '../lib/tarot/spreads';
 
 // 儀式動畫節奏（ms）：純視覺時長，與 tarot.astro <style> 內 CSS 動畫耦合，故集中於此而非 config.ts
@@ -35,11 +36,6 @@ interface ReadingResponse {
   reading: { cards: string[]; summary: string; advice: string };
   notice: string;
 }
-
-type ApiResult =
-  | { kind: 'reading'; data: ReadingResponse }
-  | { kind: 'care' }
-  | { kind: 'error'; code: ErrorCode | null };
 
 const root = document.querySelector<HTMLElement>('[data-tarot-root]');
 if (root) init(root);
@@ -77,11 +73,6 @@ function init(root: HTMLElement) {
     }
   }
 
-  function track(event: string, params: Record<string, unknown>) {
-    const gtag = (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag;
-    if (typeof gtag === 'function') gtag('event', event, params);
-  }
-
   // ---------- setup ----------
 
   // 字數以 Unicode 字元計（與後端 Array.from 一致）；不用 maxlength——瀏覽器以 UTF-16 code unit 計算，
@@ -100,7 +91,7 @@ function init(root: HTMLElement) {
     const spread = new FormData(form).get('spread');
     if (!isSpreadId(spread)) return;
     const question = Array.from(questionInput.value.trim()).slice(0, QUESTION_MAX_CHARS).join('');
-    track('tarot_start', { spread });
+    trackEvent('tarot_start', { spread });
     startPick(spread, question);
   });
 
@@ -188,7 +179,9 @@ function init(root: HTMLElement) {
     fan.classList.add('is-waiting');
     waiting.hidden = false;
 
-    const result = await requestReading(spread, question);
+    const result = await postReading<ReadingResponse>(READING_API_PATH, { spread, question }, (data) =>
+      isValidReading(data, spread),
+    );
     if (run !== runId) return;
     pending = false;
     waiting.hidden = true;
@@ -198,48 +191,15 @@ function init(root: HTMLElement) {
       return;
     }
     if (result.kind === 'error') {
-      track('tarot_reading_error', { error: result.code ?? 'UNKNOWN' });
+      trackEvent('tarot_reading_error', { error: result.code ?? 'UNKNOWN' });
       const entry = result.code ? ERROR_MESSAGES[result.code] : null;
       errorMessage.textContent = entry?.message ?? GENERIC_ERROR;
       retryBtn.hidden = !entry?.retry;
       show('error');
       return;
     }
-    track('tarot_reading_success', { spread, has_question: question !== '' });
+    trackEvent('tarot_reading_success', { spread, has_question: question !== '' });
     await renderResult(run, result.data);
-  }
-
-  async function requestReading(spread: SpreadId, question: string): Promise<ApiResult> {
-    const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), CLIENT_REQUEST_TIMEOUT_MS);
-    try {
-      const res = await fetch(READING_API_PATH, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ spread, question }),
-        signal: controller.signal,
-      });
-      let body: unknown = null;
-      try {
-        body = await res.json();
-      } catch {
-        // body 非 JSON（nginx 設定遺漏、本機無 nginx 等）→ 依狀態碼降級
-      }
-      if (body && typeof body === 'object') {
-        const data = body as Record<string, unknown>;
-        if (data.ok === true && data.care === true) return { kind: 'care' };
-        if (data.ok === true && isValidReading(data, spread)) return { kind: 'reading', data: data as unknown as ReadingResponse };
-        if (data.ok === false && isErrorCode(data.error)) return { kind: 'error', code: data.error };
-      }
-      if (res.status === 413) return { kind: 'error', code: 'PAYLOAD_TOO_LARGE' };
-      if (res.status === 429) return { kind: 'error', code: 'RATE_LIMITED' };
-      return { kind: 'error', code: null };
-    } catch {
-      // 逾時 → AI_FAILED（含重試鈕）；其他網路錯誤 → 通用錯誤
-      return { kind: 'error', code: controller.signal.aborted ? 'AI_FAILED' : null };
-    } finally {
-      window.clearTimeout(timer);
-    }
   }
 
   function isValidReading(data: Record<string, unknown>, spread: SpreadId): boolean {

@@ -1,20 +1,10 @@
 // ==========================================
 // 線上塔羅抽卡 — 前端可見文案（單一來源）
-// 錯誤碼 → 訊息、隱私告知、免責聲明、安全關懷文案集中於此；頁面與互動腳本不得散寫文案字串。
+// 錯誤碼 → 訊息、隱私告知、免責聲明集中於此；頁面與互動腳本不得散寫文案字串。
+// 錯誤碼定義見 src/lib/ai/shared/errors.ts；安全關懷文案全站一份，見 src/lib/ai/shared/care.ts。
 // ⚠️ 會被打包進前端：只能放可公開的值。
 // ==========================================
-
-export type ErrorCode =
-  | 'INVALID_REQUEST'
-  | 'FORBIDDEN_ORIGIN'
-  | 'PAYLOAD_TOO_LARGE'
-  | 'RATE_LIMITED'
-  | 'DAILY_LIMIT'
-  | 'DISABLED'
-  | 'AI_FAILED'
-  | 'SERVICE_DOWN'
-  | 'GATEWAY_TIMEOUT'
-  | 'AI_BUSY';
+import type { ErrorCode } from '../ai/shared/errors';
 
 /** 通用錯誤訊息（FORBIDDEN_ORIGIN、SERVICE_DOWN 與無法辨識之錯誤） */
 export const GENERIC_ERROR = '星靈訊號暫時中斷，請稍後再試一次。';
@@ -32,10 +22,6 @@ export const ERROR_MESSAGES: Record<ErrorCode, { message: string; retry: boolean
   GATEWAY_TIMEOUT: { message: '星靈訊號不穩，請稍後再試', retry: true },
   AI_BUSY: { message: '星靈暫時休息中，請稍後再來', retry: false },
 };
-
-export function isErrorCode(value: unknown): value is ErrorCode {
-  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(ERROR_MESSAGES, value);
-}
 
 /** 成功回應附帶之 AI 告知（API 回傳 notice 欄位） */
 export const READING_NOTICE = '本解讀由 AI 依牌義生成，僅供參考與自我覺察。';
@@ -75,16 +61,4 @@ export const UI_TEXT = {
   again: '再抽一次',
   retry: '再試一次',
   noscript: '線上抽卡需要啟用 JavaScript 才能進行。',
-} as const;
-
-/** 安全關懷（自傷相關提問）：不抽牌、不呼叫 AI，改顯示固定文案與求助資源 */
-export const CARE_COPY = {
-  title: '先停下來，好好照顧自己',
-  body: '謝謝你願意說出心裡的重量。此刻的你值得被好好陪伴——如果感到很辛苦，請先聯繫下列專業資源，他們隨時都在。',
-  hotlines: [
-    { name: '安心專線', number: '1925', note: '24 小時' },
-    { name: '生命線', number: '1995', note: '' },
-    { name: '張老師', number: '1980', note: '' },
-  ],
-  lineCta: '預約真人陪伴',
 } as const;

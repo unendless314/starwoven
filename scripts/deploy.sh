@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==========================================
-# 星靈織語 Starwoven — VPS 部署腳本（DEC-073，規格 demo_docs/tarot_plan.md 第八節第 3 小節）
+# 星靈織語 Starwoven — VPS 部署腳本（DEC-073、DEC-079，規格 demo_docs/ai_platform_plan.md 第八節第 3 小節）
 # 於 VPS repo 目錄以 root 執行：先手動 `git pull`，再 `bash scripts/deploy.sh`
 # （腳本本身不拉取，避免執行中途腳本被更新）
 #
@@ -15,7 +15,9 @@ set -euo pipefail
 WEB_ROOT=/var/www/starwoven
 APP_DIR=/opt/starwoven-app
 SERVICE=starwoven-app
-SMOKE_URL=http://127.0.0.1:4321/api/tarot/reading
+SMOKE_BASE=http://127.0.0.1:4321
+# 全部 AI 端點：須與 nginx/starwoven.conf 之 AI location 清單一致（新增功能時加入）
+SMOKE_PATHS=(/api/tarot/reading)
 SMOKE_ORIGIN=https://starwoven.xyz
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -58,27 +60,30 @@ step "重啟 $SERVICE"
 SINCE="$(date '+%Y-%m-%d %H:%M:%S')"
 systemctl restart "$SERVICE"
 
-# 6. 冒煙請求：格式錯誤之 POST（不呼叫 AI、不消耗額度），強制載入設定以觸發執行期 secret 驗證
-step "冒煙請求"
-status=""
-for _ in $(seq 1 20); do
-  status="$(curl -s -o /tmp/starwoven-smoke.json -w '%{http_code}' -X POST "$SMOKE_URL" \
-    -H "Origin: $SMOKE_ORIGIN" -H 'Content-Type: application/json' -d '{}' || true)"
-  [ "$status" != "000" ] && break
-  sleep 0.5
+# 6. 冒煙請求（逐一端點）：格式錯誤之 POST（不呼叫 AI、不消耗額度），
+#    強制載入共用與各功能設定以觸發執行期 secret 驗證
+for path in "${SMOKE_PATHS[@]}"; do
+  step "冒煙請求 $path"
+  status=""
+  for _ in $(seq 1 20); do
+    status="$(curl -s -o /tmp/starwoven-smoke.json -w '%{http_code}' -X POST "$SMOKE_BASE$path" \
+      -H "Origin: $SMOKE_ORIGIN" -H 'Content-Type: application/json' -d '{}' || true)"
+    [ "$status" != "000" ] && break
+    sleep 0.5
+  done
+  body="$(cat /tmp/starwoven-smoke.json 2>/dev/null || true)"
+  rm -f /tmp/starwoven-smoke.json
+  [ "$status" = "400" ] && [[ "$body" == *'"INVALID_REQUEST"'* ]] \
+    || die "冒煙請求失敗（$path，HTTP $status）：$body —— 請檢查 journalctl -u $SERVICE"
 done
-body="$(cat /tmp/starwoven-smoke.json 2>/dev/null || true)"
-rm -f /tmp/starwoven-smoke.json
-[ "$status" = "400" ] && [[ "$body" == *'"INVALID_REQUEST"'* ]] \
-  || die "冒煙請求失敗（HTTP $status）：$body —— 請檢查 journalctl -u $SERVICE"
 
 logs="$(journalctl -u "$SERVICE" --since "$SINCE" --no-pager)"
-if grep -q 'TAROT_AI_API_KEY missing' <<<"$logs"; then
-  die "TAROT_AI_API_KEY 未設定，抽卡功能停用中（/etc/starwoven/app.env）"
+if grep -q 'AI_API_KEY missing' <<<"$logs"; then
+  die "AI_API_KEY 未設定，全部 AI 功能停用中（/etc/starwoven/app.env）"
 fi
 if grep -qE '\[ERROR\]|EnvInvalidVariables' <<<"$logs"; then
   printf '%s\n' "$logs" | tail -20
   die "服務 log 出現錯誤"
 fi
 
-step "✅ 部署完成（冒煙請求 HTTP 400 INVALID_REQUEST，log 無錯誤）"
+step "✅ 部署完成（${#SMOKE_PATHS[@]} 個端點冒煙請求皆 HTTP 400 INVALID_REQUEST，log 無錯誤）"

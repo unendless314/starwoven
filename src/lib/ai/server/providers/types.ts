@@ -1,6 +1,6 @@
 // ==========================================
-// AI 供應商轉接器介面（規格書第五節第 3 小節（3））
-// 新增供應商：實作 ChatProvider 並登錄於 ai.ts 即可。
+// AI 供應商轉接器介面（demo_docs/ai_platform_plan.md 第五節第 3 小節）
+// 新增供應商：實作 ChatProvider 並登錄於 src/lib/ai/server/generate.ts 即可。
 // ==========================================
 
 export interface ChatRequest {

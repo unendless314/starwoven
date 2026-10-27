@@ -14,7 +14,7 @@ pre-build planning repo and is obsolete.
 - **`@astrojs/node` (standalone) adapter** since DEC-073: every page is still
   prerendered; the only on-demand route is `POST /api/tarot/reading`
   (`prerender = false`). Build output is `dist/client/`（static）＋`dist/server/`（Node）.
-- Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `TAROT_*`）· `npm run build`
+- Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `AI_*`／`TAROT_*`）· `npm run build`
   (→ `dist/client/` + `dist/server/`) · `npm run preview`
 
 ## Canonical sources of truth (read these first, in order)
@@ -47,10 +47,16 @@ pre-build planning repo and is obsolete.
 POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（Node 服務）
 ```
 
-- 抽卡程式集中於 `src/lib/tarot/`（`config.ts` 唯一常數檔、`copy.ts` 前端文案、
-  `cards.ts`／`spreads.ts` 共用資料；`server-config.ts`／`ai.ts`／`prompt.ts`／`guard.ts`／
-  `providers/` 為伺服器專用，**不得被前端 import**）＋`src/scripts/tarot.ts`。
+- AI 互動功能共用核心（DEC-079，規格書 `demo_docs/ai_platform_plan.md`）：
+  `src/lib/ai/server/`（伺服器專用：`AI_*` 設定、供應商轉接器、`generateText`、標記擷取、
+  額度工廠 `createDailyQuota`、輸入守門、端點 HTTP 工具，**不得被前端 import**）＋
+  `src/lib/ai/shared/`（前後端共用：共用常數、錯誤碼、安全關懷文案、`postReading`／`trackEvent`）。
+  只共用逐行相同之伺服器機制；各功能頁面、狀態機、提示詞與內容資料各自獨立。
+- 抽卡程式集中於 `src/lib/tarot/`（`config.ts` 功能常數檔、`copy.ts` 前端文案、
+  `cards.ts`／`spreads.ts` 共用資料；`server-config.ts`／`ai.ts`／`prompt.ts` 為伺服器專用，
+  **不得被前端 import**）＋`src/scripts/tarot.ts`。
   規格書：`demo_docs/tarot_plan.md`。牌義與提示詞為佔位內容，待占卜師審定。
+  新增 AI 功能依 `ai_platform_plan.md` 第十節檢查清單（第二階段占星抽卡另立 DEC-080）。
 
 - Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
@@ -113,7 +119,7 @@ POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（N
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-077).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-080).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
@@ -143,6 +149,7 @@ POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（N
 - `PUBLIC_GA_ID` — GA4 measurement id（未設定時 fallback 為 `G-27D79HXXF5`）。
 - `PUBLIC_WISHLIST_API_URL` — Apps Script web app URL；unset → 許願池以本機
   demo 模式運行（不發網路請求，票數存 localStorage）。
-- `TAROT_*` — 抽卡伺服器端變數（DEC-073）。**唯一清單為 `astro.config.mjs` 的
-  `env.schema`**，一律 server secret（執行期讀取、不進 bundle；VPS 改 `app.env` 重啟即生效）。
-  `TAROT_AI_API_KEY` 選填，缺少時抽卡停用、其餘頁面與 build 不受影響。
+- `AI_*` — AI 功能共用之供應商變數（DEC-079；原 `TAROT_AI_*`）、`TAROT_*` — 抽卡功能開關與
+  每日上限（DEC-073）。**唯一清單為 `astro.config.mjs` 的 `env.schema`**，一律 server secret
+  （執行期讀取、不進 bundle；VPS 改 `app.env` 重啟即生效）。`AI_API_KEY` 選填，缺少時全部 AI
+  功能停用、其餘頁面與 build 不受影響。功能前綴不得用 `PUBLIC_`／`AI_`／`ASTRO_`／`NODE_`。
