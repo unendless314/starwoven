@@ -167,7 +167,7 @@
 | `<PREFIX>_DAILY_LIMIT` | 該功能每日全站上限 |
 | `<PREFIX>_IP_DAILY_LIMIT` | 該功能每 IP 每日上限 |
 
-- 塔羅之前綴為 `TAROT_`（變數名稱與預設值不變：`TAROT_ENABLED=true`、`TAROT_DAILY_LIMIT=300`、`TAROT_IP_DAILY_LIMIT=10`）。
+- 塔羅之前綴為 `TAROT_`（變數名稱與預設值不變：`TAROT_ENABLED=true`、`TAROT_DAILY_LIMIT=300`、`TAROT_IP_DAILY_LIMIT=10`）；占星抽卡之前綴為 `ASTROCARDS_`（DEC-080：`ASTROCARDS_ENABLED=true`、`ASTROCARDS_DAILY_LIMIT=300`、`ASTROCARDS_IP_DAILY_LIMIT=10`）。
 - **前綴不得與框架或共用變數衝突**：不得使用 `PUBLIC_`（會進前端）、`AI_`（共用）、`ASTRO_`（Astro 自身使用，例如 `ASTRO_KEY`）、`NODE_`、`HOST`／`PORT`。
 - 皆不得以 `PUBLIC_` 開頭；`.env.example` 依 schema 同步列出（`AI_API_KEY` 留空）。
 
@@ -342,7 +342,7 @@ interface ChatProvider {
 
 ### 4. 總量核對
 
-- 每日最壞 AI 呼叫數＝Σ 各功能 `<PREFIX>_DAILY_LIMIT`（另加服務重啟造成之歸零）。目前：塔羅 300；占星於 DEC-080 定。
+- 每日最壞 AI 呼叫數＝Σ 各功能 `<PREFIX>_DAILY_LIMIT`（另加服務重啟造成之歸零）。目前：塔羅 300＋占星 300＝每日最壞 600 次（DEC-080；開發者確認訂閱額度充裕）。
 - Origin 檢查與 IP 限流都能被刻意繞過，**真正的硬上限是各功能每日全站上限之和與供應商訂閱額度**。
 
 ---
@@ -389,7 +389,7 @@ interface ChatProvider {
 
 ```nginx
 limit_req_zone $binary_remote_addr zone=tarot_api:1m rate=3r/m;
-# 第二階段新增：limit_req_zone $binary_remote_addr zone=astrocards_api:1m rate=3r/m;
+limit_req_zone $binary_remote_addr zone=astrocards_api:1m rate=3r/m;
 ```
 
 **443 `server {}` 內**，每個功能一個 location（內容除 zone 外相同）：

@@ -17,7 +17,7 @@ APP_DIR=/opt/starwoven-app
 SERVICE=starwoven-app
 SMOKE_BASE=http://127.0.0.1:4321
 # 全部 AI 端點：須與 nginx/starwoven.conf 之 AI location 清單一致（新增功能時加入）
-SMOKE_PATHS=(/api/tarot/reading)
+SMOKE_PATHS=(/api/tarot/reading /api/astro-cards/reading)
 SMOKE_ORIGIN=https://starwoven.xyz
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"

@@ -2,7 +2,7 @@ import { defineConfig, envField } from 'astro/config';
 import node from '@astrojs/node';
 import tailwindcss from '@tailwindcss/vite';
 
-// AI 互動功能（線上塔羅抽卡 DEC-073；共用基礎設施 DEC-079，規格 demo_docs/ai_platform_plan.md）：
+// AI 互動功能（線上塔羅抽卡 DEC-073、線上占星抽卡 DEC-080；共用基礎設施 DEC-079，規格 demo_docs/ai_platform_plan.md）：
 // 全站維持 output: 'static'；僅 src/pages/api/<feature>/reading.ts 宣告 prerender = false，
 // 由 Node standalone 服務提供（build 輸出 dist/client/ ＋ dist/server/）。
 const serverSecret = { context: 'server', access: 'secret' };
@@ -33,6 +33,10 @@ export default defineConfig({
       TAROT_ENABLED: envField.boolean({ ...serverSecret, default: true }),
       TAROT_DAILY_LIMIT: envField.number({ ...serverSecret, int: true, min: 0, default: 300 }),
       TAROT_IP_DAILY_LIMIT: envField.number({ ...serverSecret, int: true, min: 0, default: 10 }),
+      // ---- 線上占星抽卡（唯一讀取者 src/lib/astro-cards/server-config.ts） ----
+      ASTROCARDS_ENABLED: envField.boolean({ ...serverSecret, default: true }),
+      ASTROCARDS_DAILY_LIMIT: envField.number({ ...serverSecret, int: true, min: 0, default: 300 }),
+      ASTROCARDS_IP_DAILY_LIMIT: envField.number({ ...serverSecret, int: true, min: 0, default: 10 }),
     },
     validateSecrets: true,
   },

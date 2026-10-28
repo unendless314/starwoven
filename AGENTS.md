@@ -12,9 +12,9 @@ pre-build planning repo and is obsolete.
   `@tailwindcss/vite` (CSS-first config in `src/styles/global.css`; no
   `tailwind.config.*`). No JS framework, no CMS.
 - **`@astrojs/node` (standalone) adapter** since DEC-073: every page is still
-  prerendered; the only on-demand route is `POST /api/tarot/reading`
-  (`prerender = false`). Build output is `dist/client/`（static）＋`dist/server/`（Node）.
-- Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `AI_*`／`TAROT_*`）· `npm run build`
+  prerendered; the only on-demand routes are `POST /api/tarot/reading` and
+  `POST /api/astro-cards/reading` (`prerender = false`). Build output is `dist/client/`（static）＋`dist/server/`（Node）.
+- Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `AI_*`／`TAROT_*`／`ASTROCARDS_*`）· `npm run build`
   (→ `dist/client/` + `dist/server/`) · `npm run preview`
 
 ## Canonical sources of truth (read these first, in order)
@@ -44,7 +44,9 @@ pre-build planning repo and is obsolete.
 /blog         blog/index.astro       星靈專欄列表（分類過濾 + 精選置頂）
 /blog/[slug]  blog/[...slug].astro   文章內頁（Content Collections，src/content/blog/ 共 5 篇）
 /tarot        tarot.astro            線上塔羅抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-073）
-POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（Node 服務）
+/astro-cards  astro-cards.astro      線上占星抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-080）
+POST /api/tarot/reading        api/tarot/reading.ts        on-demand 路由（Node 服務）
+POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（Node 服務）
 ```
 
 - AI 互動功能共用核心（DEC-079，規格書 `demo_docs/ai_platform_plan.md`）：
@@ -52,11 +54,14 @@ POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（N
   額度工廠 `createDailyQuota`、輸入守門、端點 HTTP 工具，**不得被前端 import**）＋
   `src/lib/ai/shared/`（前後端共用：共用常數、錯誤碼、安全關懷文案、`postReading`／`trackEvent`）。
   只共用逐行相同之伺服器機制；各功能頁面、狀態機、提示詞與內容資料各自獨立。
-- 抽卡程式集中於 `src/lib/tarot/`（`config.ts` 功能常數檔、`copy.ts` 前端文案、
+- 塔羅抽卡程式集中於 `src/lib/tarot/`（`config.ts` 功能常數檔、`copy.ts` 前端文案、
   `cards.ts`／`spreads.ts` 共用資料；`server-config.ts`／`ai.ts`／`prompt.ts` 為伺服器專用，
   **不得被前端 import**）＋`src/scripts/tarot.ts`。
   規格書：`demo_docs/tarot_plan.md`。牌義與提示詞為佔位內容，待占卜師審定。
-  新增 AI 功能依 `ai_platform_plan.md` 第十節檢查清單（第二階段占星抽卡另立 DEC-080）。
+- 占星抽卡程式集中於 `src/lib/astro-cards/`（`config.ts`、`copy.ts`、`decks.ts` 前後端共用；
+  `server-config.ts`／`ai.ts`／`prompt.ts` 為伺服器專用，**不得被前端 import**）＋`src/scripts/astro-cards.ts`。
+  規格書：`demo_docs/astro_cards_plan.md`（DEC-080）。牌義與提示詞為佔位內容，待占星師審定。
+- 新增 AI 功能依 `ai_platform_plan.md` 第十節檢查清單；兩功能相似程式各自實作、不互相 import。
 
 - Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
@@ -149,7 +154,7 @@ POST /api/tarot/reading  api/tarot/reading.ts  全站唯一 on-demand 路由（N
 - `PUBLIC_GA_ID` — GA4 measurement id（未設定時 fallback 為 `G-27D79HXXF5`）。
 - `PUBLIC_WISHLIST_API_URL` — Apps Script web app URL；unset → 許願池以本機
   demo 模式運行（不發網路請求，票數存 localStorage）。
-- `AI_*` — AI 功能共用之供應商變數（DEC-079；原 `TAROT_AI_*`）、`TAROT_*` — 抽卡功能開關與
-  每日上限（DEC-073）。**唯一清單為 `astro.config.mjs` 的 `env.schema`**，一律 server secret
+- `AI_*` — AI 功能共用之供應商變數（DEC-079；原 `TAROT_AI_*`）、`TAROT_*`／`ASTROCARDS_*` — 塔羅／占星抽卡
+  功能開關與每日上限（DEC-073／DEC-080，額度分開計算）。**唯一清單為 `astro.config.mjs` 的 `env.schema`**，一律 server secret
   （執行期讀取、不進 bundle；VPS 改 `app.env` 重啟即生效）。`AI_API_KEY` 選填，缺少時全部 AI
   功能停用、其餘頁面與 build 不受影響。功能前綴不得用 `PUBLIC_`／`AI_`／`ASTRO_`／`NODE_`。
