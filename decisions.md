@@ -1483,4 +1483,11 @@
   - 提示詞修正（實測發現）：格式示意標記內含說明文字時，模型偶會先原樣輸出示意標記，使五種標記各出現 2 次而被「恰好一個」規則判為 `AI_FAILED`（1／20）；改為示意內容「…」並明言不得輸出示意標記後 0／20。另以每輪 40 次調校語言純度：明文禁止英文與簡體、使用者訊息不附英文牌名後，英文單字混入由 10／40 降至約一成、簡體字由 3／40 降至 0／40（加句之對照組 5／80）；「輸出前自我檢查」句與 `reasoning_effort: medium` 皆無改善（後者延遲達 25.1 秒並漏出推理文字），不採用。剩餘英文混入研判為 Flash 能力上限，MVP 暫不處理。另應開發者要求實測 `MiniMax-M3`（`low`）：英文 0／80，但上限 2000 tokens 時 5／40 截斷、上限 4000 時延遲 p90 32.9 秒（6／40 超過 25 秒逾時），線上失敗率約 15%，**維持 Flash**（換模型須連動共用逾時鏈，另立 DEC）。詳見規格書第五節第 2、3 小節（開發者同意提示詞可依實測調整）。
   - **本機驗收**（規格書第九節）：A-1 `npm run build`、`astro check` 0 errors，`dist/client/` 13 頁，其餘 12 頁 HTML 忽略 `/_astro/` 雜湊後與實作前（git worktree 建置）逐位元組一致；A-2 前端 bundle 無金鑰、`api.minimax.io`、`chat/completions`、提示詞、自傷關鍵字，`dist/` 無實際金鑰；A-3 log 僅含時間／`feature: astro-cards`／`spread`／結果／耗時／`limitHit`；A-4 前端可 import 檔無伺服器 import，`git diff` 確認塔羅與 `src/lib/ai/` 零變更。B-6 以本機模擬供應商逐項通過：`{}`／缺 `spread`／非 `triad`／非字串 → 400、問題 120 字成功 121 字 400、錯誤 Origin 403、錯誤 Content-Type 400、超大 body 413、非 JSON／陣列 400、自傷中英文 → `care`、未知欄位忽略、`<think>` 剝除、標記重複／缺少 → `AI_FAILED`、供應商 500 → `AI_FAILED`、429 → `AI_BUSY`、40 秒延遲 → 25 秒 `AI_FAILED`、GET 405；`ASTROCARDS_ENABLED=false` → `DISABLED` 且塔羅正常；全站上限 2 → 第 3 次 `DAILY_LIMIT` 且塔羅正常；IP 上限 2 下 `AI_FAILED`×2＋`AI_BUSY` 後仍可成功 2 次（IP 皆釋放）；全站上限 2 下 `AI_BUSY` 釋放、`AI_FAILED` 不釋放全站；缺金鑰 → 兩功能皆 `DISABLED`、`{}` 仍 400。B-9 模型實測符合判準（見規格書）。
   - **程式碼審查**：外部審查 LGTM，未發現需修改之問題（另覆核 `npm run build`、`astro check` 0 errors、`git diff --check`、本機冒煙 `{}` → 400、停用 → 503 `DISABLED`）。
-  - 待辦：B-5／B-7／B-8 瀏覽器實機（深淺模式、手機、鍵盤、reduced-motion、錯誤畫面）→ 部署（同次刪 VPS 舊 `TAROT_AI_*`）→ 線上驗收 C-10～13。
+  - **上線與線上驗收（2026-10-28）**：已部署 starwoven.xyz，同次自 VPS `app.env` 刪除舊 `TAROT_AI_*`（DEC-079 待辦完成；自此**不得回滾至 DEC-079 以前之 commit**）。部署前備份 nginx vhost、`app.env`、網站內容各一份（`*.bak-20261028*`）。線上驗收全數通過：
+    - C-10：`deploy.sh` 兩端點冒煙皆 400、log 無錯誤；`app.env` 無 `TAROT_AI_`；log 無 `AI_API_KEY missing`（雲端維運 agent 回報）。
+    - C-11：`/astro-cards/` 實際解讀成功（開發者桌機實測）、`noindex, nofollow`、首頁無入口連結。
+    - C-12：占星端點連發觸發 JSON 429 `RATE_LIMITED`，同時段塔羅端點不受影響；超大 body 回 JSON 413。
+    - C-13：塔羅單張、三張實抽成功；首頁、`/reiki` 301 正常；兩 API 端點安全標頭一致。
+  - **維運備註**：`AI_API_KEY` 與 VPS 上 OpenClaw 之 `minimax:global` 共用同一把金鑰，**輪替時兩處須同步更換**。
+  - **B-5／B-7／B-8 瀏覽器實機**：開發者於手機與桌機實測通過（抽牌、翻牌、解讀顯示、深淺模式、占星符號以單色字形呈現而未 emoji 化）。
+  - **狀態**：**已結案**（2026-10-28）。內容（牌義、提示詞、文案）仍為佔位，待業主決定事項見規格書第十節。
