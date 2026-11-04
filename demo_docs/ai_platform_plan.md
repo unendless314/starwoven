@@ -367,7 +367,7 @@ interface ChatProvider {
 | 項目 | 現況 |
 | :--- | :--- |
 | 建置方式 | **VPS 即建置機**：repo 位於 `/root/.openclaw/workspace/starwoven/`，於該處 `git pull` → `bash scripts/deploy.sh` |
-| Node.js | v24.14.0，`/usr/local/bin/node`（官方 tarball 系統級安裝），aarch64 |
+| Node.js | v24.22.1（2026-11-04 DEC-081 部署時確認；Astro 7 需 ≥ 22.23.4），`/usr/local/bin/node`（官方 tarball 系統級安裝），aarch64 |
 | nginx | 1.24.0；同主機另有 3 個站台；`nginx.conf` 已有 `zone=api`（exopolitics）→ AI 功能 zone 一律命名 `<feature>_api` |
 | 網路 | 直連、未經 CDN → `$remote_addr` 即訪客真實 IP |
 | 443 預設站 | 無 `default_server`，依載入順序預設站為 noeticseeker.com；瀏覽器皆送 SNI，無影響 |

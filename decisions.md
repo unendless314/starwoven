@@ -1494,7 +1494,7 @@
 
 ---
 
-## 2026-11-04 — DEC-081：框架升級 Astro 5.18.2 → 7.4.5、@astrojs/node 9.5.5 → 11.1.9（行為不變）——本機驗收與程式碼審查通過、已合併 main（待上線）
+## 2026-11-04 — DEC-081：框架升級 Astro 5.18.2 → 7.4.5、@astrojs/node 9.5.5 → 11.1.9（行為不變）——已上線（驗收通過）
 
 - **背景**：`npm run dev` 提示 Astro 新版 7.4.5 可用；開發者同意於獨立分支 `chore/upgrade-astro-7` 升級，驗收無誤後再合併。
 - **變更範圍**：
@@ -1518,6 +1518,7 @@
   - 追加修改後驗證：`npm run build` 0 警告；13 頁 HTML 結構與 Astro 5 基準仍一致；正式模式服務冒煙（`{}` → 400、停用 → 503、錯誤 Origin → 403、頁面 200）通過；開發伺服器實抽塔羅 200（約 5 秒）。
   - **審查覆核（2026-11-04）**：外部審查確認 `b7065dd` 無新問題——manifest 不含 `sessionConfig`、session driver 為 `null`、啟動服務後未建立 session 資料夾、文章列表 `li` 間距不變、`npm run build` 與 `git diff --check` 通過；同意進入推送與部署流程。（註：Astro 停用 sessions 後仍會輸出一個內容為 `default = null` 的 driver 檔，屬正常產物。）
 - **維運備註**：MiniMax 回 HTTP 402 表示帳戶無可用額度（未訂閱、方案到期或餘額不足），非金鑰錯誤（金鑰錯誤為 401）。
-- **待辦**：
-  1. 部署前確認 VPS Node 版本仍 ≥ 22.23.4（`node -v`）。
-  2. 依 `scripts/deploy.sh` 部署，部署前備份網站內容與 `/opt/starwoven-app`；線上驗收比照 DEC-080 C-10～C-13。回滾：退回本 DEC 之前的 commit 重新 `deploy.sh` 即可（無環境變數或 nginx 變更）。
+- **上線與線上驗收（2026-11-04，雲端維運 agent 執行）**：上線版本 `ad3a747`。VPS Node 已為 v24.22.1、npm 11.9.0（符合 ≥ 22.23.4）。Preflight（`app.env` 對 `env.schema`、nginx vhost 與 repo 一致）於 pull 前後各一次通過；部署前備份 `/var/www/starwoven.bak-20261104`、`/opt/starwoven-app.bak-20261104`（`/opt` 首份備份）；`git pull --ff-only` → `deploy.sh` exit 0。驗收：9 個頁面路徑 200；建置後 CSS 含 `.dark .article-content` 修正；塔羅 single 200（3.5 秒）、占星 triad 200（4.4 秒）；`starwoven-app` active，部署後 log 無 `[ERROR]`／`EnvInvalidVariables`／`AI_API_KEY missing`。`app.env` 與 nginx 未變更。
+- **回滾**：`git checkout 90946e7 && bash scripts/deploy.sh`（無環境變數或 nginx 變更）。
+- **維運建議**（維運 agent）：日後大版本升級宜先於 staging 驗證再上線（本站目前無 staging，VPS 即建置機）。
+- **狀態**：**已結案**（2026-11-04）。後續型別檢查缺口見 `known_issues/README.md` 第 9 項。
