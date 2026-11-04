@@ -8,7 +8,7 @@ iterated through **DEC-001 ~ DEC-054** in `decisions.md`. The original Demo dead
 iteration. This file was rewritten on 2026-10-06 — the previous version described a
 pre-build planning repo and is obsolete.
 
-- Stack: **Astro ^5.18.2** (`output: 'static'`) + **Tailwind CSS v4** via
+- Stack: **Astro ^7.4.5**（Node ≥ 22.23.4；DEC-081） (`output: 'static'`) + **Tailwind CSS v4** via
   `@tailwindcss/vite` (CSS-first config in `src/styles/global.css`; no
   `tailwind.config.*`). No JS framework, no CMS.
 - **`@astrojs/node` (standalone) adapter** since DEC-073: every page is still
@@ -124,7 +124,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-081).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-082).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in

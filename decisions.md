@@ -1491,3 +1491,22 @@
   - **維運備註**：`AI_API_KEY` 與 VPS 上 OpenClaw 之 `minimax:global` 共用同一把金鑰，**輪替時兩處須同步更換**。
   - **B-5／B-7／B-8 瀏覽器實機**：開發者於手機與桌機實測通過（抽牌、翻牌、解讀顯示、深淺模式、占星符號以單色字形呈現而未 emoji 化）。
   - **狀態**：**已結案**（2026-10-28）。內容（牌義、提示詞、文案）仍為佔位，待業主決定事項見規格書第十節。
+
+---
+
+## 2026-11-04 — DEC-081：框架升級 Astro 5.18.2 → 7.4.5、@astrojs/node 9.5.5 → 11.1.9（行為不變）——本機驗收通過（待瀏覽器實機與上線）
+
+- **背景**：`npm run dev` 提示 Astro 新版 7.4.5 可用；開發者同意於獨立分支 `chore/upgrade-astro-7` 升級，驗收無誤後再合併。
+- **變更範圍**：
+  1. `package.json`：`astro` ^5.18.2 → ^7.4.5、`@astrojs/node` ^9.5.5 → ^11.1.9（兩者須同步，adapter 11 之 peer 為 `astro ^7.2.1`）、`tailwindcss`／`@tailwindcss/vite` ^4.0.0 → ^4.3.4（小版更新）；`package-lock.json` 重新產生。`astro.config.mjs`、`content.config.ts`（已為 `glob` loader＋`render()` 新寫法）、AI 端點程式、`deploy.sh`、systemd unit、nginx vhost **皆未修改**。
+  2. **修正既有 CSS 缺陷**（`src/pages/blog/[...slug].astro`）：`<style is:global>` 內誤用 `:global(.dark) .article-content …` 共 4 處，改為 `.dark .article-content …`。Astro 5 將 `:global(...)` 原樣輸出，瀏覽器視為無效選擇器而忽略——**文章內頁深色模式之 h2／h3（白字）、粗體（星金）、引言區塊樣式自始未生效**；Astro 7 之 CSS 壓縮器（LightningCSS）對此發出警告並丟棄規則。修正後恢復原設計意圖，屬可見差異（僅文章內頁深色模式）。
+- **環境需求變更**：Astro 7 要求 **Node ≥ 22.23.4**。VPS 現為 v24.14.0（`ai_platform_plan.md` 第八節），符合；本機 v24.16.0。建置工具改為 Rolldown／LightningCSS，lockfile 已含 `linux-arm64-gnu` 原生套件（compiler、rolldown、tailwind oxide、lightningcss），VPS 上 `npm ci` 可正常安裝。
+- **本機驗收（2026-11-04）**：
+  - `npm run build` 通過、0 警告；建置產物仍為 `dist/client/`＋`dist/server/entry.mjs`（`deploy.sh` 結構檢查不受影響）。`dist/server/` 內部檔案結構改變（不再含預先產生頁面之模組），對部署無影響。
+  - **13 頁靜態 HTML 與升級前（Astro 5 建置）逐頁比對**：以 HTML 解析器比對標籤、屬性、文字（忽略空白、`/_astro/` 雜湊、`data-astro-cid-*`），**全部一致**；唯一差異為行內 `<script>`／`<style>` 之壓縮寫法（esbuild → Rolldown，邏輯相同；新輸出使用 `&&=` 等 ES2021 語法，現行瀏覽器皆支援）。
+  - **正式模式 Node 服務**（`node dist/server/entry.mjs`，同 systemd 啟動方式）：10 個頁面路徑 200、不存在路徑 404；兩端點於缺金鑰時 503 `DISABLED`、錯誤 Origin 403、錯誤牌陣／非 JSON 400、GET 405、超大 body 413；以假金鑰＋本機不存在之供應商位址驗證 `AI_*` secret 仍於**執行期**讀取（`app.env` 機制不變），供應商失敗 → 502 `AI_FAILED` 並釋放 IP 額度；自傷預檢兩功能皆回 `care`。log 格式不變。
+  - `astro dev`：全部頁面 200、兩端點 `DISABLED` 正常。
+  - `astro check`：升級前後皆為 4 errors，均為 `node:crypto`／`Buffer` 缺少 Node 型別定義（專案未安裝 `@types/node`，非升級造成）；`@astrojs/check` 目前不支援 TypeScript 7，需以 `typescript@^6` 執行。
+- **待辦**：
+  1. 瀏覽器實機（桌機＋手機）：深淺模式切換、漢堡選單、首頁輪播、評價跑馬燈、許願池投票、塔羅與占星抽卡流程、文章內頁深色模式（本次修正處）。
+  2. 合併 `main` 後依 `scripts/deploy.sh` 部署，部署前備份網站內容與 `/opt/starwoven-app`；線上驗收比照 DEC-080 C-10～C-13。回滾：退回本 DEC 之前的 commit 重新 `deploy.sh` 即可（無環境變數或 nginx 變更）。
