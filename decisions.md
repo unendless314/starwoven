@@ -1540,7 +1540,8 @@
 - **業主知悉並接受之事項**：牌義、提示詞語氣與牌面仍為佔位內容、尚未經占星師審定（`astro_cards_plan.md` 第十節第 2、3、6 項仍待決）；移除佔位標示後頁面不再對訪客揭露此點。
 - **不變**：`/tarot` 維持 DEC-073 現狀（noindex、不在導覽列、保留佔位標示）；`src/lib/ai/`、API 端點、nginx、`app.env` 皆未修改。
 - **同步文件**：`AGENTS.md`（IA、Nav、下一個 DEC 編號）、`astro_cards_plan.md`（定位、範疇、第六節文案表、第十節）。
-- **回滾**：還原本 DEC 之 commit 後 `bash scripts/deploy.sh`。
 - **本機驗證（2026-11-04）**：`npm run build` 通過、0 警告；建置產物確認各頁導覽列含「線上占星」、`/astro-cards` 無 `noindex`、`/tarot` 仍有 `noindex`。
 - **外部程式碼審查（2026-11-04）**：導覽列桌機／手機運作正常、1024px 斷點不擁擠；無殘留 `PLACEHOLDER_NOTE` import。審查曾提出 P1「深色模式下 `bg-white/85` 覆蓋 `dark:bg-white/10`，卡片白底白字」——**退回**：編譯後 CSS 兩規則權重同為 (0,1,0)（`dark` 變體以 `:where()` 定義），深色規則排序在後可正確覆蓋，與 `about.astro` 品牌故事卡同組合；審查方重現確認係主題切換後 300ms 色彩過渡期間掃描所致（既有 `known_issues/README.md` 第 8 項），深色模式重新載入並等待 500ms 後 axe 0 violations，**撤回該項**。
-- **狀態**：本機實作與審查通過，待部署。
+- **上線與線上驗收（2026-11-04，雲端維運 agent 執行）**：上線版本 `a9407c9`（`ad3a747..a9407c9`，含 DEC-081 結案文件 `f86c795`）。Pull 前審查 diff（無 `PLACEHOLDER_NOTE` 殘留、`/tarot` 仍有 `noindex`）；備份 `/var/www/starwoven.bak-20261104-2`、`/opt/starwoven-app.bak-20261104-2`（同日已有 `.bak-20261104`，另取名避免覆蓋）；Preflight 於 pull 前後各一次通過 → `deploy.sh` exit 0。驗收（`scripts/starwoven-verify-navbar.sh`，exit 0）：10 個路由 200；導覽列「線上占星」桌機＋手機各一組（部署前 0 → 2）；`/astro-cards` 無 `noindex`、無「Demo 測試版」，LINE 導引標題與內文各 1；`/tarot` `noindex` 與佔位標示皆保留；`/api/astro-cards/reading` 實抽 200（5.5 秒）；`starwoven-app` active、journalctl 錯誤 0、`nginx -t` 通過。`app.env`、nginx 未變更。
+- **回滾**：`git checkout f86c795 && bash scripts/deploy.sh`（無環境變數或 nginx 變更；`ad3a747` 程式碼相同）。
+- **狀態**：**已結案**（2026-11-04）。牌義、提示詞語氣、牌面之占星師審定仍待決（`astro_cards_plan.md` 第十節第 2、3、6 項）。
