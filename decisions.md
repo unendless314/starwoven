@@ -1494,7 +1494,7 @@
 
 ---
 
-## 2026-11-04 — DEC-081：框架升級 Astro 5.18.2 → 7.4.5、@astrojs/node 9.5.5 → 11.1.9（行為不變）——本機驗收通過、已合併 main（待上線）
+## 2026-11-04 — DEC-081：框架升級 Astro 5.18.2 → 7.4.5、@astrojs/node 9.5.5 → 11.1.9（行為不變）——本機驗收與程式碼審查通過、已合併 main（待上線）
 
 - **背景**：`npm run dev` 提示 Astro 新版 7.4.5 可用；開發者同意於獨立分支 `chore/upgrade-astro-7` 升級，驗收無誤後再合併。
 - **變更範圍**：
@@ -1516,6 +1516,7 @@
   3. **不採納**：設定 `vite.build.target` 以支援 Safari 13 以前之瀏覽器——新輸出之 ES2021 語法（`&&=` 等）主流手機／桌機瀏覽器皆支援，不值得為極少數舊瀏覽器調整。
   4. **延後**：將型別檢查納入專案（`@astrojs/check`＋`npm run check`）——屬升級前即存在之開發流程缺口，另需 `@types/node`，登錄 `known_issues/README.md` 第 9 項，日後另立 DEC。
   - 追加修改後驗證：`npm run build` 0 警告；13 頁 HTML 結構與 Astro 5 基準仍一致；正式模式服務冒煙（`{}` → 400、停用 → 503、錯誤 Origin → 403、頁面 200）通過；開發伺服器實抽塔羅 200（約 5 秒）。
+  - **審查覆核（2026-11-04）**：外部審查確認 `b7065dd` 無新問題——manifest 不含 `sessionConfig`、session driver 為 `null`、啟動服務後未建立 session 資料夾、文章列表 `li` 間距不變、`npm run build` 與 `git diff --check` 通過；同意進入推送與部署流程。（註：Astro 停用 sessions 後仍會輸出一個內容為 `default = null` 的 driver 檔，屬正常產物。）
 - **維運備註**：MiniMax 回 HTTP 402 表示帳戶無可用額度（未訂閱、方案到期或餘額不足），非金鑰錯誤（金鑰錯誤為 401）。
 - **待辦**：
   1. 部署前確認 VPS Node 版本仍 ≥ 22.23.4（`node -v`）。
