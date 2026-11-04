@@ -1510,6 +1510,12 @@
   - **實際 AI 解讀**：本機 `.env` 設定金鑰後，經開發伺服器塔羅（單張）、占星（triad）各實抽一次皆 200，解讀完整，耗時約 4～5 秒。過程中曾回 `provider HTTP 402`（→ `AI_FAILED`），查明為金鑰屬於未訂閱之帳戶，改用正確帳戶金鑰後正常；與升級無關。
   - **瀏覽器實機**（2026-11-04，開發者）：深淺模式切換、漢堡選單、首頁輪播、評價跑馬燈、許願池投票、塔羅與占星抽卡流程、文章內頁深色模式（本次修正處）皆通過。
   - 驗收通過後合併 `main`（2026-11-04）。
+- **外部程式碼審查（2026-11-04）**：審查 `90946e7..d5042af`，對照 Astro v6／v7 與 @astrojs/node v10／v11 升級指南，未發現阻擋上線之問題（另以乾淨環境 `npm ci --omit=dev` 啟動服務、冒煙請求通過）。建議事項處理：
+  1. **採納**：`astro.config.mjs` 新增 `session: false`（Astro 7.2.0 起支援）。adapter 11 預設啟用檔案儲存 session（路徑於 `cacheDir` 下），本站無 session 使用、VPS 服務為唯讀（`ProtectSystem=strict`），明確停用使設定與部署限制一致，避免日後誤用時於執行期寫檔失敗；建置後 session driver 為 `null`，啟動訊息「Enabling sessions with filesystem storage」消失。
+  2. **採納**：刪除 `blog/[...slug].astro` 無效 CSS 宣告 `space-y: 0.5rem;`（非合法屬性，瀏覽器原本即忽略，外觀無變化）。
+  3. **不採納**：設定 `vite.build.target` 以支援 Safari 13 以前之瀏覽器——新輸出之 ES2021 語法（`&&=` 等）主流手機／桌機瀏覽器皆支援，不值得為極少數舊瀏覽器調整。
+  4. **延後**：將型別檢查納入專案（`@astrojs/check`＋`npm run check`）——屬升級前即存在之開發流程缺口，另需 `@types/node`，登錄 `known_issues/README.md` 第 9 項，日後另立 DEC。
+  - 追加修改後驗證：`npm run build` 0 警告；13 頁 HTML 結構與 Astro 5 基準仍一致；正式模式服務冒煙（`{}` → 400、停用 → 503、錯誤 Origin → 403、頁面 200）通過；開發伺服器實抽塔羅 200（約 5 秒）。
 - **維運備註**：MiniMax 回 HTTP 402 表示帳戶無可用額度（未訂閱、方案到期或餘額不足），非金鑰錯誤（金鑰錯誤為 401）。
 - **待辦**：
   1. 部署前確認 VPS Node 版本仍 ≥ 22.23.4（`node -v`）。

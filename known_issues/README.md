@@ -76,3 +76,18 @@
   1. 切換主題時可暫時掛載 `disable-transitions` 類別（於主題切換腳本中暫時關閉過渡），避免自動化工具或快速切換時出現暫態白底白字。
   2. 微調淡藍按鈕（`#80A9D4`）與各星期標籤的字體顏色（改採深色字體以達 4.5:1），或將深色模式下的按鈕背景適度調深。
   3. 將深色次要弱化文字（`dark:text-white/50`）提升至 `dark:text-white/70` 以上，確保通過 WCAG AA 檢測。
+
+## 9. 型別檢查（`astro check`）未納入專案、缺 Node 型別定義
+
+- **狀態**：待排期（2026-11-04 DEC-081 外部程式碼審查建議，延後處理；處理時另立 DEC）
+- **影響位置**：`package.json`（devDependencies、scripts）；回報錯誤之檔案為 `src/lib/ai/server/quota.ts`、`src/lib/ai/server/http.ts`（`Buffer`）、`src/pages/api/tarot/reading.ts`、`src/pages/api/astro-cards/reading.ts`（`node:crypto`）
+- **說明**：
+  1. 專案未宣告 `@astrojs/check`，`npx astro check` 會要求臨時安裝，各次執行環境不一致，過去 DEC 記錄之「0 errors」無法在乾淨環境重現。
+  2. 以臨時套件執行（`npx -p @astrojs/check -p typescript@^6 astro-check --root .`）時，升級前後皆為 4 errors，全部是找不到 `node:crypto`／`Buffer` 之型別——專案未安裝 `@types/node`。**不影響建置與執行**（`npm run build` 不做型別檢查），但型別檢查結果失去參考價值，真正的型別錯誤可能被淹沒。
+  3. `@astrojs/check` 0.9.x 之 peer 為 `typescript ^5 || ^6`，**不支援 TypeScript 7**；未指定版本時 npm 會取 7 而安裝失敗（ERESOLVE）。
+  4. 另有 1 則警告：`src/pages/courses.astro` 之 `imgWorkshopBazi` 宣告未使用（DEC-078 八字體驗下架後殘留）。
+- **處理方式**：
+  1. devDependencies 新增 `@astrojs/check`、`typescript@^6`（待 `@astrojs/check` 支援 7 再升）、`@types/node`（版本對應 VPS Node 主版本 24）。
+  2. `package.json` 新增 `"check": "astro check"`，確認乾淨環境（`npm ci` 後）為 0 errors，並於 `AGENTS.md` Commands 補上 `npm run check`。
+  3. 視需要清除 `imgWorkshopBazi` 等未使用變數。
+  4. devDependencies 不影響 VPS：`deploy.sh` 之 `/opt/starwoven-app` 以 `npm ci --omit=dev` 安裝；但 repo 目錄之 `npm ci` 會一併安裝，build 時間略增。

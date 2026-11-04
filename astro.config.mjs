@@ -12,6 +12,9 @@ export default defineConfig({
   site: 'https://starwoven.xyz',
   output: 'static',
   adapter: node({ mode: 'standalone' }),
+  // 明確停用 sessions（DEC-081）：@astrojs/node 11 預設以檔案儲存 session，
+  // 但 VPS 服務為唯讀（systemd ProtectSystem=strict），本站亦無 session 需求。
+  session: false,
   env: {
     // AI 功能伺服器變數之唯一清單（規格書第三節第 4 小節）。
     // 一律宣告為 secret：於執行期讀取、不進 bundle，改 /etc/starwoven/app.env 後重啟服務即生效。
