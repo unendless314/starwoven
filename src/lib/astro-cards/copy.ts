@@ -29,8 +29,14 @@ export const READING_NOTICE = '本解讀由 AI 依牌義生成，僅供參考與
 /** 問題輸入框下方之隱私告知（同塔羅措辭） */
 export const PRIVACY_NOTE = '你的問題只用於本次解讀，我們不會保存；解讀由第三方 AI 服務生成。';
 
-/** Demo 期間佔位內容標示 */
-export const PLACEHOLDER_NOTE = 'Demo 測試版：牌義與解讀語氣為佔位內容，待占星師審定；牌面為佔位視覺。';
+/**
+ * 頁底導流文案：加入官方 LINE（DEC-082，取代 Demo 佔位內容標示；業主確認文案 2026-11-04）。
+ * 不另設按鈕——LINE 入口由結果區「預約真人占星師」與全站浮動 LINE 按鈕承接，避免重複。
+ */
+export const LINE_JOIN_CTA = {
+  title: '想看完整的個人星盤？歡迎加入官方 LINE，掌握更多占星資訊。',
+  body: '如需個人客製化星盤分析，建議先向戶政事務所申請出生登記資料、確認準確的出生時間，再預約我們的占星師諮詢。',
+} as const;
 
 /** 頁面 <title>／meta description */
 export const PAGE_META = {

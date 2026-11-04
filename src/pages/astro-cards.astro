@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import { CARE_COPY } from '../lib/ai/shared/care';
 import { DECK_ORDER, QUESTION_MAX_CHARS } from '../lib/astro-cards/config';
-import { PAGE_META, PLACEHOLDER_NOTE, PRIVACY_NOTE, UI_TEXT } from '../lib/astro-cards/copy';
+import { LINE_JOIN_CTA, PAGE_META, PRIVACY_NOTE, UI_TEXT } from '../lib/astro-cards/copy';
 import { DECK_MARKS, DECK_NAMES } from '../lib/astro-cards/decks';
 
 // ==========================================
 // 線上占星抽卡（AI 解讀）MVP — DEC-080，規格 demo_docs/astro_cards_plan.md
 // 靜態頁（prerender）；互動邏輯在 src/scripts/astro-cards.ts（頁面層級 script 引入）。
-// Demo 期間不加入主導航、加 noindex，以直接網址供業主評估。
+// DEC-082 起正式公開：導覽列「線上占星」、開放搜尋引擎索引（原 Demo 期間 noindex、不在導覽列）。
 // 狀態區塊：setup（提問）→ pick（三疊依序選牌）→ result（翻牌＋解讀）／care／error
 // 樣式 class 前綴 ac-（避免與 Astro 自動產生之 astro-* class 混淆）
 // ==========================================
@@ -19,7 +19,6 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
   title={PAGE_META.title}
   description={PAGE_META.description}
   theme="auto"
-  noindex
 >
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24" data-ac-root>
 
@@ -149,9 +148,15 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
       </p>
     </noscript>
 
-    <p class="text-center text-xs sm:text-sm text-[#3A3A3A]/60 dark:text-white/50 font-huninn tracking-wide transition-colors mt-12 sm:mt-16">
-      {PLACEHOLDER_NOTE}
-    </p>
+    <!-- 頁底導流 CTA：加入官方 LINE（DEC-082） -->
+    <aside aria-labelledby="ac-line-cta-title" class="mt-12 sm:mt-16 max-w-2xl mx-auto rounded-3xl border p-6 sm:p-8 text-center space-y-4 bg-white/85 dark:bg-white/10 border-[#80A9D4]/30 dark:border-white/15 shadow-sm transition-colors">
+      <p id="ac-line-cta-title" class="text-lg sm:text-xl font-bold font-huninn tracking-wider leading-relaxed text-[#2E2A4F] dark:text-white">
+        {LINE_JOIN_CTA.title}
+      </p>
+      <p class="text-sm sm:text-base leading-relaxed text-[#3A3A3A]/80 dark:text-white/80">
+        {LINE_JOIN_CTA.body}
+      </p>
+    </aside>
 
     <!-- 結果區：單張牌模板（前端 clone 填入） -->
     <template id="ac-card-template">

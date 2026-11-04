@@ -44,7 +44,7 @@ pre-build planning repo and is obsolete.
 /blog         blog/index.astro       星靈專欄列表（分類過濾 + 精選置頂）
 /blog/[slug]  blog/[...slug].astro   文章內頁（Content Collections，src/content/blog/ 共 5 篇）
 /tarot        tarot.astro            線上塔羅抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-073）
-/astro-cards  astro-cards.astro      線上占星抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-080）
+/astro-cards  astro-cards.astro      線上占星抽卡（AI 解讀）——導覽列「線上占星」、開放索引（DEC-080／DEC-082）
 POST /api/tarot/reading        api/tarot/reading.ts        on-demand 路由（Node 服務）
 POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（Node 服務）
 ```
@@ -63,7 +63,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
   規格書：`demo_docs/astro_cards_plan.md`（DEC-080）。牌義與提示詞為佔位內容，待占星師審定。
 - 新增 AI 功能依 `ai_platform_plan.md` 第十節檢查清單；兩功能相似程式各自實作、不互相 import。
 
-- Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 + 「預約諮詢」CTA
+- Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 / 線上占星 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
   - `/reiki`, `/akashic` — pages deleted (DEC-020/023); content lives on as blog
     long-form posts; server-level 301s live in `nginx/starwoven.conf`.
@@ -124,7 +124,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-082).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-083).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in

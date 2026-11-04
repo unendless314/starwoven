@@ -1522,3 +1522,25 @@
 - **回滾**：`git checkout 90946e7 && bash scripts/deploy.sh`（無環境變數或 nginx 變更）。
 - **維運建議**（維運 agent）：日後大版本升級宜先於 staging 驗證再上線（本站目前無 staging，VPS 即建置機）。
 - **狀態**：**已結案**（2026-11-04）。後續型別檢查缺口見 `known_issues/README.md` 第 9 項。
+
+---
+
+## 2026-11-04 — DEC-082：線上占星抽卡正式公開——加入導覽列「線上占星」、移除 noindex、頁底佔位標示改為官方 LINE 導引文字
+
+- **背景**：DEC-080 之 `/astro-cards` 以 MVP Demo 上線（noindex、不在導覽列，供業主評估）。業主回覆 `astro_cards_plan.md` 第十節第 1、5 項：占星抽卡可以公開；`/tarot` 暫不公開。
+- **決策**：
+  1. **導覽列**：`Navbar.astro` 之 `navLinks` 末項新增「線上占星」→ `/astro-cards`（桌機與手機選單共用陣列）。名稱取四字，與既有項目等長，避免窄版桌機導覽列擁擠（業主決定）。⚠️ 共用元件，影響全站。
+  2. **移除 `noindex`**：`/astro-cards` 開放搜尋引擎索引，以增加轉換機會（業主決定）。
+  3. **頁底文案**：原 Demo 佔位標示（`PLACEHOLDER_NOTE`「Demo 測試版：牌義與解讀語氣為佔位內容，待占星師審定；牌面為佔位視覺。」）移除，改為引導加入官方 LINE 之文字卡片（`copy.ts` 之 `LINE_JOIN_CTA`）：
+     - 標題：想看完整的個人星盤？歡迎加入官方 LINE，掌握更多占星資訊。
+     - 內文：如需個人客製化星盤分析，建議先向戶政事務所申請出生登記資料、確認準確的出生時間，再預約我們的占星師諮詢。
+     - **不設按鈕**（業主決定）：初版曾加「加入官方 LINE」按鈕，與結果區既有「預約真人占星師」按鈕（同一 LINE URL）重複，移除；未抽牌之訪客由全站右下角浮動 LINE 按鈕承接。
+     - 業主原稿為「官方群組」；因無 LINE 群組／社群邀請連結（見 `known_issues/README.md` 第 2 項），改為官方 LINE，業主同意。
+  4. **每日上限**：業主確認維持 `ASTROCARDS_DAILY_LIMIT=300`，`app.env` 不變。
+- **業主知悉並接受之事項**：牌義、提示詞語氣與牌面仍為佔位內容、尚未經占星師審定（`astro_cards_plan.md` 第十節第 2、3、6 項仍待決）；移除佔位標示後頁面不再對訪客揭露此點。
+- **不變**：`/tarot` 維持 DEC-073 現狀（noindex、不在導覽列、保留佔位標示）；`src/lib/ai/`、API 端點、nginx、`app.env` 皆未修改。
+- **同步文件**：`AGENTS.md`（IA、Nav、下一個 DEC 編號）、`astro_cards_plan.md`（定位、範疇、第六節文案表、第十節）。
+- **回滾**：還原本 DEC 之 commit 後 `bash scripts/deploy.sh`。
+- **本機驗證（2026-11-04）**：`npm run build` 通過、0 警告；建置產物確認各頁導覽列含「線上占星」、`/astro-cards` 無 `noindex`、`/tarot` 仍有 `noindex`。
+- **外部程式碼審查（2026-11-04）**：導覽列桌機／手機運作正常、1024px 斷點不擁擠；無殘留 `PLACEHOLDER_NOTE` import。審查曾提出 P1「深色模式下 `bg-white/85` 覆蓋 `dark:bg-white/10`，卡片白底白字」——**退回**：編譯後 CSS 兩規則權重同為 (0,1,0)（`dark` 變體以 `:where()` 定義），深色規則排序在後可正確覆蓋，與 `about.astro` 品牌故事卡同組合；審查方重現確認係主題切換後 300ms 色彩過渡期間掃描所致（既有 `known_issues/README.md` 第 8 項），深色模式重新載入並等待 500ms 後 axe 0 violations，**撤回該項**。
+- **狀態**：本機實作與審查通過，待部署。
