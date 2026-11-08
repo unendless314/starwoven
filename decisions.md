@@ -1602,3 +1602,19 @@
   - **部署（2026-11-08）**：VPS repo 目錄 `.env` 新增 `PUBLIC_BOOTH_API_URL` → `git pull`（`d8eea4a`）→ `scripts/deploy.sh`（exit 0，preflight PASS，AI 端點冒煙正常）；確認 bundle 內嵌網址與 `.env` 一致、首頁及 `/courses/`、`/wishlist/`、`/tarot/`、`/astro-cards/` 回歸 200。開發者於正式站目視確認 UI 正常。
   - **狀態**：**已上線，結案**。提示卡文案仍為佔位，業主定稿後再改（`index.astro` 提示卡與 `<noscript>` 兩處＋`content_inventory.md` 1.1）。
   - ~~原狀態~~：已實作、**已完成部分本機驗收**（上列案例；規格書第七節第 2 小節其餘項目，如雙主題、手機、清空、GA4 DebugView 等，部署後於正式站補驗），**待部署（Step 6）**；提示卡文案仍為佔位，待業主定稿（不阻塞上線）。
+
+---
+
+## 2026-11-08 — DEC-086：首頁 Hero 輪播改為公告為主——上架 11 月兩張業主海報、AI 填充圖精簡為 1 張
+
+- **背景**：業主提供兩張新海報（2026 年底市集預告、年度流年塔羅）。輪播原為 2 張公告海報＋4 張 AI 生成填充圖（DEC-062～065），海報已足量，輪播定位改為公告欄。
+- **決策**：
+  1. `heroSlides` 順序：市集預告 → 年度流年塔羅 → 實習生招募（常態活動，保留）→ 聖誕週年慶（保留）→ 光之編織・星靈織語；四張海報點擊皆另開官方 LINE。
+  2. AI 填充圖僅保留「光之編織・星靈織語」（`home_a_star_weaver_v1.webp`）作品牌美學保底圖——主題即品牌名、色調與海報相近，且海報全數過期下架時輪播不致空白。「世界牌」「天體星盤儀」「命運之輪」自首頁下架；實體檔保留於 `public/assets/` 與 `sd-assets/`，**不刪除、不移至 rejected**（比照 DEC-084）。
+  3. 年度流年塔羅為新商品，價格（首波 NT$1,313／正式 NT$1,499）取自業主海報，登錄 `content_inventory.md` 第 1.1 節。
+- **素材**：原檔改名 `home_announcement_202611_{market,annual_tarot}_original.jpg`（`demo_docs/announcements/2026-11/`，git-ignored）；WebP Q85 原尺寸輸出，三處歸檔（`public/assets/`、`announcements/2026-11/`、`sd-assets/`）。
+- **已知限制（業主反映中，先上架）**：兩張比例與輪播容器 888:1152 不一致（市集 825×1024 略寬、流年塔羅 2:3 偏瘦長），`object-contain` 下顯示大小不一、圓角不作用；流年塔羅文字密度高，手機上小字難辨，檔案 276 KB 超出 README 建議之 80～150 KB。業主提供 3:4 新版時升版號 `_v2` 替換。
+- **同步文件**：`content_inventory.md` 第 1.1 節、`image_prompts.md` 生成紀錄（`公告-202611-A／B`）、`AGENTS.md`（下一個 DEC 編號）。
+- **共用表面**：新增 `public/assets/` 兩檔；未修改 Layout、Navbar、`global.css`。
+- **狀態**：本機檢視通過（開發者），待部署。
+

@@ -371,6 +371,8 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `專欄-E` | 塔羅心靈之鏡 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 古典靈性鏡面倒映塔羅牌星盤 | 188810271202554 | 採用上架 | 轉 WebP Q85 (保留背景) | `blog_e_tarot_mirror_v1.webp` |
 | `公告-202610-A` | 聖誕節交換禮物週年慶 (v1) | 2026-10-09 | Canva | 聖誕樹禮物塔羅牌週年慶活動海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_christmas_v1.webp` |
 | `公告-202610-B` | 星靈實習生招募 (v1) | 2026-10-09 | Canva | 星空月亮以技能換技能培訓招募海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_intern_v1.webp` |
+| `公告-202611-A` | 2026 年底市集預告 (v1) | 2026-11-08 | 業主提供 | 夜空水晶塔羅四市集場次與服務項目海報 | - | 採用上架 | 轉 WebP Q85 (825×1024，原尺寸) | `home_announcement_202611_market_v1.webp` |
+| `公告-202611-B` | 年度流年塔羅 (v1) | 2026-11-08 | 業主提供 | 太陽牌粉紫星空年度報告內容與費用海報 | - | 採用上架 | 轉 WebP Q85 (1024×1536，原尺寸) | `home_announcement_202611_annual_tarot_v1.webp` |
 
 
 ---
