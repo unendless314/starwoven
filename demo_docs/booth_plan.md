@@ -1,6 +1,6 @@
 # 星靈織語 Starwoven — 星靈出攤（首頁出攤公告）規格書 v0.2
 
-> **文件狀態**：v0.2，**設計審查通過，待業主定案提示文案與帳號歸屬後實作**（2026-11-08）。已登錄 DEC-085。
+> **文件狀態**：v0.2，設計審查通過；**已實作、已完成部分本機驗收（見 DEC-085；其餘第七節第 2 小節項目部署後補驗），待部署（Step 6）**（2026-11-08）。提示卡文案仍為佔位，待業主定稿（不阻塞上線）。已登錄 DEC-085。
 > **建立日期**：2026-11-08
 > **沿革摘要**：業主經常於外部市集擺攤，活動接洽成功之通知具時效性，經由開發者改程式碼、重新部署的流程太慢；希望業主自行於 Google 試算表更新，首頁即時呈現。經開發者與 AI 討論後整理為 v0.1。v0.2 依 v0.1 之設計審查（3 項 P2）及其覆核（2 項建議）修訂：後端驗證第 1 列標題（`SHEET_SCHEMA_MISMATCH`）、GA4 只送連結網域、補列 Apps Script 單點故障之接受標準與依失敗原因分流之處置流程。各項採納與取捨見**第十一節**。
 > **核心目標**：首頁 Hero 原「品牌三大核心特色」三張卡片（DEC-060，AI 生成之 Demo 文案）**移除**，改為「星靈出攤」區塊——內容由 Google 試算表驅動，**業主改試算表、訪客重整網頁即更新，不需重新部署**。
@@ -268,7 +268,7 @@ function doGet(e) {
 - 載入失敗時送出 `booth_load_error`，參數 `{ reason, code }`（第 5 小節；`code` 含 `SHEET_SCHEMA_MISMATCH` 等後端錯誤碼）。用途為事後排查：可於 GA4 報表觀察失敗次數與原因分布（偶發逾時 vs. 全面失效）。`no_api_url` 亦送出，以便發現線上 build 漏設環境變數。
   - 如需於 GA4 報表以 `reason` 分組，需另於 GA4 後台登錄自訂維度（選配，不影響功能；同許願池 `course_name`）。
   - GA 尚未載入完成或被訪客阻擋時，事件不送出——此為盡力而為之紀錄。
-- `GoogleAnalytics.astro` 既有監聽只比對 `line.me`／`iopenmall.tw`／`maps.app.goo.gl`，若主辦方連結剛好是這些網域會被額外記一筆，可接受。
+- `GoogleAnalytics.astro` 既有之 document 層級外連監聽以子字串比對 `line.me`／`iopenmall.tw`／`maps.app.goo.gl`，命中時會以**完整 href** 送出 `destination`，違反上述「只送網域」。故出攤卡片之 click handler 送出 `booth_link_click` 後呼叫 `stopPropagation()`，不讓事件冒泡至該監聽（不 `preventDefault`，連結照常開啟；不修改 `GoogleAnalytics.astro`）。
 
 ---
 
@@ -284,11 +284,11 @@ function doGet(e) {
 
 ### 1. 實施步驟
 
-- [ ] **Step 1（業主／開發者）**：建立「星靈出攤」試算表，工作表命名 `Booth`，第 1 列填入 A～E 標題，貼上第三節第 2 小節之操作規則至說明分頁；共用編輯權限給業主（帳號歸屬見第八節）。
-- [ ] **Step 2**：貼上第四節 Apps Script → 部署為網頁應用程式（執行身分：我；存取權：任何人）→ 取得網址。
-- [ ] **Step 3**：curl 實測：`?action=get_all`（純 JSON）、`?action=get_all&callback=cb`（JSONP，回傳 `cb({...});`）、`?action=get_all&callback=foo.bar`（非法但可抵達 Apps Script 之 callback）降級回傳純 JSON；`?action=get_all&callback=cb();alert(1)//`（含括號，URL 編碼後送出）預期由 **Google 層回傳 HTTP 400**，不會抵達 `respond()`（同許願池 DEC-067 實測）、`?action=xxx` 回傳 `invalid_action`；暫改 B1 標題為 `日期X` → 回傳 `SHEET_SCHEMA_MISMATCH`，改回即恢復。
-- [ ] **Step 3 補充**：依實際建立試算表之 Google 帳號類型（個人／Workspace），查閱 Google 官方 Apps Script 配額頁，將與網頁應用程式相關之限制（如同時執行數）記錄於第九節。**不得沿用未查證之數字。**
-- [ ] **Step 4（開發）**：前端實作（`index.astro` 移除品牌卡、新增星靈出攤區塊；`src/scripts/booth.ts`）；`npm run build` 通過、0 警告。
+- [x] **Step 1（業主／開發者）**：建立「星靈出攤」試算表，工作表命名 `Booth`，第 1 列填入 A～E 標題，貼上第三節第 2 小節之操作規則至說明分頁；共用編輯權限給業主（帳號歸屬見第八節）。
+- [x] **Step 2**：貼上第四節 Apps Script → 部署為網頁應用程式（執行身分：我；存取權：任何人）→ 取得網址。
+- [x] **Step 3**：curl 實測：`?action=get_all`（純 JSON）、`?action=get_all&callback=cb`（JSONP，回傳 `cb({...});`）、`?action=get_all&callback=foo.bar`（非法但可抵達 Apps Script 之 callback）降級回傳純 JSON；`?action=get_all&callback=cb();alert(1)//`（含括號，URL 編碼後送出）預期由 **Google 層回傳 HTTP 400**，不會抵達 `respond()`（同許願池 DEC-067 實測）、`?action=xxx` 回傳 `invalid_action`；暫改 B1 標題為 `日期X` → 回傳 `SHEET_SCHEMA_MISMATCH`，改回即恢復。
+- [x] **Step 3 補充**：依實際建立試算表之 Google 帳號類型（個人／Workspace），查閱 Google 官方 Apps Script 配額頁，將與網頁應用程式相關之限制（如同時執行數）記錄於第九節。**不得沿用未查證之數字。**
+- [x] **Step 4（開發）**：前端實作（`index.astro` 移除品牌卡、新增星靈出攤區塊；`src/scripts/booth.ts`）；`npm run build` 通過、0 警告。
 - [ ] **Step 5（開發）**：本機 `.env` 填入網址，`npm run dev` 瀏覽器驗收（下方清單）。
 - [ ] **Step 6（部署）**：VPS `.env` 新增 `PUBLIC_BOOTH_API_URL` → `git pull` → `scripts/deploy.sh`。
   - 部署順序：**先完成 Step 2，再部署前端**。若前端先上線、網址未設定，首頁顯示提示卡（安全，不壞畫面）。
@@ -341,7 +341,12 @@ function doGet(e) {
   - **接受標準**：
     - 可接受：零星 `timeout`（GA4 中偶發、開發者重整即恢復、無法穩定重現）——不處理。
     - 須處理：同一 `reason`／`code` **持續出現**，或開發者可自行穩定重現失敗——依第十節依原因分流排查。
-  - **配額**：實作／部署前，依實際建立試算表之 Google 帳號類型（個人／Workspace），以 Google 官方 Apps Script 配額頁確認網頁應用程式相關限制（如同時執行數），記錄於本節（第七節 Step 3 補充）。本文件不預先寫入未查證之數字。
+  - **配額**（2026-11-08 查證；試算表與 Apps Script 建立於**個人 Google 帳號**〔以非 Gmail 信箱註冊，配額同 consumer／gmail.com〕；來源：Google 官方 Apps Script 配額頁 `developers.google.com/apps-script/guides/services/quotas`）：
+    - 官方頁面未列網頁應用程式／`doGet` 專屬配額，適用一般執行限制；以下個人帳號與 Workspace 相同：
+    - **同時執行數：每位使用者 30**（Web App「執行身分：我」→ 所有訪客請求皆計入建立者帳號；超過時錯誤訊息為 "There are too many scripts running simultaneously for this Google user account."）——為本功能最可能觸及之限制，觸及時前端表現為 `timeout`／`network`。
+    - 同時執行數：每個指令碼 1,000；單次執行時間上限 6 分鐘（本功能單次執行為秒級，不會觸及）。
+    - 每日配額（觸發條件總執行時間 90 分鐘／日、URL Fetch 20,000 次／日）僅適用觸發條件與 `UrlFetchApp`，本功能皆未使用。
+    - 注意：同一帳號下之其他 Apps Script（如許願池若同帳號部署）共用「每位使用者 30」之同時執行數。
   - **最後手段**：如 Apps Script 長時間無法恢復而需緊急公告，回到原流程——開發者暫時將公告寫入程式碼、重新部署。
   - **選配**：GA4「自訂洞察」可設定 `booth_load_error` 事件數異常時寄信通知；不列為上線必要條件。
 - **後端快取之效果有限**：Apps Script `CacheService` 短快取（如 60 秒）只省去讀取試算表的時間，**每次請求仍會執行一次 Apps Script**，對同時執行數或執行次數類之配額幫助有限；代價為業主改完最多延遲快取時間才生效。僅於 `timeout` 持續出現且查明為讀取過慢時評估採用。
@@ -403,3 +408,9 @@ function doGet(e) {
 ### D. v0.2 第二次覆核（1 項 P2，採納）
 
 1. **非法 callback 之驗收預期與既有實測衝突**：原寫「`callback=cb();alert(1)//` 回傳純 JSON」，但 DEC-067 許願池實測紀錄已指出含括號／尖括號之 callback 由 Google 層以 HTTP 400 拒絕，`respond()` 根本不會執行。第七節 Step 3 改為：以 `callback=foo.bar` 驗證「非法但可抵達 Apps Script → 降級純 JSON」；含括號之案例保留，預期結果改為 Google 層 HTTP 400。
+
+### E. 實作 code review（2026-11-08，2 項，皆採納）
+
+1. **[P1] 共用外連監聽會上傳完整活動連結**：原第五節第 7 小節將「被共用監聽額外記一筆」視為可接受，未察覺該監聽送出完整 href。改為卡片 click handler 呼叫 `stopPropagation()`（第五節第 7 小節）。已確認站內無其他 document 層級 click 監聽，不影響其他功能。
+2. **[P3] 規格書與 DEC 實作狀態未更新**：文件狀態列與 DEC-085 標題／狀態改為「已實作、待部署」。
+3. **覆核 [P3] 文件狀態清理**：DEC-085「待業主決定」移除已決定之帳號歸屬、原設計審查狀態標為歷史；Step 5 驗收清單未全數完成，用語由「通過本機驗收」改為「已完成部分本機驗收」，未驗項目部署後補驗。
