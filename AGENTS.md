@@ -36,7 +36,7 @@ pre-build planning repo and is obsolete.
 ## Current site IA (actual routes)
 
 ```
-/             index.astro            Hero / 四大核心服務×4 / 固定循環課程×6 / 許願池入口連結 / 學員評價輪播
+/             index.astro            Hero / 四大核心服務×4 / 許願池入口連結 / 學員評價輪播
 /wishlist     wishlist.astro         課程許願池（敲碗開課投票，試算表 SSOT；DEC-049 自首頁獨立為分頁）
 /about        about.astro            品牌故事 + 創辦人×2 + 星靈夥伴×9（真人頭像已上架）
 /services     services.astro         7 大服務雙欄大卡片（塔羅/星盤/靈數/八字/靈氣與光/阿卡西/毛孩溝通）
@@ -124,7 +124,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-084).
+- **Off-spec decisions → append to `decisions.md`** (next number: DEC-085).
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
