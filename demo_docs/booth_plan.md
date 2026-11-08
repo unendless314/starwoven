@@ -1,6 +1,6 @@
 # 星靈織語 Starwoven — 星靈出攤（首頁出攤公告）規格書 v0.2
 
-> **文件狀態**：v0.2，設計審查通過；**已實作、已完成部分本機驗收（見 DEC-085；其餘第七節第 2 小節項目部署後補驗），待部署（Step 6）**（2026-11-08）。提示卡文案仍為佔位，待業主定稿（不阻塞上線）。已登錄 DEC-085。
+> **文件狀態**：v0.2，設計審查通過；**已實作並上線（2026-11-08，見 DEC-085）**（2026-11-08）。提示卡文案仍為佔位，待業主定稿（不阻塞上線）。已登錄 DEC-085。
 > **建立日期**：2026-11-08
 > **沿革摘要**：業主經常於外部市集擺攤，活動接洽成功之通知具時效性，經由開發者改程式碼、重新部署的流程太慢；希望業主自行於 Google 試算表更新，首頁即時呈現。經開發者與 AI 討論後整理為 v0.1。v0.2 依 v0.1 之設計審查（3 項 P2）及其覆核（2 項建議）修訂：後端驗證第 1 列標題（`SHEET_SCHEMA_MISMATCH`）、GA4 只送連結網域、補列 Apps Script 單點故障之接受標準與依失敗原因分流之處置流程。各項採納與取捨見**第十一節**。
 > **核心目標**：首頁 Hero 原「品牌三大核心特色」三張卡片（DEC-060，AI 生成之 Demo 文案）**移除**，改為「星靈出攤」區塊——內容由 Google 試算表驅動，**業主改試算表、訪客重整網頁即更新，不需重新部署**。
@@ -289,8 +289,8 @@ function doGet(e) {
 - [x] **Step 3**：curl 實測：`?action=get_all`（純 JSON）、`?action=get_all&callback=cb`（JSONP，回傳 `cb({...});`）、`?action=get_all&callback=foo.bar`（非法但可抵達 Apps Script 之 callback）降級回傳純 JSON；`?action=get_all&callback=cb();alert(1)//`（含括號，URL 編碼後送出）預期由 **Google 層回傳 HTTP 400**，不會抵達 `respond()`（同許願池 DEC-067 實測）、`?action=xxx` 回傳 `invalid_action`；暫改 B1 標題為 `日期X` → 回傳 `SHEET_SCHEMA_MISMATCH`，改回即恢復。
 - [x] **Step 3 補充**：依實際建立試算表之 Google 帳號類型（個人／Workspace），查閱 Google 官方 Apps Script 配額頁，將與網頁應用程式相關之限制（如同時執行數）記錄於第九節。**不得沿用未查證之數字。**
 - [x] **Step 4（開發）**：前端實作（`index.astro` 移除品牌卡、新增星靈出攤區塊；`src/scripts/booth.ts`）；`npm run build` 通過、0 警告。
-- [ ] **Step 5（開發）**：本機 `.env` 填入網址，`npm run dev` 瀏覽器驗收（下方清單）。
-- [ ] **Step 6（部署）**：VPS `.env` 新增 `PUBLIC_BOOTH_API_URL` → `git pull` → `scripts/deploy.sh`。
+- [x] **Step 5（開發）**：本機 `.env` 填入網址，`npm run dev` 瀏覽器驗收（下方清單）。
+- [x] **Step 6（部署）**：VPS `.env` 新增 `PUBLIC_BOOTH_API_URL` → `git pull` → `scripts/deploy.sh`。
   - 部署順序：**先完成 Step 2，再部署前端**。若前端先上線、網址未設定，首頁顯示提示卡（安全，不壞畫面）。
 
 ### 2. 瀏覽器驗收
