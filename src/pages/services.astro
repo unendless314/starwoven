@@ -141,6 +141,32 @@ const services: ServiceCard[] = [
     ],
   },
 ];
+
+// ==========================================
+// 分類快捷鍵（DEC-087）：分類與服務對應（暫定，業主未逐項確認）
+// 搬移服務、改分類名稱或增減分類只需修改此陣列；codes 對應上方 services 的 code。
+// ==========================================
+interface ServiceCategory {
+  id: string;      // 錨點 id（#divination 等）
+  label: string;   // 快捷鍵按鈕與分類小標題
+  codes: string[];
+}
+
+const serviceCategories: ServiceCategory[] = [
+  { id: 'divination', label: '占卜', codes: ['服務-A'] },
+  { id: 'fortune', label: '命理', codes: ['服務-B', '服務-C', '服務-D'] },
+  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F'] },
+  { id: 'pet', label: '毛孩', codes: ['服務-G'] },
+];
+
+const categorizedServices = serviceCategories.map((cat) => ({
+  ...cat,
+  items: cat.codes.map((code) => {
+    const item = services.find((s) => s.code === code);
+    if (!item) throw new Error(`serviceCategories 找不到服務代碼：${code}`);
+    return item;
+  }),
+}));
 ---
 
 <Layout
@@ -150,7 +176,7 @@ const services: ServiceCard[] = [
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
     <!-- Header: 還原 Canva 頁頭標題與手繪感說明 -->
-    <header class="text-center max-w-3xl mx-auto mb-16 sm:mb-20 space-y-4">
+    <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-4">
       <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
         命理服務
       </h1>
@@ -161,10 +187,37 @@ const services: ServiceCard[] = [
       <div class="w-20 h-1.5 bg-[#80A9D4] mx-auto rounded-full mt-3 opacity-80"></div>
     </header>
 
-    <!-- Services Grid: 還原 Canva 2 大欄（雙欄寬幅大卡片）排版與專屬留圖空間 -->
+    <!-- 分類快捷鍵（DEC-087）：同頁錨點，沿用全站 scroll-behavior: smooth -->
+    <nav aria-label="服務分類" class="max-w-2xl mx-auto mb-16 sm:mb-20">
+      <ul class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        {serviceCategories.map((cat) => (
+          <li>
+            <a
+              href={`#${cat.id}`}
+              class="flex items-center justify-center gap-1.5 h-full px-4 py-3 rounded-full font-huninn font-bold text-base sm:text-lg tracking-wider text-[#2E2A4F] dark:text-white bg-white/85 dark:bg-white/10 border border-[#80A9D4]/35 dark:border-white/20 shadow-sm hover:bg-[#80A9D4]/15 dark:hover:bg-white/20 hover:border-[#80A9D4] dark:hover:border-white/40 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#80A9D4] transition-all duration-300"
+            >
+              <span class="text-[#80A9D4] dark:text-[#FCE794] text-sm" aria-hidden="true">✦</span>
+              {cat.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- Services by Category：各分類區塊維持雙欄同寬卡片；奇數時最後一張置中（DEC-087） -->
+    <div class="space-y-16 sm:space-y-20">
+    {categorizedServices.map((cat) => (
+    <section id={cat.id} aria-labelledby={`${cat.id}-heading`} class="scroll-mt-28">
+      <h2 id={`${cat.id}-heading`} class="text-center text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider mb-8 sm:mb-10 transition-colors">
+        <span class="text-[#80A9D4] dark:text-[#FCE794]" aria-hidden="true">✦ </span>{cat.label}<span class="text-[#80A9D4] dark:text-[#FCE794]" aria-hidden="true"> ✦</span>
+      </h2>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-      {services.map((item) => (
-        <div class="group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+      {cat.items.map((item, index) => (
+        <div class:list={[
+          'group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-[#80A9D4]/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between',
+          // 奇數項目的最後一張：跨兩欄後以單欄寬度置中
+          cat.items.length % 2 === 1 && index === cat.items.length - 1 && 'lg:col-span-2 lg:justify-self-center lg:w-[calc((100%-2.5rem)/2)]',
+        ]}>
           
           <div>
             <!-- 1. 卡片頂部：專屬留圖空間（插圖） + 服務大標題 -->
@@ -259,9 +312,9 @@ const services: ServiceCard[] = [
 
               <!-- 標題與裝飾線 -->
               <div class="flex-1">
-                <h2 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+                <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
                   {item.title}
-                </h2>
+                </h3>
                 <!-- 手繪微光底線 -->
                 <div class="w-24 sm:w-32 h-1 bg-gradient-to-r from-[#80A9D4] to-transparent rounded-full mt-2"></div>
                 <!-- 預約形式膠囊標籤 -->
@@ -330,6 +383,9 @@ const services: ServiceCard[] = [
 
         </div>
       ))}
+    </div>
+    </section>
+    ))}
     </div>
 
     <!-- CTA Section: 還原 Canva 頁尾引導預約諮詢區塊 -->
