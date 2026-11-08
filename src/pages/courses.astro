@@ -213,6 +213,16 @@ const workshops: Workshop[] = [
     youtubeId: 'qIQLaGWaDn8',
   },
 ];
+
+// ==========================================
+// 分類快捷鍵（DEC-088）：按鈕文字沿用各專區標題；id 對應下方 <section id>
+// 業主若要精簡按鈕名稱，只改 label。color 與專區標題左側色條一致。
+// ==========================================
+const courseSections = [
+  { id: 'recurring', label: '固定循環課程', color: '#80A9D4' },
+  { id: 'meetup', label: '實體交流會', color: '#8FB8E8' },
+  { id: 'workshops', label: '主題體驗課程', color: '#F7971E' },
+];
 ---
 
 <Layout
@@ -223,7 +233,7 @@ const workshops: Workshop[] = [
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
     
     <!-- 頁頭 Header：還原 Canva 原始手繪溫暖意象 -->
-    <header class="text-center max-w-3xl mx-auto mb-16 sm:mb-24 space-y-4">
+    <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-4">
       <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-medium tracking-wider bg-[#80A9D4]/15 text-[#2E2A4F] dark:bg-white/10 dark:text-[#8FB8E8] transition-colors">
         ✦ 星靈織語共學空間 ✦
       </div>
@@ -237,10 +247,27 @@ const workshops: Workshop[] = [
       <div class="w-20 h-1.5 bg-[#80A9D4] mx-auto rounded-full mt-3 opacity-80"></div>
     </header>
 
+    <!-- 分類快捷鍵（DEC-088）：同頁錨點，沿用全站 scroll-behavior: smooth；圓點色與各專區標題色條一致 -->
+    <nav aria-label="課程分類" class="max-w-2xl mx-auto mb-16 sm:mb-24">
+      <ul class="grid grid-cols-3 gap-2 sm:gap-3">
+        {courseSections.map((sec) => (
+          <li>
+            <a
+              href={`#${sec.id}`}
+              class="flex items-center justify-center gap-1.5 sm:gap-2 h-full px-2 sm:px-4 py-3 rounded-full font-huninn font-bold text-sm sm:text-lg tracking-wide sm:tracking-wider text-[#2E2A4F] dark:text-white bg-white/85 dark:bg-white/10 border border-[#80A9D4]/35 dark:border-white/20 shadow-sm hover:bg-[#80A9D4]/15 dark:hover:bg-white/20 hover:border-[#80A9D4] dark:hover:border-white/40 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#80A9D4] transition-all duration-300"
+            >
+              <span class="hidden sm:inline-block w-2 h-2 rounded-full shrink-0" style={`background-color: ${sec.color}`} aria-hidden="true"></span>
+              {sec.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
     <!-- ======================================================== -->
     <!-- 【專區 1】：固定課程 (Recurring Classes)                 -->
     <!-- ======================================================== -->
-    <section class="mb-20 sm:mb-28">
+    <section id="recurring" class="mb-20 sm:mb-28 scroll-mt-28">
       
       <!-- 專區標題列 -->
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
@@ -457,7 +484,7 @@ const workshops: Workshop[] = [
     <!-- ======================================================== -->
     <!-- 【專區 2】：交流會 (Meetups)                             -->
     <!-- ======================================================== -->
-    <section class="mb-20 sm:mb-28">
+    <section id="meetup" class="mb-20 sm:mb-28 scroll-mt-28">
       
       <!-- 專區標題列 -->
       <div class="flex items-center gap-2.5 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
@@ -551,7 +578,7 @@ const workshops: Workshop[] = [
     <!-- ======================================================== -->
     <!-- 【專區 3】：體驗課程 (Workshops & Experiences)          -->
     <!-- ======================================================== -->
-    <section class="mb-20 sm:mb-28">
+    <section id="workshops" class="mb-20 sm:mb-28 scroll-mt-28">
       
       <!-- 專區標題列 -->
       <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12 border-b border-[#80A9D4]/20 dark:border-white/10 pb-5">
