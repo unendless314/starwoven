@@ -1575,7 +1575,7 @@
 - **素材**：`首頁-G`～`首頁-L` 不再於首頁使用；其實體檔 `courses_[a-f]_*_v1.webp` 與 `課程-A`～`課程-F` 共用，`/courses` 仍使用，**不刪除、不移至 rejected**。
 - **同步文件**：`content_inventory.md`（第 1.3 節標示已移除、第 1.7 節位置描述）、`AGENTS.md`（IA 首頁區塊、下一個 DEC 編號）。
 - **共用表面**：未修改 Layout、Navbar、`global.css`、`public/assets/`。
-- **狀態**：本機實作完成，待業主檢視與部署。
+- **狀態**：**已上線**（與 DEC-085～088 同批部署；2026-11-09 補正狀態，原未更新）。
 
 ---
 
@@ -1677,7 +1677,7 @@
 - **同步文件**：`content_inventory.md` 第 1.2、2.1a、2.2 節；`known_issues/README.md` 第 10、11 項（新增）；`AGENTS.md`（IA 首頁與 `/services` 服務數、下一個 DEC 編號）。
 - **共用表面**：未修改 Layout、Navbar、`global.css`、`public/assets/`、content schema。
 - **實作（2026-11-09）**：`src/pages/index.astro`、`src/pages/services.astro`。`npm run build` 成功；本機 Playwright 截圖確認 1440／1024／768／390 寬、深淺主題，四顆按鈕對齊、1024 寬按鈕不折行、服務頁佔位卡片正常。
-- **狀態**：本機實作完成，待業主檢視與部署。
+- **狀態**：**已上線（2026-11-09），VPS 驗收通過（服務正常、主要路由 200）。** 按鈕文字仍為暫定；天使靈氣／亢達里尼靈氣服務資料、首頁是否補回「實體交流會」待業主回覆。
 
 ---
 
@@ -1698,4 +1698,4 @@
 - **同步文件**：`content_inventory.md` 第 3.2 節（三門課費用欄刪除單報說明；占星循環班新增舊生複訓；週三課程更名）；部落格 3 篇與文章內頁樣式（見第 7～9 點）；`image_prompts.md` 素材代號登錄（首頁-I、課程-C 說明）；`gacha_plan.md` 第 96 行（暫緩規格書，同步名稱）；`scripts/process_photo.py`（`--batch-courses` 輸出之素材名稱）；`AGENTS.md`（下一個 DEC 編號）。`spec.md`、`phase0_answers.md`、部落格文章經搜尋無相關內容。
 - **共用表面**：未修改 Layout、Navbar、`global.css`、`public/assets/`、content schema。
 - **實作（2026-11-09）**：`src/pages/courses.astro`（刪除三筆單報備註、修改固定循環課程副標、`extraNote` → `extraNotes` 陣列、占星新增複訓）。
-- **狀態**：本機實作完成，待與其他 `/courses` 微調一併部署。
+- **狀態**：**已上線（2026-11-09），VPS 驗收通過。** 待業主確認：占星「舊生複訓 1.5 小時 300元」之語意——(a) 舊生回團體課旁聽半堂（按次計價，每小時約 200 元，高於包月主課約 167 元）或 (b) 舊生付費參加新生贈送之 1.5 小時個人基礎加強；確認後調整備註文字，價格不變。
