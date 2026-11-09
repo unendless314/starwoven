@@ -288,4 +288,26 @@ const formatDate = (date: Date) => {
   .dark .article-content strong {
     color: #FCE794;
   }
+
+  /* 內文連結（Tailwind preflight 會清除連結底線與顏色，需明示；DEC-090） */
+  .article-content a {
+    color: #2E2A4F;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: #80A9D4;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+  .article-content a:hover {
+    color: #80A9D4;
+  }
+  .dark .article-content a {
+    color: #8FB8E8;
+    text-decoration-color: rgba(143, 184, 232, 0.5);
+  }
+  .dark .article-content a:hover {
+    color: #FFFFFF;
+    text-decoration-color: #8FB8E8;
+  }
 </style>

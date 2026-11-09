@@ -10,7 +10,7 @@ import CTAButton from '../components/CTAButton.astro';
 // 【1. 固定循環課程現場照片（6張）】
 const imgCourseAkashic = '/assets/courses_a_akashic_v1.webp';    // 課程-A：光與阿卡西紀錄現場照片
 const imgCourseAstrology = '/assets/courses_b_astrology_v1.webp';  // 課程-B：占星循環班現場照片
-const imgCourseWaite = '/assets/courses_c_waite_v1.webp';      // 課程-C：偉特塔羅團練現場照片
+const imgCourseWaite = '/assets/courses_c_waite_v1.webp';      // 課程-C：偉特塔羅循環班現場照片
 const imgCourseReiki = '/assets/courses_d_reiki_v1.webp';      // 課程-D：七脈輪與靈氣現場照片
 const imgCourseThoth = '/assets/courses_e_thoth_v1.webp';      // 課程-E：托特塔羅循環班現場照片
 const imgCourseNumerology = '/assets/courses_f_numerology_v1.webp'; // 課程-F：生命靈數循環班現場照片
@@ -35,7 +35,6 @@ const recurringCourses = [
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
-    extraNote: '可單報阿卡西紀錄團練（20:00-21:00 包月四堂1000元）',
     description: '結合光的靜心冥想與阿卡西紀錄解讀技巧，每週帶領學員穩定能量中軸、清理情緒印記，並練習開啟個人的阿卡西紀錄，探索生命議題的根源解答與內在力量。',
     highlights: ['13 道光的能量靜心與氣場調頻', '阿卡西靈魂紀錄開啟與提問心法', '雙人練習與日常自我能量療癒'],
     suitableFor: '渴望深度向內探索、尋求生命解答、或對能量療癒有興趣的朋友。',
@@ -52,7 +51,7 @@ const recurringCourses = [
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
-    extraNote: '第一次包月報名送 1.5 小時個人基礎加強',
+    extraNotes: ['新生：第一次包月報名送 1.5 小時個人基礎加強', '舊生複訓：1.5 小時 300元'],
     description: '以循序漸進的實務教學，陪伴學員從本命盤的基礎結構入門，透過大量真實案例演練與互相探討，學會讀懂個人性格天賦、人際相處模式與生命週期流年運勢。',
     highlights: ['十大行星與十二星座原型的深度剖析', '後天十二宮位與重要交角相位解析', '真實星盤實戰演練與合盤概念入門'],
     suitableFor: '想有系統學習西洋占星、讀懂自己與他人本命星盤的初學及進階者。',
@@ -64,7 +63,7 @@ const recurringCourses = [
     code: '課程-C',
     day: '每週三',
     dayColor: 'bg-[#5B8EA6] text-white',
-    title: '偉特塔羅團練',
+    title: '偉特塔羅循環班',
     teacher: '以恩老師',
     time: '20:00 - 21:30',
     price: '包月四堂 1200元',
@@ -85,7 +84,6 @@ const recurringCourses = [
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
-    extraNote: '可單報靈氣團練（21:45-23:00 包月四堂1000元）',
     description: '聚焦於人體七大能量樞紐（脈輪）與臼井靈氣手位調和，每週進行脈輪掃描、能量調頻與互助療癒練習，幫助現代人在緊湊的職場與生活步調中重新接地、找回身心和諧。',
     highlights: ['七大脈輪失衡訊號辨識與能量掃描', '臼井靈氣手位療癒與氣場平衡練習', '下班後的能量歸零與深層放鬆靜心'],
     suitableFor: '高壓上班族、常感疲憊焦慮、或希望學習自我能量保健的現代人。',
@@ -102,7 +100,6 @@ const recurringCourses = [
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
-    extraNote: '可單報托特塔羅團練（20:00-21:00 包月四堂1000元）',
     description: '由學長老師帶領深入托特塔羅的象徵體系，解密色彩心理、埃及神話、占星學與卡巴拉符號在牌面上的深層隱喻，培養直覺穿透力與高維度的洞察解讀視角。',
     highlights: ['托特牌獨特色彩心理與幾何構圖解讀', '大阿卡納與卡巴拉生命之樹的符號對應', '高層次直覺連結與直指核心的牌義探討'],
     suitableFor: '喜愛深層神祕學符號、欲挑戰高階塔羅系統或想拓寬解讀廣度的占卜愛好者。',
@@ -119,7 +116,7 @@ const recurringCourses = [
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
     priceNote: '平均每堂 500元',
-    extraNote: '從靈數連線、流年到合盤對應，扎實建立解盤思維',
+    extraNotes: ['從靈數連線、流年到合盤對應，扎實建立解盤思維'],
     description: '以輕鬆易懂且邏輯嚴謹的方式，引導學員拆解出生年月日的數字原力，掌握生命靈數九宮格連線的特質優勢，並深入探討個人流年節奏與人際合盤的相處契機。',
     highlights: ['1~9 主命數原型與天賦潛能解碼', '九宮格連線意義與空缺數補強策略', '流年數計算與人生十年大運趨勢洞察'],
     suitableFor: '想快速掌握實用人際讀心工具、發掘自身天賦潛能與流年趨勢的所有人。',
@@ -279,7 +276,7 @@ const courseSections = [
             </h2>
           </div>
           <p class="text-sm sm:text-base text-[#3A3A3A]/75 dark:text-white/70 mt-2 font-light tracking-wide transition-colors">
-            每週一至週六常態循環開課・包月制深度陪伴・可單獨報名團練
+            每週一至週六常態循環開課・包月制深度陪伴
           </p>
         </div>
 
@@ -384,11 +381,13 @@ const courseSections = [
                     </div>
                   </div>
 
-                  <!-- 加碼備註（若有，如團練包月或基礎加強） -->
-                  {c.extraNote && (
-                    <div class="text-xs text-[#3A3A3A]/75 dark:text-white/70 mb-3 px-3 py-1.5 rounded-lg bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/15 dark:border-white/10">
-                      ✦ {c.extraNote}
-                    </div>
+                  <!-- 加碼備註（若有，如基礎加強、複訓；可多條，每條一行） -->
+                  {c.extraNotes && c.extraNotes.length > 0 && (
+                    <ul class="text-xs text-[#3A3A3A]/75 dark:text-white/70 mb-3 px-3 py-1.5 rounded-lg bg-[#EAF3F8]/70 dark:bg-white/5 border border-[#80A9D4]/15 dark:border-white/10 space-y-0.5">
+                      {c.extraNotes.map((note) => (
+                        <li>✦ {note}</li>
+                      ))}
+                    </ul>
                   )}
 
                   <!-- 手風琴收折面板（僅收折「細節介紹文案、學習亮點、適合對象」） -->

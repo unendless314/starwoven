@@ -142,7 +142,7 @@ COURSES_MAPPING = {
     "偉特塔羅.jpg": {
         "output": "courses_c_waite_v1.webp",
         "code": "課程-C",
-        "name": "週三 偉特塔羅團練現場照",
+        "name": "週三 偉特塔羅循環班現場照",
         "crop_box": (0, 100, 1280, 900),   # 16:10
         "target_size": (960, 600),
     },

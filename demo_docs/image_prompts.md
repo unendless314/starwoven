@@ -132,7 +132,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 - **對應編號與檔案**：
   - `[首頁]-[圖片 G]`：每週一 阿卡西紀錄與光的課程 (`home_g_course_akashic.jpg`)
   - `[首頁]-[圖片 H]`：每週二 占星循環班 (`home_h_course_astrology.jpg`)
-  - `[首頁]-[圖片 I]`：每週三 偉特塔羅團練 (`home_i_course_waite.jpg`)
+  - `[首頁]-[圖片 I]`：每週三 偉特塔羅循環班 (`home_i_course_waite.jpg`)
   - `[首頁]-[圖片 J]`：每週四 七脈輪與靈氣團練 (`home_j_course_reiki.jpg`)
   - `[首頁]-[圖片 K]`：每週五 托特塔羅循環班 (`home_k_course_thoth.jpg`)
   - `[首頁]-[圖片 L]`：每週六 生命靈數 (`home_l_course_numerology.jpg`)
@@ -210,7 +210,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 - **對應編號與檔案**：
   - `[課程]-[圖片 A]`：週一 光與阿卡西紀錄現場照 (`courses_a_akashic_v1.webp`)
   - `[課程]-[圖片 B]`：週二 占星循環班現場照 (`courses_b_astrology_v1.webp`)
-  - `[課程]-[圖片 C]`：週三 偉特塔羅團練現場照 (`courses_c_waite_v1.webp`)
+  - `[課程]-[圖片 C]`：週三 偉特塔羅循環班現場照 (`courses_c_waite_v1.webp`)
   - `[課程]-[圖片 D]`：週四 七脈輪與靈氣現場照 (`courses_d_reiki_v1.webp`)
   - `[課程]-[圖片 E]`：週五 托特塔羅循環班現場照 (`courses_e_thoth_v1.webp`)
   - `[課程]-[圖片 F]`：週六 生命靈數循環班現場照 (`courses_f_numerology_v1.webp`)
