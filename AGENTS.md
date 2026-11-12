@@ -128,11 +128,21 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **`decisions.md` 只記四類決策**（next number: DEC-091）：架構選型、範疇／IA
-  變更、業主確認的商業規則、明確決定不做的事。每條只寫背景、決策、理由，
-  不寫改了哪些檔案。內容更新、版面調整、bug 修復、素材上架**不立 DEC**，
-  寫在 commit message；待業主確認的事項記在 `known_issues/README.md`。
-  Never silently change scope, IA, pricing, or people.
+- **`decisions.md` 不是變更日誌，預設不立 DEC**（next number: DEC-091）。
+  - 立 DEC 的判準：**半年後的人只看程式碼與規格書，會不會想不通「為什麼這樣做」
+    或把它改回去？** 會，才立。只收四類：架構選型、範疇／IA 變更、業主確認的
+    商業**規則**、明確決定不做的事。
+  - **不立 DEC**：價格／人名／連結／場次等現值更新（改 `content_inventory.md`）、
+    版面與文案調整、bug 與程式碼審查修復、素材上架、部署與驗收紀錄、文件同步。
+    這些寫在 commit message。
+  - 每條只寫背景、決策、理由，以十行內為度；不寫改了哪些檔案、驗收過程、
+    審查輪次、上線狀態。細節放對應的 `demo_docs/*_plan.md`。
+  - 既有決策被修改或取代時，**直接改寫原條目**（或刪除），不另附加新條目；
+    檔案應反映現行決策，歷史由 git 保存。
+  - 待業主確認的事項記在 `known_issues/README.md`，不記在 DEC。
+  - 規格書或舊註解中的「另立 DEC」字樣同樣適用上述判準。
+  Never silently change scope, IA, pricing, or people——不立 DEC 不代表可以不說：
+  在回覆與 commit message 中明講。
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
   your final reply.
