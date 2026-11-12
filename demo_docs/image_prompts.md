@@ -165,9 +165,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ## 二、【命理服務】(Services / starwovenwrite)
 
-### [服務]-[圖片 A~G]：七大服務項目全彩手繪水彩插圖（7張，已採用上線）
+### [服務]-[圖片 A~I]：九大服務項目全彩手繪水彩插圖（A~G 已採用上線；H、I 待生成）
 
-- **版位用途**：命理服務頁面（`/services`）7 大雙欄卡片頂部專屬插圖位置（`w-24 h-24 sm:w-28 sm:h-28` 容器，居中 `object-contain`）
+- **版位用途**：命理服務頁面（`/services`）9 大雙欄卡片頂部專屬插圖位置（`w-24 h-24 sm:w-28 sm:h-28` 容器，居中 `object-contain`）
 - **視覺重點**：溫暖靈性的全彩水彩插畫（Full Color Watercolor Illustration），完美呼應 Canva 原站視覺調性，去背透明 WebP 支援深淺色雙主題自適應。
 - **對應編號與檔案**：
   - `[服務]-[圖片 A]`：塔羅占卜插圖（神秘深紫金邊雙牌、星月與粉晶光芒）(`services_a_tarot_v1.webp`)
@@ -177,7 +177,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   - `[服務]-[圖片 E]`：靈氣調頻插圖（雙手溫柔托舉、七脈輪彩虹能量光球升騰）(`services_e_reiki_v1.webp`)
   - `[服務]-[圖片 F]`：阿卡西紀錄插圖（茂盛生命之樹、金葉星塵與靈魂源頭水彩）(`services_f_akashic_v1.webp`)
   - `[服務]-[圖片 G]`：毛孩溝通插圖（貓咪與小狗心靈對話、光之絲線與水彩星塵光芒）(`services_g_pet_v1.webp`)
-- **備註**：已全部完成生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
+  - `[服務]-[圖片 H]`：天使靈氣插圖（半身天使合掌閉眼祈禱、背後光圈與金色星塵）(`services_h_angel_reiki_v1.webp`，**待生成**)
+  - `[服務]-[圖片 I]`：亢達里尼靈氣插圖（中軸光柱、蛇形光帶螺旋上升、頂端蓮花光芒）(`services_i_kundalini_reiki_v1.webp`，**待生成**)
+- **備註**：A~G 已全部完成生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
 
 ---
 
@@ -199,6 +201,61 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   low quality, blurry, deformed, extra limbs, messy lines, realistic photo, 3d render, dark background, complex background, text, watermark, noise, jpeg artifacts, overexposed, dirty texture, modern tech, sad expression, aggressive animal
   ```
 - **後製參數**：解析度 1024×1024 / U2Net 自動去背 / WebP Q85（上線體積 172.1 KB）
+
+---
+
+### [服務]-[圖片 H]：天使靈氣（Angel Reiki — Praying Angel）
+
+- **狀態**：待生成（2026-11-12 依古古老師描述擴寫）
+- **版位用途**：命理服務頁面（`/services`）服務-H 卡片頂部專屬插圖位置（`services_h_angel_reiki_v1.webp`）；填入 `services.astro` 之 `imgAngelReiki`
+- **形象來源**：古古老師原始描述——人形天使、雙手合掌、低頭、微笑、閉眼祈禱，周遭有可見的 aura。
+- **開發者擴寫（依版位限制）**：
+  1. **半身構圖（腰部以上）**：插圖容器僅約 96~112px，全身構圖會使臉與手過小。
+  2. **翅膀明顯**：小尺寸下辨識為「天使」的關鍵特徵，雙翼柔和展開於身後、輪廓完整入鏡。
+  3. **光暈收斂**：aura 以身後邊緣清楚之圓形光圈＋周身少量金色星塵表現，避免大範圍擴散的柔光霧（去背時易被切除或殘留髒邊）。
+  4. **畫風對齊 A~G**：手繪水彩、細鉛筆輪廓、中性柔和五官；不畫寫實人臉、不採華麗西洋宗教油畫風、不加文字或宗教符號。
+- **色彩規格**：月光藍（`#8FB8E8`）、淡紫羅蘭、暖柔金光（光圈與星塵），白／象牙色衣袍，去背透明 WebP 支援深淺色雙主題自適應。
+- **OpenAI Playground / DALL·E 3 提示詞**：
+  ```text
+  A delicate and spiritual hand-drawn watercolor illustration of a gentle angel, shown from the waist up, centered in the frame. The angel bows the head slightly with eyes softly closed and a serene, peaceful smile, both palms pressed together in prayer in front of the chest. A pair of soft feathered wings gently spreads behind the shoulders, fully visible within the frame. Behind the head and upper body glows a clearly defined circular halo of light, with a few tiny golden stardust sparkles floating around the figure. Flowing white and ivory robe, gender-neutral soft facial features, simple and clean details that stay readable at small sizes. Hand-painted watercolor wash aesthetic with soft bleeding edges and delicate pencil contour lines, in pastel moonlight blue, soft lavender, and warm glowing gold. Minimalist, healing, and tender mood. Isolated on a pure, clean solid white background with no shadows or ground plane, suitable for transparent background cutout.
+  ```
+- **ComfyUI / SDXL 標籤式提示詞**：
+  ```text
+  masterpiece, best quality, minimalist watercolor illustration, gentle angel, upper body, waist up, centered composition, head slightly bowed, eyes closed, serene soft smile, palms pressed together in prayer, praying hands at chest, soft feathered wings spread behind shoulders, wings fully in frame, clearly defined circular halo of light behind head and shoulders, few tiny golden stardust sparkles, flowing white ivory robe, gender-neutral soft features, delicate pencil contour lines, beautiful watercolor wash texture, gentle bleeding edges, pastel moonlight blue, soft lavender and warm gold tones, zen healing aesthetic, simple readable silhouette, isolated on pure solid white background, clean edges, flat 2d illustration feel, no text, no watermark
+  ```
+- **負面提示詞（Negative Prompt）**：
+  ```text
+  low quality, blurry, deformed, extra limbs, extra fingers, fused fingers, extra wings, cropped wings, cropped head, full body, tiny figure, open eyes, sad expression, realistic photo, realistic human face, 3d render, oil painting, baroque, ornate religious icon, cross, crucifix, text, watermark, dark background, complex background, diffuse glow fog, heavy bloom, smoke, noise, jpeg artifacts, overexposed, dirty texture, modern tech
+  ```
+- **後製參數（預定）**：解析度 1024×1024 / `scripts/process_asset.py` U2Net 自動去背（翅膀羽毛與光圈邊緣需人工檢視）/ WebP Q85；採用後記錄於「六、生成紀錄」，並將 `services.astro` 之 `imgAngelReiki` 填入 `/assets/services_h_angel_reiki_v1.webp`。
+
+---
+
+### [服務]-[圖片 I]：亢達里尼靈氣（Kundalini Reiki — Rising Serpent of Light）
+
+- **狀態**：待生成（2026-11-12 依老師描述擴寫；試繪後由老師確認效果）
+- **版位用途**：命理服務頁面（`/services`）服務-I 卡片頂部專屬插圖位置（`services_i_kundalini_reiki_v1.webp`）；填入 `services.astro` 之 `imgKundaliniReiki`
+- **形象來源**：老師原始描述——參考世界衛生組織（WHO）的蛇杖 logo 設計。
+- **開發者擴寫與設計注意**：
+  1. **只取結構，不仿 WHO 標誌**：「杖＋盤繞之蛇」（阿斯克勒庇俄斯之杖）為古代公共領域符號，可自由繪製；但 WHO 標誌（聯合國地球＋橄欖枝環＋蛇杖之組合）受國際組織標誌保護，不得仿製或暗示關聯——不畫地球、橄欖枝環、徽章外框。
+  2. **避開醫療聯想**：蛇杖是通用醫療標誌，用於靈氣服務可能使訪客誤認為醫療行為或療效宣稱（非醫療機構不宜有醫療暗示）。因此木杖改為**由下而上的中軸光柱**（象徵脊椎），頂端收於**蓮花／頂輪光芒**，轉為亢達里尼自身的能量意象。
+  3. **蛇柔化為光帶**：以柔和水彩、半透明的蛇形光帶螺旋盤繞上升，不畫寫實鱗片與尖牙（避免部分訪客反感）。
+  4. **與相近符號區隔**：不加翅膀、不畫雙蛇（易成商神杖，另一常被誤用之醫療符號）；不用紅十字、醫療藍白配色；不採服務-E 之七色脈輪彩虹光球為主體。
+  5. **畫風對齊 A~H**：手繪水彩、細鉛筆輪廓，縱向主體置中、輪廓簡潔，小尺寸（約 96~112px）下仍可辨識。
+- **色彩規格**：月光藍（`#8FB8E8`）、淡紫羅蘭、暖柔金光（光柱與蓮花），蛇形光帶可帶淡金至淡紫漸層；去背透明 WebP 支援深淺色雙主題自適應。
+- **OpenAI Playground / DALL·E 3 提示詞**：
+  ```text
+  A delicate and spiritual hand-drawn watercolor illustration symbolizing kundalini energy awakening. In the center stands a slender vertical pillar of soft glowing light rising from bottom to top, representing the spine. A single gentle, translucent serpent formed of flowing light spirals gracefully upward around the pillar, its form soft and stylized like a ribbon of energy, with no realistic scales or fangs and a calm, peaceful expression. At the top of the pillar, a softly blooming lotus flower radiates a gentle crown of golden light. A few tiny golden stardust sparkles float around the composition. Simple, elegant, vertically centered composition that stays readable at small sizes. Hand-painted watercolor wash aesthetic with soft bleeding edges and delicate pencil contour lines, in pastel moonlight blue, soft lavender, and warm glowing gold. Minimalist, sacred, and healing mood, not medical. Isolated on a pure, clean solid white background with no shadows or ground plane, suitable for transparent background cutout.
+  ```
+- **ComfyUI / SDXL 標籤式提示詞**：
+  ```text
+  masterpiece, best quality, minimalist watercolor illustration, kundalini energy awakening concept, slender vertical pillar of glowing light rising upward, single translucent serpent made of flowing light spiraling upward around the pillar, stylized ribbon-like serpent, soft calm serpent, no scales, blooming lotus flower at the top, gentle golden crown light radiating from lotus, few tiny golden stardust sparkles, vertically centered composition, simple readable silhouette, delicate pencil contour lines, beautiful watercolor wash texture, gentle bleeding edges, pastel moonlight blue, soft lavender and warm gold tones, sacred healing aesthetic, isolated on pure solid white background, clean edges, flat 2d illustration feel, no text, no watermark
+  ```
+- **負面提示詞（Negative Prompt）**：
+  ```text
+  low quality, blurry, deformed, realistic snake, scales, fangs, open mouth, aggressive, scary, menacing, two snakes, wings, caduceus, medical symbol, red cross, hospital, globe, laurel wreath, emblem, badge, logo, wooden staff, rainbow chakra orbs, human figure, realistic photo, 3d render, text, watermark, dark background, complex background, diffuse glow fog, heavy bloom, smoke, noise, jpeg artifacts, overexposed, dirty texture, modern tech
+  ```
+- **後製參數（預定）**：解析度 1024×1024 / `scripts/process_asset.py` U2Net 自動去背（半透明光帶與光柱邊緣需人工檢視）/ WebP Q85；採用後記錄於「六、生成紀錄」，並將 `services.astro` 之 `imgKundaliniReiki` 填入 `/assets/services_i_kundalini_reiki_v1.webp`。
 
 ---
 

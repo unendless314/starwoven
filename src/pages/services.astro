@@ -14,8 +14,8 @@ const imgBazi = '/assets/services_d_bazi_v1.webp';        // 服務-D：八字�
 const imgReiki = '/assets/services_e_reiki_v1.webp';       // 服務-E：靈氣調頻手繪插圖
 const imgAkashic = '/assets/services_f_akashic_v1.webp';     // 服務-F：阿卡西紀錄手繪插圖
 const imgPet = '/assets/services_g_pet_v1.webp';             // 服務-G：毛孩溝通手繪插圖
-const imgAngelReiki = '';      // 服務-H：天使靈氣（佔位，待業主提供資料，known_issues 第 10 項）
-const imgKundaliniReiki = '';  // 服務-I：亢達里尼靈氣（佔位，待業主提供資料，known_issues 第 10 項）
+const imgAngelReiki = '';      // 服務-H：天使靈氣手繪插圖（待生成，見 image_prompts.md）
+const imgKundaliniReiki = '';  // 服務-I：亢達里尼靈氣手繪插圖（待生成，見 image_prompts.md）
 
 interface PractitionerGroup {
   system?: string;         // 例如：'偉特塔羅'、'托特塔羅'
@@ -142,20 +142,18 @@ const services: ServiceCard[] = [
       { names: ['以恩', '古古'] },
     ],
   },
-  // ↓ 佔位卡片（DEC-089）：首頁「身心靈療癒」卡片列出之項目，服務資料待業主提供（known_issues 第 10 項）。
-  //   不得自行填入價格或老師；取得資料後直接改寫此兩筆。
   {
     code: '服務-H',
     title: '天使靈氣',
     image: imgAngelReiki,
     iconType: 'reiki',
-    modalities: ['（待業主提供）'],
+    modalities: ['工作室面對面療癒'],
     prices: [
-      { label: '方案與費用', rate: '（待業主提供）' },
+      { label: '工作室面對面療癒', rate: '30分鐘 800元 · 60分鐘 1500元' },
     ],
-    roleTitle: '可預約老師',
+    roleTitle: '可預約調頻師',
     practitioners: [
-      { names: ['（待業主提供）'] },
+      { names: ['古古'] },
     ],
   },
   {
@@ -163,13 +161,13 @@ const services: ServiceCard[] = [
     title: '亢達里尼靈氣',
     image: imgKundaliniReiki,
     iconType: 'reiki',
-    modalities: ['（待業主提供）'],
+    modalities: ['工作室面對面療癒'],
     prices: [
-      { label: '方案與費用', rate: '（待業主提供）' },
+      { label: '工作室面對面療癒', rate: '30分鐘 800元 · 60分鐘 1500元' },
     ],
-    roleTitle: '可預約老師',
+    roleTitle: '可預約調頻師',
     practitioners: [
-      { names: ['（待業主提供）'] },
+      { names: ['學長'] },
     ],
   },
 ];
