@@ -151,7 +151,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 - HTTPS via `certbot --nginx` with auto-renew。
 - 部署現況（2026-10-20 確認）：網站已上線（HTTPS、直連未經 CDN）；VPS 即建置機，
   repo 位於 `/root/.openclaw/workspace/starwoven/`，於該處 build 後 rsync 至
-  `/var/www/starwoven`。線上 vhost 目前與 repo 版分叉，DEC-073 實作時整併。
+  `/var/www/starwoven`。
 - ⚠️ 線上抽卡功能（DEC-073）合併後，`dist/` 改為 `client/`＋`server/` 結構，
   **舊指令 `rsync -a --delete dist/ /var/www/starwoven/` 不得再使用**，一律改用
   `scripts/deploy.sh`（規格見 `demo_docs/tarot_plan.md` 第八節）。
