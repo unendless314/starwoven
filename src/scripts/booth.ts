@@ -1,5 +1,5 @@
 // ==========================================
-// 星靈出攤（首頁出攤公告）互動邏輯（DEC-085，規格書 demo_docs/booth_plan.md）
+// 星靈出攤（首頁出攤公告）互動邏輯（規格書 demo_docs/booth_plan.md）
 // - 由 index.astro 以頁面層級 <script> 引入（全頁一份）
 // - 「星靈出攤」試算表＋Apps Script 為唯一資料來源（只讀，JSONP）；SSR 不寫死任何活動
 // - 卡片一律 clone 自 <template id="booth-card-template">；依活動數 3／2／1／0 自動排版

@@ -3,7 +3,7 @@
 ## Repo state
 
 This repo contains the **fully built Astro static site** (initial commit `000b083`),
-iterated through **DEC-001 ~ DEC-054** in `decisions.md`. The original Demo deadline
+with key decisions recorded in `decisions.md`. The original Demo deadline
 (2026-09-23) has passed; the site is feature-complete and under continuous content/UI
 iteration. This file was rewritten on 2026-10-06 — the previous version described a
 pre-build planning repo and is obsolete.
@@ -19,8 +19,10 @@ pre-build planning repo and is obsolete.
 
 ## Canonical sources of truth (read these first, in order)
 
-1. `decisions.md` — the authoritative change log (DEC-001 起). If any other doc
-   conflicts with reality or with each other, **this file wins**.
+1. `decisions.md` — 決策紀錄（只記「為什麼」：架構選型、範疇／IA 變更、商業規則、
+   決定不做的事；2026-11-12 精簡，編號跳號屬正常）。If any other doc conflicts
+   with it on those matters, **this file wins**；價格、人名、連結等現值以
+   `content_inventory.md` 與程式碼為準。
 2. `demo_docs/content_inventory.md` — copy/content SSOT for every page (fully
    populated since DEC-001; never invent copy, names, or prices).
 3. `demo_docs/phase0_answers.md` — Phase-0 confirmations（較新的確認優先於 spec）。
@@ -30,14 +32,14 @@ pre-build planning repo and is obsolete.
    reference).
 6. `demo_docs/image_prompts.md` — asset registry（命名代碼）+ generation log.
 
-衝突判定順序：`decisions.md` ＞ `content_inventory.md`（文案）＞
+衝突判定順序：`decisions.md`（決策與規則）＞ `content_inventory.md`（文案與現值）＞
 `phase0_answers.md` ＞ `spec.md`。
 
 ## Current site IA (actual routes)
 
 ```
-/             index.astro            Hero（含星靈出攤，試算表驅動；DEC-085）/ 四大核心服務×4（卡片底部按鈕、部落格卡列最新文章；DEC-089）/ 許願池入口連結 / 學員評價輪播
-/wishlist     wishlist.astro         課程許願池（敲碗開課投票，試算表 SSOT；DEC-049 自首頁獨立為分頁）
+/             index.astro            Hero（含星靈出攤，試算表驅動）/ 四大核心服務×4（卡片底部按鈕、部落格卡列最新文章；DEC-089）/ 許願池入口連結 / 學員評價輪播
+/wishlist     wishlist.astro         課程許願池（敲碗開課投票，試算表 SSOT）
 /about        about.astro            品牌故事 + 創辦人×2 + 星靈夥伴×9（真人頭像已上架）
 /services     services.astro         9 項服務雙欄大卡片，依 4 分類分區（塔羅/星盤/靈數/八字/靈氣與光/阿卡西/毛孩溝通＋天使靈氣、亢達里尼靈氣兩張佔位；DEC-087／DEC-089）
 /courses      courses.astro          固定課程（圖片常態外顯+手風琴詳情）/ 交流會 / 主題體驗工作坊
@@ -65,7 +67,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 / 線上占星 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
-  - `/reiki`, `/akashic` — pages deleted (DEC-020/023); content lives on as blog
+  - `/reiki`, `/akashic` — pages deleted; content lives on as blog
     long-form posts; server-level 301s live in `nginx/starwoven.conf`.
   - `/shop` — removed (DEC-004); shopping routes to the footer iOpen Mall link.
 
@@ -101,6 +103,8 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
   `<html lang="zh-Hant">`; full-width punctuation in copy.
 - Page content lives in **frontmatter data arrays** (courses, reviews, wishlist,
   team) — edit data, not markup.
+- 部落格文章**不寫死課程的星期、時段、講師、價格**，一律連至
+  `/courses#recurring`；粗體緊鄰全形引號（「」）時 `**` 不生效，改用 `<strong>`。
 - Every page sets its own `<title>` and meta description. ⚠️ OG image：各頁目前
   未個別傳入 `ogImage`，共用 Layout 預設值 `/assets/og-image.jpg`——**該檔案
   尚未存在**，社群分享縮圖會 404，見 `known_issues/README.md` 第 4 項。
@@ -124,7 +128,10 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **Off-spec decisions → append to `decisions.md`** (next number: DEC-091).
+- **`decisions.md` 只記四類決策**（next number: DEC-091）：架構選型、範疇／IA
+  變更、業主確認的商業規則、明確決定不做的事。每條只寫背景、決策、理由，
+  不寫改了哪些檔案。內容更新、版面調整、bug 修復、素材上架**不立 DEC**，
+  寫在 commit message；待業主確認的事項記在 `known_issues/README.md`。
   Never silently change scope, IA, pricing, or people.
 - **Multi-agent workflow**: when you change shared surfaces (Layout, Navbar,
   footer, `global.css`, `public/assets/`, content schema), say so explicitly in
@@ -154,7 +161,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 - `PUBLIC_GA_ID` — GA4 measurement id（未設定時 fallback 為 `G-27D79HXXF5`）。
 - `PUBLIC_WISHLIST_API_URL` — Apps Script web app URL；unset → 許願池以本機
   demo 模式運行（不發網路請求，票數存 localStorage）。
-- `PUBLIC_BOOTH_API_URL` — 星靈出攤 Apps Script web app URL（DEC-085，`demo_docs/booth_plan.md`）；
+- `PUBLIC_BOOTH_API_URL` — 星靈出攤 Apps Script web app URL（`demo_docs/booth_plan.md`）；
   unset → 首頁出攤區直接顯示提示卡（不發網路請求）。build 時編譯進前端，修改後須重新 build＋部署。
 - `AI_*` — AI 功能共用之供應商變數（DEC-079；原 `TAROT_AI_*`）、`TAROT_*`／`ASTROCARDS_*` — 塔羅／占星抽卡
   功能開關與每日上限（DEC-073／DEC-080，額度分開計算）。**唯一清單為 `astro.config.mjs` 的 `env.schema`**，一律 server secret
