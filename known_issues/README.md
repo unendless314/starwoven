@@ -26,14 +26,12 @@
   2. 將課程價格、報名連結、人物資料與素材路徑集中至單一資料檔。
   3. 後續加入內容格式驗證或基本檢查，避免跨頁資訊不一致。
 
-## 4. 全站 OG 分享圖檔案尚未存在
+## 4. 全站 OG 分享圖檔案曾缺失
 
 - **狀態**：✅ 已解決（2026-11-13）：ComfyUI 生成底圖＋程式疊字，上架 `public/assets/common_b_og_image_v1.jpg`，Layout 預設值改指向此檔並輸出完整網址；格式採 JPG 之理由見 DEC-091。
-- **影響位置**：全站各頁（`src/layouts/Layout.astro` 預設 `ogImage = '/assets/og-image.jpg'`）
-- **說明**：各頁面均未傳入 `ogImage`，全站共用 Layout 預設值，但 `public/assets/og-image.jpg` 尚未生成；社群平台（LINE / Facebook）抓取分享縮圖時會 404。
-- **處理方式**：
-  1. 由素材管線產出 1200×630 品牌 OG 圖，依全站 WebP 強制規範輸出為 `og-image.webp`（Q85）放入 `public/assets/`，並同步把 `Layout.astro` 預設 `ogImage` 改為 `/assets/og-image.webp`；若目標分享平台不相容 WebP，再例外評估 JPG 並記錄於 `decisions.md`。
-  2. 或於各頁 `<Layout ogImage="...">` 個別指定既有素材。
+- **影響位置**：全站各頁（`src/layouts/Layout.astro` 預設 `ogImage = '/assets/common_b_og_image_v1.jpg'`）
+- **說明**：各頁面未個別傳入 `ogImage`，原共用預設圖檔不存在，社群平台（LINE／Facebook）抓取分享縮圖時會 404。
+- **處理結果**：已產出 1200×630 品牌 JPG，並上架至 `public/assets/common_b_og_image_v1.jpg` 與 `demo_docs/sd-assets/`。Layout 以此為預設值，透過完整絕對網址輸出 `og:image` 與 `twitter:image`；JPG 是全站 WebP 規範的唯一例外（DEC-091）。
 
 ## 5. 許願池 SSR fallback 與試算表最新課程清單未同步
 
