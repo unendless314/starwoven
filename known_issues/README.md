@@ -60,7 +60,7 @@
 
 ## 8. 活動與課程頁深色模式切換過渡期白底白字與 WCAG AA 對比度未通過
 
-- **狀態**：第 1 點暫不處理（2026-11-13 決定，理由見下方處理方式 1）；第 2、3 點待排期優化（2026-10-26 審查回饋發現）
+- **狀態**：第 1 點暫不處理、第 3 點已解決（皆 2026-11-13，見下方處理方式）；第 2 點待排期優化（2026-10-26 審查回饋發現）
 - **影響位置**：`src/pages/courses.astro`（活動與課程頁面）
 - **說明**：
   1. **主題動態切換過渡（Transition Timing）**：
@@ -73,11 +73,11 @@
 - **處理方式**：
   1. ~~切換主題時可暫時掛載 `disable-transitions` 類別（於主題切換腳本中暫時關閉過渡），避免自動化工具或快速切換時出現暫態白底白字。~~ **暫不處理**（2026-11-13）：實際操作肉眼幾乎察覺不到，主要是自動化工具在切換瞬間才抓得到；而修正會讓切換主題失去 300ms 漸變、改為瞬間換色。除非業主或使用者反映，否則維持現狀。
   2. 微調淡藍按鈕（`#80A9D4`）與各星期標籤的字體顏色（改採深色字體以達 4.5:1），或將深色模式下的按鈕背景適度調深。
-  3. 將深色次要弱化文字（`dark:text-white/50`）提升至 `dark:text-white/70` 以上，確保通過 WCAG AA 檢測。
+  3. ~~將深色次要弱化文字（`dark:text-white/50`）提升至 `dark:text-white/70` 以上，確保通過 WCAG AA 檢測。~~ ✅ 已解決（2026-11-13）：「採包月小班制・滿班即止」、交流會照片說明、「採單場預約報名制」、工作坊費用備註（`feeNote`）、「報名費用」五處，深色統一 `dark:text-white/70`（卡片上約 5.8:1）；淺色同批文字原 `text-[#3A3A3A]/60` 亦僅約 3.5:1，一併改為 `/75`（約 5.3:1）。分隔符「｜」屬裝飾，維持原狀。
 
 ## 9. 型別檢查（`astro check`）未納入專案、缺 Node 型別定義
 
-- **狀態**：✅ 已解決（2026-11-13）：devDependencies 新增 `@astrojs/check`、`typescript@^6`、`@types/node@^24`，新增 `npm run check`；`npm ci` 後為 0 errors、0 warnings（另有 14 則 hints，皆為 `src/content.config.ts` 之 `z` 自 `astro:content` 匯入已棄用，不影響結果）。`imgWorkshopBazi` 已刪除。屬工具調整，未立 DEC；TypeScript 固定 6 之理由記於 `AGENTS.md` Commands。
+- **狀態**：✅ 已解決（2026-11-13）：devDependencies 新增 `@astrojs/check`、`typescript@^6`、`@types/node@^24`，新增 `npm run check`；`npm ci` 後為 0 errors、0 warnings、0 hints（`src/content.config.ts` 之 `z` 已改自 `astro/zod` 匯入，原 `astro:content` 匯出將於 Astro 8 移除）。`imgWorkshopBazi` 已刪除。屬工具調整，未立 DEC；TypeScript 固定 6 之理由記於 `AGENTS.md` Commands。
 - **影響位置**：`package.json`（devDependencies、scripts）；回報錯誤之檔案為 `src/lib/ai/server/quota.ts`、`src/lib/ai/server/http.ts`（`Buffer`）、`src/pages/api/tarot/reading.ts`、`src/pages/api/astro-cards/reading.ts`（`node:crypto`）
 - **說明**：
   1. 專案未宣告 `@astrojs/check`，`npx astro check` 會要求臨時安裝，各次執行環境不一致，過去 DEC 記錄之「0 errors」無法在乾淨環境重現。
