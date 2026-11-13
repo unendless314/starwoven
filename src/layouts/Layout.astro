@@ -14,7 +14,7 @@ interface Props {
 
 const {
   title = '星靈織語 Starwoven — 每一段相遇，都是一場心靈的編織',
-  description = '星靈織語提供命理與占卜服務，包含塔羅、占星、八字、靈氣調頻與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。',
+  description = '星靈織語提供命理與占卜服務，包含塔羅、占星、八字、臼井靈氣與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。',
   ogImage = '/assets/og-image.jpg',
   theme = 'auto',
   noindex = false,
@@ -253,9 +253,8 @@ const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === 
         </div>
 
         <!-- 4. 底層版權宣告列 -->
-        <div class="pt-10 mt-12 border-t border-current/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs opacity-60">
+        <div class="pt-10 mt-12 border-t border-current/10 flex justify-center text-xs opacity-60">
           <p>© 2026 星靈織語 Starwoven. All rights reserved.</p>
-          <p>純靜態展示版本（Demo MVP）</p>
         </div>
 
       </div>
