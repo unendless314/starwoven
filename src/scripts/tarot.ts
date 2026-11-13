@@ -249,7 +249,7 @@ function init(root: HTMLElement) {
     const orientation = node.querySelector<HTMLElement>('[data-orientation]')!;
     orientation.className += entry.reversed
       ? ' bg-[#2E2A4F]/10 text-[#2E2A4F] dark:bg-[#FCE794]/20 dark:text-[#FCE794]'
-      : ' bg-[#80A9D4]/15 text-[#4f7fae] dark:bg-[#8FB8E8]/20 dark:text-[#8FB8E8]';
+      : ' bg-[#80A9D4]/15 text-[#376CA3] dark:bg-[#8FB8E8]/20 dark:text-[#8FB8E8]';
     node.querySelector('[data-face]')!.classList.toggle('is-reversed', entry.reversed);
     node.querySelector('[data-flip]')!.setAttribute(
       'aria-label',
