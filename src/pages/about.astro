@@ -71,7 +71,7 @@ const founders: Person[] = [
   },
 ];
 
-// 嚴格對應 Canva 原始排版：2 欄 × 4 排 (2*4 行)
+// 9 位夥伴，2 欄排列（原 Canva 版為 2 欄 × 4 排 8 位，第 5 排為後加入之黎夢）
 const members: Person[] = [
   // 第 1 排 (Row 1)
   {
@@ -154,6 +154,7 @@ const members: Person[] = [
       '火漆章占卜',
       '阿卡西紀錄解讀',
       '光的能量傳遞',
+      '臼井靈氣',
       '天使靈氣',
       'Henna圖騰繪製',
       '毛孩溝通',
@@ -394,7 +395,7 @@ const members: Person[] = [
       </div>
     </section>
 
-    <!-- Section 4 & 5: 星靈織語成員 (嚴格 2 欄 × 4 排 = 8 位 橫式名片) -->
+    <!-- Section 4 & 5: 星靈織語成員 (2 欄橫式名片，共 9 位；人數標籤由 members.length 自動計算) -->
     <section class="mb-20">
       <div class="flex items-center gap-3 mb-8">
         <div class="w-2 h-6 rounded-full bg-[#80A9D4]"></div>
@@ -406,7 +407,7 @@ const members: Person[] = [
         </span>
       </div>
 
-      <!-- 2 欄 × 4 排 網格佈局 (嚴格對應 Canva Section 4 & 5) -->
+      <!-- 2 欄網格佈局（沿用 Canva Section 4 & 5 版型） -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {members.map((member) => (
           <div class="group relative bg-white/80 dark:bg-white/10 backdrop-blur-xs p-5 sm:p-6 rounded-3xl border border-[#80A9D4]/20 dark:border-white/15 shadow-xs hover:shadow-md hover:border-[#80A9D4]/40 dark:hover:border-white/25 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
