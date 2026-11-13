@@ -89,9 +89,11 @@ const formatDate = (date: Date) => {
                 <span>✦</span>
                 <span>精選專文</span>
               </span>
-              <span class="text-xs text-[#80A9D4] dark:text-[#8FB8E8] font-medium tracking-wide">
-                {featuredPost.data.category}
-              </span>
+              {!featuredPost.data.coverImage && (
+                <span class="text-xs text-[#376CA3] dark:text-[#8FB8E8] font-medium tracking-wide">
+                  {featuredPost.data.category}
+                </span>
+              )}
             </div>
 
             <!-- 星靈靈性幾何符號圖示 -->
@@ -103,10 +105,13 @@ const formatDate = (date: Date) => {
               </div>
             )}
 
-            <div class="flex items-center justify-between text-xs text-[#3A3A3A]/70 dark:text-white/60 z-10 font-medium">
-              <span>{formatDate(featuredPost.data.pubDate)}</span>
-              <span>預估閱讀 {featuredPost.data.readTime}</span>
-            </div>
+            <!-- 無封面時之佔位資訊；有封面時不疊在圖上（右側內容區已列分類、日期與閱讀時間） -->
+            {!featuredPost.data.coverImage && (
+              <div class="flex items-center justify-between text-xs text-[#3A3A3A]/70 dark:text-white/60 z-10 font-medium">
+                <span>{formatDate(featuredPost.data.pubDate)}</span>
+                <span>預估閱讀 {featuredPost.data.readTime}</span>
+              </div>
+            )}
           </div>
 
           <!-- 內容細節區 -->
