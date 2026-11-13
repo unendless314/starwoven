@@ -196,12 +196,13 @@ interface ServiceCategory {
   id: string;      // 錨點 id（#divination 等）
   label: string;   // 快捷鍵按鈕與分類小標題
   codes: string[];
+  note?: string;   // 分類說明（選填）：顯示於分類小標題下方，適用該分類全部服務
 }
 
 const serviceCategories: ServiceCategory[] = [
   { id: 'divination', label: '占卜', codes: ['服務-A'] },
   { id: 'fortune', label: '命理', codes: ['服務-B', '服務-C', '服務-D'] },
-  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I', '服務-J'] },
+  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I', '服務-J'], note: '以下服務皆包含脈輪檢測與光的輔助' },
   { id: 'pet', label: '毛孩', codes: ['服務-G'] },
 ];
 
@@ -254,9 +255,14 @@ const categorizedServices = serviceCategories.map((cat) => ({
     <div class="space-y-16 sm:space-y-20">
     {categorizedServices.map((cat) => (
     <section id={cat.id} aria-labelledby={`${cat.id}-heading`} class="scroll-mt-28">
-      <h2 id={`${cat.id}-heading`} class="text-center text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider mb-8 sm:mb-10 transition-colors">
+      <h2 id={`${cat.id}-heading`} class:list={['text-center text-2xl sm:text-3xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors', cat.note ? 'mb-4' : 'mb-8 sm:mb-10']}>
         <span class="text-[#80A9D4] dark:text-[#FCE794]" aria-hidden="true">✦ </span>{cat.label}<span class="text-[#80A9D4] dark:text-[#FCE794]" aria-hidden="true"> ✦</span>
       </h2>
+      {cat.note && (
+        <p class="w-fit max-w-full mx-auto mb-8 sm:mb-10 px-5 py-2 rounded-full text-center text-sm sm:text-base font-medium tracking-wide text-[#2E2A4F] dark:text-white/90 bg-white/85 dark:bg-white/10 border border-[#80A9D4]/35 dark:border-white/20 shadow-2xs transition-colors">
+          <span class="text-[#80A9D4] dark:text-[#FCE794]" aria-hidden="true">✧ </span>{cat.note}
+        </p>
+      )}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
       {cat.items.map((item, index) => (
         <div class:list={[
