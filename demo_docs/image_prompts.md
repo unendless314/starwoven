@@ -177,9 +177,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
   - `[服務]-[圖片 E]`：靈氣調頻插圖（雙手溫柔托舉、七脈輪彩虹能量光球升騰）(`services_e_reiki_v1.webp`)
   - `[服務]-[圖片 F]`：阿卡西紀錄插圖（茂盛生命之樹、金葉星塵與靈魂源頭水彩）(`services_f_akashic_v1.webp`)
   - `[服務]-[圖片 G]`：毛孩溝通插圖（貓咪與小狗心靈對話、光之絲線與水彩星塵光芒）(`services_g_pet_v1.webp`)
-  - `[服務]-[圖片 H]`：天使靈氣插圖（半身天使合掌閉眼祈禱、背後光圈與金色星塵）(`services_h_angel_reiki_v1.webp`，**待生成**)
-  - `[服務]-[圖片 I]`：亢達里尼靈氣插圖（中軸光柱、蛇形光帶螺旋上升、頂端蓮花光芒）(`services_i_kundalini_reiki_v1.webp`，**待生成**)
-- **備註**：A~G 已全部完成生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
+  - `[服務]-[圖片 H]`：天使靈氣插圖（半身天使合掌閉眼祈禱、背後光圈與金色星塵）(`services_h_angel_reiki_v1.webp`)
+  - `[服務]-[圖片 I]`：亢達里尼靈氣插圖（中軸光柱、薄荷翡翠綠蛇形光帶螺旋上升、頂端淡粉蓮花光芒）(`services_i_kundalini_reiki_v1.webp`)
+- **備註**：A~J 已全部完成生成、高品質去背（Transparent RGBA）與 WebP 最佳化，正式部署於 `public/assets/` 與 `src/pages/services.astro`。
 
 ---
 
@@ -206,7 +206,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ### [服務]-[圖片 H]：天使靈氣（Angel Reiki — Praying Angel）
 
-- **狀態**：待生成（2026-11-12 依古古老師描述擴寫）
+- **狀態**：已採用上架（2026-11-13）
 - **版位用途**：命理服務頁面（`/services`）服務-H 卡片頂部專屬插圖位置（`services_h_angel_reiki_v1.webp`）；填入 `services.astro` 之 `imgAngelReiki`
 - **形象來源**：古古老師原始描述——人形天使、雙手合掌、低頭、微笑、閉眼祈禱，周遭有可見的 aura。
 - **開發者擴寫（依版位限制）**：
@@ -233,7 +233,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ### [服務]-[圖片 I]：亢達里尼靈氣（Kundalini Reiki — Rising Serpent of Light）
 
-- **狀態**：待生成（2026-11-12 依老師描述擴寫；試繪後由老師確認效果）
+- **狀態**：已採用上架（2026-11-13）
 - **版位用途**：命理服務頁面（`/services`）服務-I 卡片頂部專屬插圖位置（`services_i_kundalini_reiki_v1.webp`）；填入 `services.astro` 之 `imgKundaliniReiki`
 - **形象來源**：老師原始描述——參考世界衛生組織（WHO）的蛇杖 logo 設計。
 - **開發者擴寫與設計注意**：
@@ -261,7 +261,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ### [服務]-[圖片 J]：靈擺調頻（Pendulum Healing — Crystal Pendulum）
 
-- **狀態**：待生成（2026-11-13 開發者草案，待黎夢老師確認；生圖工具預定 ComfyUI）
+- **狀態**：已採用上架（2026-11-13）
 - **版位用途**：命理服務頁面（`/services`）服務-J 卡片頂部專屬插圖位置（`services_j_pendulum_v1.webp`）；填入 `services.astro` 之 `imgPendulum`
 - **形象來源**：老師尚未描述，以下為開發者草案。建議向黎夢老師確認慣用靈擺的水晶種類、形狀與顏色，再替換提示詞中的「紫水晶」。
 - **開發者設計注意**：
@@ -431,6 +431,9 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `服務-D` | 八字命理 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 東方水墨水彩太極陰陽五行流轉 | 753048023136719 | 採用上架 | 去背 + 轉 WebP | `services_d_bazi_v1.webp` |
 | `服務-E` | 靈氣調頻 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 雙手捧托七脈輪彩虹能量光暈 | 950154034724132 | 採用上架 | 去背 + 轉 WebP | `services_e_reiki_v1.webp` |
 | `服務-F` | 阿卡西紀錄 (v1) | 2026-09-30 | ComfyUI (Z-Image-Turbo) | 靈魂生命之樹金葉星塵水彩 | 877470136253271 | 採用上架 | 去背 + 轉 WebP | `services_f_akashic_v1.webp` |
+| `服務-H` | 天使靈氣 (v1) | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 暖金髮象牙白袍半身天使合掌祈禱 | 416420314841581 | 採用上架 | 去背（光環內圈清理）+ WebP Q85 | `services_h_angel_reiki_v1.webp` |
+| `服務-I` | 亢達里尼靈氣 (v1) | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 薄荷翡翠綠光蛇盤繞金光柱與粉蓮花 | 202100658325472 | 採用上架 | 去背 + WebP Q85 | `services_i_kundalini_reiki_v1.webp` |
+| `服務-J` | 靈擺調頻 (v1) | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 雙指銀鏈雙尖紫水晶柱與弧形金光 | 44320477463172 | 採用上架 | 去背（弧形金光與星芒補回）+ WebP Q85 | `services_j_pendulum_v1.webp` |
 | `關於-A` | 品牌故事氛圍插圖 (v1) | 2026-10-09 | 業主提供 (Canva) | 手繪全彩命理師團隊群像與星光織語 | - | 採用上架 | 轉 WebP Q85 (保留背景) | `about_a_brand_story_v1.webp` |
 | `關於-B` | 以恩 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_b_founder_yien_v1.webp` |
 | `關於-C` | 皮皮 創辦人形象照 | 2026-10-02 | 業主實拍 | 創辦人個人頭像 | - | 採用上架 | EXIF校正 + 轉 WebP Q85 | `about_c_founder_pipi_v1.webp` |
