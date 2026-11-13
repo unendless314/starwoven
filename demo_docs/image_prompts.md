@@ -259,6 +259,33 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
+### [服務]-[圖片 J]：靈擺調頻（Pendulum Healing — Crystal Pendulum）
+
+- **狀態**：待生成（2026-11-13 開發者草案，待黎夢老師確認；生圖工具預定 ComfyUI）
+- **版位用途**：命理服務頁面（`/services`）服務-J 卡片頂部專屬插圖位置（`services_j_pendulum_v1.webp`）；填入 `services.astro` 之 `imgPendulum`
+- **形象來源**：老師尚未描述，以下為開發者草案。建議向黎夢老師確認慣用靈擺的水晶種類、形狀與顏色，再替換提示詞中的「紫水晶」。
+- **開發者設計注意**：
+  1. **單一主體、縱向置中**：插圖容器僅約 96~112px，主體須簡單可辨。
+  2. **不畫整隻手**：服務-E 為「雙手捧托光球」，畫手易撞圖；頂端只露兩根指尖捏住鏈條。
+  3. **避開催眠聯想**：靈擺易被畫成懷錶或催眠道具，負面提示詞排除懷錶與螺旋圖案。
+  4. **擺動感以單道淡金弧線表現**：小尺寸下比殘影清楚。
+  5. **畫風對齊 A~I**：手繪水彩、細鉛筆輪廓。
+- **色彩規格**：月光藍（`#8FB8E8`）、淡紫羅蘭（水晶）、暖柔金光（光弧與星塵），銀色細鏈；去背透明 WebP 支援深淺色雙主題自適應。
+- **OpenAI Playground / DALL·E 3 提示詞**：
+  ```text
+  A delicate and spiritual hand-drawn watercolor illustration of a crystal pendulum used for energy healing, vertically centered in the frame. A faceted, softly translucent lavender amethyst crystal point hangs from a fine delicate silver chain, held at the very top by two gentle fingertips. The pendulum swings gently, its motion suggested by a single soft curved arc of warm golden light beneath it. A subtle glow emanates from the crystal tip, with a few tiny golden stardust sparkles floating nearby. Simple, elegant composition that stays readable at small sizes. Hand-painted watercolor wash aesthetic with soft bleeding edges and delicate pencil contour lines, in pastel moonlight blue, soft lavender, and warm glowing gold. Minimalist, calm, and healing mood. Isolated on a pure, clean solid white background with no shadows or ground plane, suitable for transparent background cutout.
+  ```
+- **ComfyUI / SDXL 標籤式提示詞**：
+  ```text
+  masterpiece, best quality, minimalist watercolor illustration, crystal pendulum, energy healing concept, faceted translucent lavender amethyst crystal point, hanging from fine delicate silver chain, two fingertips holding chain at top, gentle swinging motion, single soft curved arc of golden light below, subtle glow from crystal tip, few tiny golden stardust sparkles, vertically centered composition, simple readable silhouette, delicate pencil contour lines, beautiful watercolor wash texture, gentle bleeding edges, pastel moonlight blue, soft lavender and warm gold tones, zen healing aesthetic, isolated on pure solid white background, clean edges, flat 2d illustration feel, no text, no watermark
+  ```
+- **負面提示詞（Negative Prompt）**：
+  ```text
+  low quality, blurry, deformed, extra fingers, full hand, two hands, open palms, arm, human figure, face, pocket watch, clock, hypnosis spiral, swirl pattern, multiple pendulums, motion blur trails, rainbow chakra orbs, dark crystal, realistic photo, 3d render, text, watermark, dark background, complex background, diffuse glow fog, heavy bloom, smoke, noise, jpeg artifacts, overexposed, dirty texture, modern tech
+  ```
+- **後製參數（預定）**：解析度 1024×1024 / `scripts/process_asset.py` U2Net 自動去背（細鏈與光弧邊緣易被切除，需人工檢視）/ WebP Q85；採用後記錄於「六、生成紀錄」，並將 `services.astro` 之 `imgPendulum` 填入 `/assets/services_j_pendulum_v1.webp`。
+---
+
 ## 三、【活動與課程】(Courses / starwovenstudy)
 
 ### [課程]-[圖片 A~F]：固定循環課程現場活動照片（6張，已採用上線）

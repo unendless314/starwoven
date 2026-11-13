@@ -16,6 +16,7 @@ const imgAkashic = '/assets/services_f_akashic_v1.webp';     // 服務-F：阿�
 const imgPet = '/assets/services_g_pet_v1.webp';             // 服務-G：毛孩溝通手繪插圖
 const imgAngelReiki = '';      // 服務-H：天使靈氣手繪插圖（待生成，見 image_prompts.md）
 const imgKundaliniReiki = '';  // 服務-I：亢達里尼靈氣手繪插圖（待生成，見 image_prompts.md）
+const imgPendulum = '';        // 服務-J：靈擺調頻手繪插圖（待生成，見 image_prompts.md）
 
 interface PractitionerGroup {
   system?: string;         // 例如：'偉特塔羅'、'托特塔羅'
@@ -170,6 +171,21 @@ const services: ServiceCard[] = [
       { names: ['學長'] },
     ],
   },
+  {
+    // 2026-11-12 業主提供名稱、老師與價格；分類與預約形式為開發者暫定（known_issues 第 13 項）
+    code: '服務-J',
+    title: '靈擺調頻',
+    image: imgPendulum,
+    iconType: 'reiki',
+    modalities: ['工作室面對面療癒'],
+    prices: [
+      { label: '工作室面對面療癒', rate: '15分鐘 300元' },
+    ],
+    roleTitle: '可預約調頻師',
+    practitioners: [
+      { names: ['黎夢'] },
+    ],
+  },
 ];
 
 // ==========================================
@@ -185,7 +201,7 @@ interface ServiceCategory {
 const serviceCategories: ServiceCategory[] = [
   { id: 'divination', label: '占卜', codes: ['服務-A'] },
   { id: 'fortune', label: '命理', codes: ['服務-B', '服務-C', '服務-D'] },
-  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I'] },
+  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I', '服務-J'] },
   { id: 'pet', label: '毛孩', codes: ['服務-G'] },
 ];
 
