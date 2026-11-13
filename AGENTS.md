@@ -105,14 +105,15 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
   team) — edit data, not markup.
 - 部落格文章**不寫死課程的星期、時段、講師、價格**，一律連至
   `/courses#recurring`；粗體緊鄰全形引號（「」）時 `**` 不生效，改用 `<strong>`。
-- Every page sets its own `<title>` and meta description. ⚠️ OG image：各頁目前
-  未個別傳入 `ogImage`，共用 Layout 預設值 `/assets/og-image.jpg`——**該檔案
-  尚未存在**，社群分享縮圖會 404，見 `known_issues/README.md` 第 4 項。
+- Every page sets its own `<title>` and meta description. OG image：各頁未個別傳入
+  `ogImage`，共用 Layout 預設值 `/assets/common_b_og_image_v1.jpg`（1200×630；
+  刻意用 JPG，DEC-091；Layout 會轉成完整網址輸出）。
 
 ## Asset management (human-led, WebP mandatory)
 
 - Naming: `[分頁代碼]_[圖片代碼]_[素材名稱]_v[版本號].webp`
   (e.g. `home_a_tarot_world_v3.webp`)；代號登錄於 `image_prompts.md`。
+  唯一例外：社群分享圖（OG）用 JPG（DEC-091）。
 - Adopted assets → archive copy in `demo_docs/sd-assets/` + production copy in
   `public/assets/`；rejected → `demo_docs/sd-assets/rejected/`（never delete）。
 - **Never commit raw PNGs** — convert to WebP (Q85, `method=6`) before commit.
@@ -128,7 +129,7 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 
 - **No fabrication.** Copy/names/prices come from `content_inventory.md` or the
   owner. Missing content → placeholders, keep moving.
-- **`decisions.md` 不是變更日誌，預設不立 DEC**（next number: DEC-091）。
+- **`decisions.md` 不是變更日誌，預設不立 DEC**（next number: DEC-092）。
   - 立 DEC 的判準：**半年後的人只看程式碼與規格書，會不會想不通「為什麼這樣做」
     或把它改回去？** 會，才立。只收四類：架構選型、範疇／IA 變更、業主確認的
     商業**規則**、明確決定不做的事。

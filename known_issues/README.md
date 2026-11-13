@@ -28,7 +28,7 @@
 
 ## 4. 全站 OG 分享圖檔案尚未存在
 
-- **狀態**：待補素材
+- **狀態**：✅ 已解決（2026-11-13）：ComfyUI 生成底圖＋程式疊字，上架 `public/assets/common_b_og_image_v1.jpg`，Layout 預設值改指向此檔並輸出完整網址；格式採 JPG 之理由見 DEC-091。
 - **影響位置**：全站各頁（`src/layouts/Layout.astro` 預設 `ogImage = '/assets/og-image.jpg'`）
 - **說明**：各頁面均未傳入 `ogImage`，全站共用 Layout 預設值，但 `public/assets/og-image.jpg` 尚未生成；社群平台（LINE / Facebook）抓取分享縮圖時會 404。
 - **處理方式**：

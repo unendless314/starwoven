@@ -71,7 +71,7 @@
 
 - [x] 每頁套用淺藍水彩風格底色（以 CSS 漸層實現；另支援全站深淺色切換，DEC-008）
 - [x] 每頁獨立 title / description
-- [ ] 每頁獨立 OG 圖 — 目前各頁未傳 `ogImage`，共用 Layout 預設 `/assets/og-image.jpg` 且**該檔案尚未存在**（見 `known_issues/README.md` 第 4 項）
+- [ ] 每頁獨立 OG 圖 — 目前各頁未傳 `ogImage`，共用 Layout 預設 `/assets/common_b_og_image_v1.jpg`（全站共用圖已於 2026-11-13 上架）
 - [x] 各頁與原站截圖比對（DEC-011/014/017 等多次對齊 Canva 原版）
 
 **檢查點**：核心頁面全部完成，導航、CTA、響應式皆正常。✅ 已達成；IA 後續調整（新增 `/blog`、移除 `/reiki` `/akashic`）見 `decisions.md`。

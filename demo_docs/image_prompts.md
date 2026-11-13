@@ -366,6 +366,21 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
+### [共用]-[圖片 B]：社群分享圖（Open Graph，已採用上線）
+
+- **版位用途**：全站 `og:image`／`twitter:image`（`Layout.astro` 預設值），LINE、Facebook 等分享預覽縮圖。
+- **規格**：1200×630 **JPG**（Q88、progressive；OG 圖為 WebP 規範之例外，見 DEC-091）。以 1824×960 生成後縮圖，不裁切。
+- **構圖原則**：圖中不放字，「星靈織語／STARWOVEN／標語」以程式（Pillow＋粉圓體 Huninn）疊於上半部深色夜空；主體集中於中央約 630×630，以容許平台裁成正方形。
+- **生圖平台**：ComfyUI Z-Image-Turbo（Steps 8 / CFG 1.0；CFG 1.0 時負面提示詞幾乎無作用，需求須寫進正面提示詞）。
+- **正面提示詞（採用版）**：
+  ```text
+  A full-bleed watercolor illustration filling the entire frame edge to edge, with no borders, no margins and no white space. A calm deep indigo and midnight purple night sky with soft, uneven hand-painted watercolor texture. Soft lavender and moonlight blue watercolor cloud banks rest on the left and right sides at middle height, reaching gently toward the inner third of the image and thinning into faint wisps near the center. Two or three long, thin, flowing golden threads weave in and out of the clouds like loose silk strands, drifting horizontally from both sides toward the middle, their glowing tips fading softly just below the center of the image. The central area stays calm, dark and open, suitable for title text, with only very faint tiny stars. Many small twinkling four-pointed stars and fine star dust are scattered across the upper sky and around the clouds on both sides. The composition is balanced but not mirrored, the left and right sides look naturally different. The sky is flat and open with no swirling shapes. Serene, healing, mystical, elegant mood, high resolution.
+  ```
+- **經驗紀錄**：提示詞含「banner」會使模型在畫布內再畫一條橫幅（上下白邊）；要求光暈「匯聚於中央」會畫出漩渦星系；雲層寫「middle height」會讓雲帶橫在中央，文字因此改放上半部。
+- **存放檔名**：`common_b_og_image_v1.jpg`（`public/assets/` 與 `demo_docs/sd-assets/`；生成原圖 `common_b_og_image_v1.png` 留存本機，git-ignored）
+
+---
+
 ### [頁尾]-[圖片 A~D]：聯絡我們 官方社群與賣場 QR Code（4張）
 
 - **版位用途**：全站頁尾「聯絡我們」區塊之官方條碼
@@ -460,6 +475,19 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `公告-202610-B` | 星靈實習生招募 (v1) | 2026-10-09 | Canva | 星空月亮以技能換技能培訓招募海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_intern_v1.webp` |
 | `公告-202611-A` | 2026 年底市集預告 (v1) | 2026-11-08 | 業主提供 | 夜空水晶塔羅四市集場次與服務項目海報 | - | 採用上架 | 轉 WebP Q85 (825×1024，原尺寸) | `home_announcement_202611_market_v1.webp` |
 | `公告-202611-B` | 年度流年塔羅 (v1) | 2026-11-08 | 業主提供 | 太陽牌粉紫星空年度報告內容與費用海報 | - | 採用上架 | 轉 WebP Q85 (1024×1536，原尺寸) | `home_announcement_202611_annual_tarot_v1.webp` |
+| `共用-B` | 社群分享圖候選 00039 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 漩渦星系與金色星座連線（初版提示詞） | 974073409220626 | 淘汰：中央漩渦過亮，不利疊字 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00039_.png` |
+| `共用-B` | 社群分享圖候選 00040 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 兩側雲與燙金線、中央留空 | 958450086481488 | 淘汰：左右鏡像、偏套版 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00040_.png` |
+| `共用-B` | 社群分享圖候選 00041 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 85263663017668 | 淘汰：上下白邊（提示詞 banner 所致） | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00041_.png` |
+| `共用-B` | 社群分享圖候選 00042 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 雲層與上揚金線 | 539808056558190 | 淘汰：亮星壓到標語 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00042_.png` |
+| `共用-B` | 社群分享圖候選 00043 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 金線穿雲、非對稱 | 143405639927255 | 淘汰：第三輪基準，後被取代 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00043_.png` |
+| `共用-B` | 社群分享圖候選 00044 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 雲帶於中央高度＋金線穿雲 | 1072124963798572 | 淘汰：與 00051 相近 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00044_.png` |
+| `共用-B` | 社群分享圖候選 00045 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 17859789415335 | 淘汰：雲過亮過大 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00045_.png` |
+| `共用-B` | 社群分享圖候選 00046 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 919531332585147 | 淘汰：與 00051 相近 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00046_.png` |
+| `共用-B` | 社群分享圖候選 00047 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 298113064375389 | 淘汰：雲過亮過大 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00047_.png` |
+| `共用-B` | 社群分享圖候選 00048 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 721564883295122 | 淘汰：雲過亮過大 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00048_.png` |
+| `共用-B` | 社群分享圖候選 00049 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上，星點最多 | 422759402323167 | 淘汰：次選 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00049_.png` |
+| `共用-B` | 社群分享圖候選 00050 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 148174810181506 | 淘汰：與 00051 相近 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00050_.png` |
+| `共用-B` | 社群分享圖 (v1) | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 夜空雲帶金線自兩側交會、上半部疊粉圓體品牌字 | 932090169070292 | 採用上架 | 1824×960 縮至 1200×630＋Pillow 疊字，JPG Q88（DEC-091） | `common_b_og_image_v1.jpg` |
 
 
 ---

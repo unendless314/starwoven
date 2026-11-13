@@ -15,13 +15,16 @@ interface Props {
 const {
   title = '星靈織語 Starwoven — 每一段相遇，都是一場心靈的編織',
   description = '星靈織語提供命理與占卜服務，包含塔羅、占星、八字、臼井靈氣與阿卡西紀錄，陪伴你探索生命可能，找到心靈方向。',
-  ogImage = '/assets/og-image.jpg',
+  // 社群分享圖：刻意用 JPG 而非 WebP（DEC-091）
+  ogImage = '/assets/common_b_og_image_v1.jpg',
   theme = 'auto',
   noindex = false,
 } = Astro.props;
 
 const siteName = '星靈織語 Starwoven';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://starwoven.xyz');
+// og:image 須為完整網址，部分平台不解析相對路徑
+const ogImageURL = new URL(ogImage, Astro.site || 'https://starwoven.xyz');
 const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === '/' || Astro.url.pathname === ''));
 ---
 
@@ -41,14 +44,15 @@ const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content={siteName} />
-    <meta property="og:image" content={ogImage} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:alt" content={siteName} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-    <meta property="twitter:image" content={ogImage} />
+    <meta property="twitter:image" content={ogImageURL} />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%238FB8E8'><path d='M12.3 2a10 10 0 0 0-.19 20 10 10 0 0 0 8.89-5.4 1 1 0 0 0-1.04-1.42 8 8 0 1 1-7.66-13.18 1 1 0 0 0-.01-1.99c.01 0 .01 0 0 0z'/></svg>" />
