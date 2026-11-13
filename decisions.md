@@ -177,7 +177,6 @@
 - 環境需求：Node ≥ 22.23.4。
 - `astro.config.mjs` 明確設定 `session: false`：新版轉接器預設啟用檔案式 session，但本站不使用 session，且 VPS 服務為唯讀檔案系統，日後誤用會在執行期寫檔失敗。
 - 不為 Safari 13 以前的瀏覽器調整 build target。
-- 型別檢查（`astro check`）尚未納入專案，見 `known_issues/README.md` 第 9 項。
 - **維運須知**：
   1. MiniMax 回 HTTP 402 表示帳戶無可用額度（未訂閱、到期或餘額不足），不是金鑰錯誤（金鑰錯誤為 401）。
   2. 本站沒有 staging，VPS 即建置機；大版本升級須先在獨立分支完成本機驗收再合併。

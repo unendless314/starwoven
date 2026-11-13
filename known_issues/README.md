@@ -77,7 +77,7 @@
 
 ## 9. 型別檢查（`astro check`）未納入專案、缺 Node 型別定義
 
-- **狀態**：待排期（2026-11-04 DEC-081 外部程式碼審查建議，延後處理；處理時另立 DEC）
+- **狀態**：✅ 已解決（2026-11-13）：devDependencies 新增 `@astrojs/check`、`typescript@^6`、`@types/node@^24`，新增 `npm run check`；`npm ci` 後為 0 errors、0 warnings（另有 14 則 hints，皆為 `src/content.config.ts` 之 `z` 自 `astro:content` 匯入已棄用，不影響結果）。`imgWorkshopBazi` 已刪除。屬工具調整，未立 DEC；TypeScript 固定 6 之理由記於 `AGENTS.md` Commands。
 - **影響位置**：`package.json`（devDependencies、scripts）；回報錯誤之檔案為 `src/lib/ai/server/quota.ts`、`src/lib/ai/server/http.ts`（`Buffer`）、`src/pages/api/tarot/reading.ts`、`src/pages/api/astro-cards/reading.ts`（`node:crypto`）
 - **說明**：
   1. 專案未宣告 `@astrojs/check`，`npx astro check` 會要求臨時安裝，各次執行環境不一致，過去 DEC 記錄之「0 errors」無法在乾淨環境重現。
@@ -95,7 +95,7 @@
 - **狀態**：✅ 已解決（2026-11-12 業主提供資料）
 - **影響位置**：`src/pages/services.astro`（`services` 陣列服務-H／服務-I）、`src/pages/about.astro`（古古專業領域）、`demo_docs/content_inventory.md`（第 1.2、2.1a、2.2、4.3 節）
 - **說明**：首頁「身心靈療癒／一對一體驗」卡片列出「天使靈氣」「亢達里尼靈氣」，但命理服務頁原無對應卡片，DEC-089 先以佔位卡片上架，待業主提供資料。
-- **處理結果**：業主確認兩項各自獨立成服務，預約形式與收費比照「靈氣與光調頻」（工作室面對面療癒，30分鐘 800元 · 60分鐘 1500元，無超時規則）；天使靈氣由古古、亢達里尼靈氣由學長提供。服務頁移除佔位標示；關於我們頁古古專業領域補上「天使靈氣」（學長原已列「亢達里尼靈氣」）。兩張卡片插圖尚未生成，暫以虛線佔位框呈現，改由 `demo_docs/image_prompts.md`（服務-H／服務-I）追蹤。
+- **處理結果**：業主確認兩項各自獨立成服務，預約形式與收費比照「靈氣與光調頻」（工作室面對面療癒，30分鐘 800元 · 60分鐘 1500元，無超時規則）；天使靈氣由古古、亢達里尼靈氣由學長提供。服務頁移除佔位標示；關於我們頁古古專業領域補上「天使靈氣」（學長原已列「亢達里尼靈氣」）。兩張卡片插圖已於 2026-11-13 上架（服務-H／服務-I，見 `demo_docs/image_prompts.md`）。
 
 ## 11. 首頁不再出現「實體交流會」字樣，待業主確認是否需要補回
 
@@ -120,7 +120,7 @@
   2. 預約形式寫「工作室面對面療癒」（是否另有通話語音？）。
   3. 只列 15 分鐘 300 元、不寫超時規則（是否有 30／60 分鐘方案或超時計費？）。
   4. 首頁「身心靈療癒／一對一體驗」卡片未加列此項（DEC-089 只要求首頁項目在服務頁有對應卡，反向不強制）。
-- **其他**：卡片插圖尚未生成，暫以虛線佔位框呈現，由 `demo_docs/image_prompts.md`（服務-J）追蹤；提示詞為開發者草案，待黎夢老師確認。
+- **其他**：卡片插圖已於 2026-11-13 上架（服務-J，見 `demo_docs/image_prompts.md`），但依開發者草案提示詞生成，畫面尚未經黎夢老師確認。
 
 ## 14. 「靈氣與光調頻」更名為「臼井靈氣」後之連帶事項待業主確認
 

@@ -15,7 +15,9 @@ pre-build planning repo and is obsolete.
   prerendered; the only on-demand routes are `POST /api/tarot/reading` and
   `POST /api/astro-cards/reading` (`prerender = false`). Build output is `dist/client/`（static）＋`dist/server/`（Node）.
 - Commands: `npm run dev`（前後端一起，API 讀 `.env` 的 `AI_*`／`TAROT_*`／`ASTROCARDS_*`）· `npm run build`
-  (→ `dist/client/` + `dist/server/`) · `npm run preview`
+  (→ `dist/client/` + `dist/server/`) · `npm run preview` · `npm run check`（`astro check`
+  型別檢查；`npm run build` 不做型別檢查，改動 TS 後須另跑，應為 0 errors）。
+  `typescript` 固定 `^6`：`@astrojs/check` 0.9.x 不支援 TypeScript 7，待其支援再升。
 
 ## Canonical sources of truth (read these first, in order)
 
