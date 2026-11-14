@@ -274,13 +274,13 @@ function init(root: HTMLElement) {
   function readingBlock(title: string, text: string, highlight = false): HTMLElement {
     const box = document.createElement('div');
     box.className = highlight
-      ? 'ac-fade rounded-3xl p-5 sm:p-7 border-2 border-[#FCE794] bg-[#FCE794]/20 dark:bg-[#FCE794]/10'
-      : 'ac-fade rounded-3xl p-5 sm:p-7 bg-white/95 dark:bg-[#231f40]/95 border border-gray-200/80 dark:border-white/20 shadow-sm';
+      ? 'ac-fade rounded-3xl p-5 sm:p-7 border-2 border-star-gold bg-star-gold/20 dark:bg-star-gold/10'
+      : 'ac-fade rounded-3xl p-5 sm:p-7 bg-white/95 dark:bg-dark-card/95 border border-gray-200/80 dark:border-white/20 shadow-sm';
     const h = document.createElement('h3');
-    h.className = 'font-bold font-huninn tracking-wider text-lg text-[#2E2A4F] dark:text-white mb-2';
+    h.className = 'font-bold font-huninn tracking-wider text-lg text-star-indigo-dark dark:text-white mb-2';
     h.textContent = title;
     const p = document.createElement('p');
-    p.className = 'text-base leading-loose text-[#3A3A3A]/90 dark:text-white/85';
+    p.className = 'text-base leading-loose text-ink/90 dark:text-white/85';
     p.textContent = text;
     box.append(h, p);
     return box;

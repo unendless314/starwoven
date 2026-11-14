@@ -152,15 +152,18 @@
 
 ## 16. 全站顏色直接寫死色碼，未使用語意化顏色變數
 
-- **狀態**：後續優化（2026-11-14 處理第 8 項時記錄；技術債，非急件）
-- **影響位置**：全站 `src/pages/`、`src/components/`、`src/scripts/`；`src/styles/global.css`
+- **狀態**：第一階段 ✅ 已完成（2026-11-14）；第二階段為後續優化，視需要再排（2026-11-14 處理第 8 項時記錄；技術債，非急件）
+- **影響位置**：全站 `src/pages/`、`src/components/`、`src/layouts/`、`src/scripts/`；`src/styles/global.css`
 - **說明**：
-  1. 顏色幾乎都以色碼寫在各處 class 或頁內 `<style>`（如 `text-[#80A9D4]`），`AGENTS.md` 亦註明「Changing a color = global search」。同一色碼兼作文字、圖示、框線、裝飾等不同用途，換色時須逐處判斷用途。第 8 項改淡藍文字時，即須在 9 個檔案、近 70 處中人工區分文字與圖示，並曾漏改一處深色模式設定（靠審查發現）。
-  2. `global.css` 之 `@theme` 已定義 `--color-accent-blue`、`--color-star-indigo-dark` 等顏色變數，`:root` 另有 `--star-dark` 等，但全站使用次數為 0。
+  1. 顏色原本幾乎都以色碼寫在各處 class 或頁內 `<style>`（如 `text-[#80A9D4]`），全站約 1,080 處、94 種色碼，其中前 5 個品牌色佔約 73%。同一色碼兼作文字、圖示、框線、裝飾等不同用途，換色時須逐處判斷用途。第 8 項改淡藍文字時，即須在 9 個檔案、近 70 處中人工區分文字與圖示，並曾漏改一處深色模式設定（靠審查發現）。
+  2. `global.css` 之 `@theme` 原已定義顏色變數、`:root` 另有 `--star-dark` 等，但全站使用次數為 0。
 - **處理方式**：
-  1. 依用途定義語意化顏色（如強調文字、圖示、主要按鈕底色／字色、弱化文字），淺色／深色各一組，取代散落之色碼；清理未使用之舊變數。
-  2. 改動面遍及全站，須逐頁截圖比對（淺色＋深色）確認外觀不變，宜獨立排期、分頁進行。
-  3. 完成後同步更新 `AGENTS.md` 的 Styling conventions。
+  1. **第一階段：只換名字、不改用途** ✅ 已完成（2026-11-14）。
+     - 11 個品牌色改以名稱引用，唯一定義處為 `global.css` 的 `@theme static`：`star-indigo-dark`、`star-indigo`、`dark-card`、`moon-blue`、`accent-blue`、`accent-blue-soft`、`accent-blue-deep`、`light-bg`、`ink`、`ink-light`、`star-gold`。共約 900 處（class 836、頁內 `<style>` 65、課程頁分類圓點行內樣式 2），含 `src/scripts/` 內之 class 字串。
+     - 清除未使用之舊變數：`:root` 的 `--star-dark`／`--star-accent`／`--bg-inner`，`@theme` 的 `star-indigo-light`、`light-card`、`text-muted`；`text-dark`／`text-light` 更名為 `ink`／`ink-light`。
+     - 驗收：14 個路由 × 淺／深色 × 桌機／手機共 56 張整頁截圖前後比對，40 張完全相同，16 張僅 6～41 個像素相差 1/255（半透明色由編譯期換算改為瀏覽器 `color-mix` 計算之捨入差，肉眼不可見）；另逐條比對編譯後 CSS 規則（含懸停、深色、腳本動態套用之樣式），顏色值全數相同。
+     - **未納入**（仍為寫死值，約 170 處）：第三方品牌色（LINE、Google 等）、許願池粉彩漸層、星期標籤六色、各式一次性漸層色；以 `rgba()` 寫的品牌色陰影／光暈（約 25 處，主要在塔羅與占星頁 `<style>`）；SVG 屬性內之色碼。
+  2. **第二階段：只對配對穩定之少數用途做語意化**（未排期）。名稱目前是「色名」不是「用途」，同一色仍兼作文字／圖示／框線，淺深配對仍靠 `dark:` 逐處指定。可考慮者：強調文字（淺 `accent-blue-deep`／深 `moon-blue`，36 處中 35 處配對一致）、卡片底色、主要按鈕。**不宜全面語意化**：如 `text-star-indigo-dark` 之深色對應有白、月光藍、星金及多種透明度白，硬收成單一用途會改變外觀。
 
 ## 17. 404 頁文案待業主確認
 

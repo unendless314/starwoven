@@ -21,7 +21,7 @@ const INFO_STACKED = 'mt-2 flex flex-col gap-1';
 const INFO_INLINE = 'mt-2 flex flex-row flex-wrap gap-x-5 gap-y-1';
 // 懸停效果僅套用於帶 href 之卡片
 const LINK_CARD_CLASSES =
-  'cursor-pointer hover:border-[#80A9D4]/55 dark:hover:border-white/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#80A9D4]';
+  'cursor-pointer hover:border-accent-blue/55 dark:hover:border-white/30 hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue';
 
 type BoothState = 'loading' | 'ok' | 'empty' | 'error';
 type FailReason = 'timeout' | 'network' | 'bad_response' | 'no_api_url';

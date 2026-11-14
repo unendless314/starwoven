@@ -2,26 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-@theme {
+/* 品牌色票（known_issues #16 第一階段）：全站以名稱引用，如 `text-accent-blue`、`bg-star-gold/20`；
+   頁內 <style> 與行內樣式用 `var(--color-accent-blue)`。換色只改這裡。
+   `static`：變數一律輸出，供未經 Tailwind 掃描之 <style>／行內樣式使用。 */
+@theme static {
   --font-huninn: 'Huninn', 'Quicksand', 'Nunito', sans-serif;
 
-  --color-star-indigo-dark: #2E2A4F;
-  --color-star-indigo: #3D3A63;
-  --color-star-indigo-light: #4D4978;
-  --color-moon-blue: #8FB8E8;
-  --color-accent-blue: #80A9D4;
-  --color-light-bg: #EAF3F8;
-  --color-light-card: #FFFFFF;
-  --color-text-dark: #3A3A3A;
-  --color-text-muted: #6B7280;
-  --color-text-light: #F5F5F5;
-  --color-star-gold: #FCE794;
-}
-
-:root {
-  --star-dark: #2E2A4F;
-  --star-accent: #8FB8E8;
-  --bg-inner: #EAF3F8;
+  --color-star-indigo-dark: #2E2A4F; /* 深夜空：深色頁底、淺色模式標題字、月光藍按鈕上的字 */
+  --color-star-indigo: #3D3A63;      /* 夜空漸層較亮一階 */
+  --color-dark-card: #231F40;        /* 深色模式卡片底 */
+  --color-moon-blue: #8FB8E8;        /* 月光藍：深色模式強調字／按鈕底 */
+  --color-accent-blue: #80A9D4;      /* accent：按鈕底、圖示、框線、裝飾（淺色模式不作閱讀文字，對比不足） */
+  --color-accent-blue-soft: #9DBDE0; /* accent 按鈕懸停底 */
+  --color-accent-blue-deep: #376CA3; /* 淺色模式需閱讀之強調文字（WCAG AA） */
+  --color-light-bg: #EAF3F8;         /* 內頁底 */
+  --color-ink: #3A3A3A;              /* 淺底內文字 */
+  --color-ink-light: #F5F5F5;        /* 深底內文字 */
+  --color-star-gold: #FCE794;        /* 星金 */
 }
 
 html {

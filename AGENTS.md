@@ -98,9 +98,15 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 - **Dual theme everywhere**: `@custom-variant dark` on `.dark`; homepage defaults
   dark (starry night), inner pages default light (watercolor); user toggle
   overrides via localStorage. Every style change must cover both modes.
-- Colors are mostly **hardcoded hex + `dark:` variants**, not theme tokens:
-  `#2E2A4F`（深夜空）、`#8FB8E8`（月光藍）、`#80A9D4`（accent）、
-  `#EAF3F8`（內頁底）、`#FCE794`（星金）。Changing a color = global search.
+- Colors：品牌色以 **顏色名稱 + `dark:` variants** 引用（`global.css` 的 `@theme static`
+  為唯一定義處；known_issues #16 第一階段）。`star-indigo-dark` `#2E2A4F`（深夜空）、
+  `moon-blue` `#8FB8E8`（月光藍）、`accent-blue` `#80A9D4`（accent）、`light-bg` `#EAF3F8`（內頁底）、
+  `star-gold` `#FCE794`（星金），另有 `star-indigo`、`dark-card`、`accent-blue-soft`、
+  `accent-blue-deep`（淺色模式需閱讀之強調文字）、`ink`、`ink-light`。寫法：class 用
+  `text-accent-blue`、`bg-star-gold/20`；頁內 `<style>`／行內樣式用 `var(--color-accent-blue)`。
+  **這些顏色不得再寫死色碼**。名稱是「色名」不是「用途」，同一色仍兼作文字／圖示／框線，
+  淺深配對仍靠 `dark:` 逐處指定。其餘零星色碼（第三方品牌色、粉彩漸層、星期標籤等）與
+  `rgba()` 陰影仍為寫死值。
 - `font-huninn`（粉圓體）for headings/brand; Latin: Quicksand/Nunito;
   `<html lang="zh-Hant">`; full-width punctuation in copy.
 - Page content lives in **frontmatter data arrays** (courses, reviews, wishlist,

@@ -26,7 +26,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
 ---
 
 <div
-  class="wish-card group bg-white/95 dark:bg-[#231f40]/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-200/80 dark:border-white/20 flex flex-col"
+  class="wish-card group bg-white/95 dark:bg-dark-card/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-200/80 dark:border-white/20 flex flex-col"
   data-wish-card
   data-course-id={id}
   data-course-name={title}
@@ -39,7 +39,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     <span class="absolute bottom-2 right-4 w-16 h-16 bg-white/20 rounded-full blur-xl"></span>
 
     <!-- 許願人數膠囊（右上） -->
-    <span class="absolute top-3 right-3 z-10 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full bg-[#FCE794] text-[#2E2A4F] tracking-wider shadow-md flex items-center gap-1">
+    <span class="absolute top-3 right-3 z-10 text-[11px] sm:text-xs font-bold px-3 py-1 rounded-full bg-star-gold text-star-indigo-dark tracking-wider shadow-md flex items-center gap-1">
       <span aria-hidden="true">🔥</span>
       <span class="wish-pill-count inline-block">{votes}</span>
       <span>人想上</span>
@@ -52,23 +52,23 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   <!-- 資訊區 -->
   <div class="p-5 sm:p-6 flex-1 flex flex-col gap-3">
     <div>
-      <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wide transition-colors">{title}</h3>
-      <p class="text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
+      <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wide transition-colors">{title}</h3>
+      <p class="text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
       <!-- 課程時數／課程費用（試算表 I／J 欄自由文字；留空時整行隱藏，待 get_all 覆寫） -->
-      <p class:list={['text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !duration }]}>課程時數｜<span class="wish-duration">{duration}</span></p>
-      <p class:list={['text-xs sm:text-sm text-[#3A3A3A]/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !price }]}>課程費用｜<span class="wish-price">{price}</span></p>
+      <p class:list={['text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !duration }]}>課程時數｜<span class="wish-duration">{duration}</span></p>
+      <p class:list={['text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !price }]}>課程費用｜<span class="wish-price">{price}</span></p>
     </div>
 
     <!-- 進度條 -->
     <div class="space-y-1.5">
-      <div class="w-full h-2.5 rounded-full bg-[#3A3A3A]/10 dark:bg-white/15 overflow-hidden">
+      <div class="w-full h-2.5 rounded-full bg-ink/10 dark:bg-white/15 overflow-hidden">
         <div
           class:list={['wish-bar-fill h-full rounded-full transition-all duration-500', reached ? 'bg-[#58A497]' : 'bg-[#F5A623]']}
           style={`width: ${percent}%`}
         ></div>
       </div>
       <div class="flex items-center justify-between text-xs sm:text-sm">
-        <span class="text-[#3A3A3A]/75 dark:text-white/75 font-medium transition-colors">
+        <span class="text-ink/75 dark:text-white/75 font-medium transition-colors">
           <span class="wish-progress-text">{votes} / {threshold}</span> 人許願
         </span>
         <span class:list={['wish-reached font-bold text-[#58A497]', reached ? '' : 'hidden']}>✓ 達標籌備中</span>
@@ -78,7 +78,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
     <!-- 許願按鈕 -->
     <button
       type="button"
-      class="wish-btn mt-auto w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-[#80A9D4] hover:bg-[#9DBDE0] text-[#2E2A4F] text-sm sm:text-base font-bold font-huninn tracking-widest shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
+      class="wish-btn mt-auto w-full inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full bg-accent-blue hover:bg-accent-blue-soft text-star-indigo-dark text-sm sm:text-base font-bold font-huninn tracking-widest shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer"
     >
       <span class="wish-btn-label">✦ 我想一起</span>
     </button>
@@ -109,8 +109,8 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   }
 
   .wish-btn.is-voted {
-    background-color: #FCE794;
-    color: #2E2A4F;
+    background-color: var(--color-star-gold);
+    color: var(--color-star-indigo-dark);
     box-shadow: 0 0 18px rgba(252, 231, 148, 0.55);
   }
 
@@ -123,6 +123,6 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
 
   .wish-btn.is-closed {
     background-color: #58A497;
-    color: #2E2A4F;
+    color: var(--color-star-indigo-dark);
   }
 </style>

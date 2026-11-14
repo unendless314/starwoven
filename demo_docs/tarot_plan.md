@@ -280,7 +280,7 @@
 
 ### 2. 視覺與無障礙
 
-- 預設主題沿用 `Layout` 的 `auto`（內頁＝淺色水彩），深色模式完整適配；配色沿用既有 hex（`#2E2A4F`、`#8FB8E8`、`#FCE794` 等）。
+- 預設主題沿用 `Layout` 的 `auto`（內頁＝淺色水彩），深色模式完整適配；配色沿用既有品牌色（`star-indigo-dark`、`moon-blue`、`star-gold` 等，定義於 `global.css` `@theme`）。
 - 標題 `font-huninn`；牌名同時顯示中英文。
 - 逆位以牌面旋轉 180° 呈現，並以文字標示「逆位」（不只靠視覺）。
 - 尊重 `prefers-reduced-motion`：減少動畫時改為直接淡入。

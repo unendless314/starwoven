@@ -248,8 +248,8 @@ function init(root: HTMLElement) {
     set('[data-orientation]', entry.reversed ? UI_TEXT.reversed : UI_TEXT.upright);
     const orientation = node.querySelector<HTMLElement>('[data-orientation]')!;
     orientation.className += entry.reversed
-      ? ' bg-[#2E2A4F]/10 text-[#2E2A4F] dark:bg-[#FCE794]/20 dark:text-[#FCE794]'
-      : ' bg-[#80A9D4]/15 text-[#376CA3] dark:bg-[#8FB8E8]/20 dark:text-[#8FB8E8]';
+      ? ' bg-star-indigo-dark/10 text-star-indigo-dark dark:bg-star-gold/20 dark:text-star-gold'
+      : ' bg-accent-blue/15 text-accent-blue-deep dark:bg-moon-blue/20 dark:text-moon-blue';
     node.querySelector('[data-face]')!.classList.toggle('is-reversed', entry.reversed);
     node.querySelector('[data-flip]')!.setAttribute(
       'aria-label',
@@ -262,13 +262,13 @@ function init(root: HTMLElement) {
   function readingBlock(title: string, text: string, highlight = false): HTMLElement {
     const box = document.createElement('div');
     box.className = highlight
-      ? 'tarot-fade rounded-3xl p-5 sm:p-7 border-2 border-[#FCE794] bg-[#FCE794]/20 dark:bg-[#FCE794]/10'
-      : 'tarot-fade rounded-3xl p-5 sm:p-7 bg-white/95 dark:bg-[#231f40]/95 border border-gray-200/80 dark:border-white/20 shadow-sm';
+      ? 'tarot-fade rounded-3xl p-5 sm:p-7 border-2 border-star-gold bg-star-gold/20 dark:bg-star-gold/10'
+      : 'tarot-fade rounded-3xl p-5 sm:p-7 bg-white/95 dark:bg-dark-card/95 border border-gray-200/80 dark:border-white/20 shadow-sm';
     const h = document.createElement('h3');
-    h.className = 'font-bold font-huninn tracking-wider text-lg text-[#2E2A4F] dark:text-white mb-2';
+    h.className = 'font-bold font-huninn tracking-wider text-lg text-star-indigo-dark dark:text-white mb-2';
     h.textContent = title;
     const p = document.createElement('p');
-    p.className = 'text-base leading-loose text-[#3A3A3A]/90 dark:text-white/85';
+    p.className = 'text-base leading-loose text-ink/90 dark:text-white/85';
     p.textContent = text;
     box.append(h, p);
     return box;
