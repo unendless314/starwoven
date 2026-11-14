@@ -414,8 +414,8 @@ location /api/tarot/ {
 
 - named location `@ai_429`／`@ai_413`／`@ai_502`／`@ai_504` 全部功能共用一組（內容同 v0.9 之 `@tarot_*`，僅改名）。
 - **不再保留泛用 `location /api/`**：未登錄之 `/api/*` 路徑不會被轉送至 Node，依 nginx location 比對分兩種：
-  - 一般路徑（如 `/api/unknown`）落入 `location /`：GET 回首頁 fallback（與全站錯誤網址行為一致，見 `known_issues` 第 6 項），POST 由 nginx 回 405（HTML）。
-  - 符合靜態資產副檔名 regex 之路徑（如 `/api/unknown.js`）落入靜態資產 location：檔案不存在，回 404（HTML）。
+  - 一般路徑（如 `/api/unknown`）落入 `location /`：檔案不存在，GET／POST 皆回 404＋品牌 404 頁（HTML；與全站錯誤網址行為一致，見 `known_issues` 第 6 項。2026-11-14 前為 GET 回首頁 fallback、POST 回 405）。
+  - 符合靜態資產副檔名 regex 之路徑（如 `/api/unknown.js`）落入靜態資產 location：檔案不存在，同樣回 404＋品牌 404 頁（HTML）。
   - 兩者皆為 nginx 既有行為，本規格不調整 location 優先序。新增功能必須明確新增 location，避免未經限流之端點意外對外開放。
 - 各 location 重複列出 proxy 設定為刻意取捨：維持單一 vhost 檔為唯一正本，不引入 `include` 片段檔（多一個需部署同步的檔案）。
 - ⚠️ 沿用陷阱提醒：location 內出現任何 `add_header`，server 層安全標頭不再繼承——AI location 與 named location 不新增 `add_header`；不得開啟 `proxy_intercept_errors`。
@@ -492,7 +492,7 @@ location /api/tarot/ {
 4. 錯誤路徑逐一實測，回應 body 與 HTTP 狀態與重構前相同：超長問題 400、錯誤 Origin 403、非 JSON Content-Type 400、超大 body 413、`TAROT_ENABLED=false` 503 `DISABLED`、`AI_API_KEY` 留空 503 `DISABLED`（並出現新 log 字串）、每日上限暫調為 2 驗證 `DAILY_LIMIT`、自傷測試句回 `care`、極短逾時模擬 `AI_FAILED`（IP 額度釋放、全站不釋放）、模擬供應商 429 回 `AI_BUSY`（兩者皆釋放）。
 5. log 抽查：含 `feature` 欄位；無問題原文、無解讀、無完整 IP。
 6. 程式碼搜尋：除 `decisions.md`、規格書沿革外，搜尋不到 `TAROT_AI_`；`src/lib/ai/shared/` 與前後端共用檔中搜尋不到 `astro:env/server`、`src/lib/ai/server` 之 import；搜尋不到自 `lib/tarot/` import 已搬移之符號（含 `import type`）、搜尋不到 `lib/tarot/guard`、`lib/tarot/providers`。
-7. 線上（部署後）：`deploy.sh` 冒煙通過且無 `AI_API_KEY missing`；兩種牌陣實際解讀成功；連續請求觸發 nginx JSON 429、超大 body 觸發 JSON 413、`systemctl stop` 時回 JSON 502 `SERVICE_DOWN`（其他頁面正常）；`/api/unknown` 不再轉送 Node（GET 回首頁 fallback、POST 回 nginx 405）、`/api/unknown.js` 回 404；送出含未知欄位之請求（如 `{"spread":"single","question":"","debug":true}`）與重構前同樣成功；既有頁面、許願池、`/reiki` 301 正常；回應安全標頭與替換前一致。
+7. 線上（部署後）：`deploy.sh` 冒煙通過且無 `AI_API_KEY missing`；兩種牌陣實際解讀成功；連續請求觸發 nginx JSON 429、超大 body 觸發 JSON 413、`systemctl stop` 時回 JSON 502 `SERVICE_DOWN`（其他頁面正常）；`/api/unknown` 不再轉送 Node（當時 GET 回首頁 fallback、POST 回 nginx 405；2026-11-14 起皆回 404）、`/api/unknown.js` 回 404；送出含未知欄位之請求（如 `{"spread":"single","question":"","debug":true}`）與重構前同樣成功；既有頁面、許願池、`/reiki` 301 正常；回應安全標頭與替換前一致。
 
 ### 4. 環境變數遷移順序（新舊並存）
 

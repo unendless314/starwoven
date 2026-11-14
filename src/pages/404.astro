@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+import CTAButton from '../components/CTAButton.astro';
+
+// ==========================================
+// 404 頁（known_issues 第 6 項）：build 輸出 dist/client/404.html，
+// 由 nginx `error_page 404 /404.html` 提供（狀態碼維持 404，網址列保留訪客原網址）。
+// 文案正本：content_inventory.md 第 9 節（開發暫擬，待業主確認；known_issues 第 17 項）。
+// 不另列頁面捷徑：Layout 已含完整導覽列，避免重複維護導覽資料。
+// ==========================================
+---
+
+<Layout
+  title="找不到這個頁面 — 星靈織語 Starwoven"
+  description="你要找的頁面不存在或已移動，歡迎回到星靈織語首頁繼續探索。"
+  noindex
+>
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center space-y-6">
+    <p class="text-6xl sm:text-7xl font-bold font-huninn text-[#2E2A4F]/20 dark:text-white/20 tracking-widest select-none" aria-hidden="true">
+      404
+    </p>
+    <h1 class="text-3xl sm:text-4xl font-bold font-huninn text-[#2E2A4F] dark:text-white tracking-wider transition-colors">
+      這顆星星不在星圖上
+    </h1>
+    <p class="text-lg text-[#3A3A3A]/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+      你要找的頁面不存在，或已經移到別的地方了。<br class="hidden sm:inline" />
+      回到首頁，或從上方選單繼續探索。
+    </p>
+    <div class="w-20 h-1.5 bg-[#FCE794] mx-auto rounded-full opacity-80"></div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center bg-[#2E2A4F] hover:bg-[#3d3866] dark:bg-white dark:hover:bg-white/85 text-white dark:text-[#2E2A4F] px-7 py-3 rounded-full shadow-sm hover:shadow-md text-base font-medium tracking-wider transition-all duration-200 active:scale-95"
+      >
+        回到首頁
+      </a>
+      <CTAButton variant="primary" />
+    </div>
+  </div>
+</Layout>

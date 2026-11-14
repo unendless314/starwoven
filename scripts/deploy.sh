@@ -39,6 +39,8 @@ npm run build
 # 2. 結構檢查：防止將錯誤結構同步至網站根目錄
 step "檢查建置產物結構"
 [ -f dist/client/index.html ] || die "dist/client/index.html 不存在，中止部署"
+# nginx error_page 404 依賴此檔（known_issues 第 6 項）
+[ -f dist/client/404.html ] || die "dist/client/404.html 不存在，中止部署"
 [ -f dist/server/entry.mjs ] || die "dist/server/entry.mjs 不存在，中止部署"
 
 # 3. 靜態站（保留 certbot webroot 驗證目錄 .well-known/）

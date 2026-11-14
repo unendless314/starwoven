@@ -43,14 +43,18 @@
 
 ## 6. 網站無 404 頁面，nginx 以首頁作為錯誤網址 fallback；靜態資產長快取
 
-- **狀態**：後續優化（2026-10-20 VPS 現況調查發現，DEC-073）
-- **影響位置**：`src/pages/`（無 `404.astro`）、`nginx/starwoven.conf`（`location /`、靜態資產快取）
+- **狀態**：程式已完成，待部署（2026-11-14）：第 1 點已改（repo），須於 VPS 部署並完成下方驗證後再標示已解決；第 2 點評估後維持現狀（2026-10-20 VPS 現況調查發現，DEC-073）
+- **影響位置**：`src/pages/404.astro`、`nginx/starwoven.conf`（`location /`、`error_page`、靜態資產快取）、`scripts/deploy.sh`（結構檢查）
 - **說明**：
-  1. 線上 nginx 之 `location /` 為 `try_files $uri $uri/ /index.html`，任何錯誤網址皆回傳首頁且狀態碼 200（SEO 上屬 soft 404）。repo 原版為 `=404`，但網站沒有 404 頁，直接改回會顯示 nginx 預設錯誤頁。DEC-073 nginx 整併時刻意保留線上行為，避免於業主會議前改變既有頁面表現。
-  2. 線上靜態資產快取為 `expires 1y`＋`immutable`，套用於所有圖片（含檔名不帶 hash 之 `public/assets/`）。同名覆蓋時訪客最長一年看不到新圖——現行以素材版本號命名（`_v2`、`_v3`）規避，**換圖必須升版號**。
-- **處理方式**：
-  1. 新增品牌風格 `src/pages/404.astro`，nginx 改為 `try_files $uri $uri/ $uri/index.html =404;`＋`error_page 404 /404.html;`。
-  2. 評估將 `immutable` 長快取限縮至 `/_astro/`（檔名含 hash），`/assets/` 改為較短快取。
+  1. 線上 nginx 之 `location /` 原為 `try_files $uri $uri/ /index.html`，任何錯誤網址皆回傳首頁且狀態碼 200（SEO 上屬 soft 404，訪客也無從得知連結失效）。DEC-073 nginx 整併時為避免於業主會議前改變既有頁面表現而刻意保留；此理由已不存在，且未寫入 DEC。
+  2. 線上靜態資產快取為 `expires 1y`＋`immutable`，套用於所有圖片（含檔名不帶 hash 之 `public/assets/`）。同名覆蓋時訪客最長一年看不到新圖。
+- **處理結果**：
+  1. 新增 `src/pages/404.astro`（`noindex`，build 輸出 `404.html`；文案為開發者草擬之功能性文字）。nginx 改為 `try_files $uri $uri/ =404;`＋server 層 `error_page 404 /404.html;`，並以 `location = /404.html { internal; }` 使直接造訪 `/404.html` 亦回 404。AI location 自訂了 `error_page`、不繼承 server 層設定，且未開 `proxy_intercept_errors`，端點回應照原樣穿透。`deploy.sh` 結構檢查新增 `dist/client/404.html`。舊站在 Canva 網域，本站無其他舊網址依賴首頁 fallback（`/reiki`、`/akashic` 已有 301）。
+  2. **維持 `/assets/` 1 年＋`immutable`，不縮短**：`public/assets/` 一律依命名規則帶版本號（`_v1`、`_v3`，`AGENTS.md` 列為強制），版本號即等同 hash，長快取為此類資產的標準做法；縮短只會讓回訪者重新驗證圖片，換來的僅是違規同名覆蓋時的保險。**換圖必須升版號**之規則不變，nginx 註解保留提醒。
+- **部署注意**：`deploy.sh` 不同步 nginx 設定，須於 VPS 手動執行 `cp nginx/starwoven.conf /etc/nginx/sites-available/starwoven && nginx -t && systemctl reload nginx`（先備份現行 vhost 並 diff 核對）。部署後驗證（皆用 GET；`curl -I` 為 HEAD、取不到內容，不可用來確認頁面）：
+  - `curl -s -o /dev/null -w '%{http_code}\n' https://starwoven.xyz/no-such-page` 為 `404`，且 `curl -s https://starwoven.xyz/no-such-page | grep -c '這顆星星不在星圖上'` 大於 0（確認是品牌 404 頁，不是 nginx 預設錯誤頁）。
+  - 同法確認 `/about` 與 `/about/` 為 `200`、`/reiki` 為 `301`、直接造訪 `/404.html` 為 `404`。
+- **文案**：404 頁文案為開發暫擬，待業主確認，見第 17 項。
 
 ## 7. nginx 全域 `ssl_protocols` 宣告與實際行為不符
 
@@ -157,3 +161,10 @@
   1. 依用途定義語意化顏色（如強調文字、圖示、主要按鈕底色／字色、弱化文字），淺色／深色各一組，取代散落之色碼；清理未使用之舊變數。
   2. 改動面遍及全站，須逐頁截圖比對（淺色＋深色）確認外觀不變，宜獨立排期、分頁進行。
   3. 完成後同步更新 `AGENTS.md` 的 Styling conventions。
+
+## 17. 404 頁文案待業主確認
+
+- **狀態**：待部署後請業主確認（2026-11-14 完成於 repo；正式站尚未部署，部署並通過第 6 項驗證後再請業主看）
+- **影響位置**：`src/pages/404.astro`、`demo_docs/content_inventory.md` 第 9 節
+- **說明**：處理第 6 項時新增 404 頁，標題、說明與 meta 文案為開發者草擬（正本登錄於 `content_inventory.md` 第 9 節，標記為暫擬）。業主事前未提出此需求。
+- **處理方式**：請業主明確回覆「確認」或提供修改；**未回覆不視為同意**。若業主希望改採「公告後期限內未反對即採用」，須先由業主明確同意此流程並訂出期限。確認後移除 `content_inventory.md` 第 9 節之暫擬標記並結案。
