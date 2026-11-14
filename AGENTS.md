@@ -98,15 +98,23 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 - **Dual theme everywhere**: `@custom-variant dark` on `.dark`; homepage defaults
   dark (starry night), inner pages default light (watercolor); user toggle
   overrides via localStorage. Every style change must cover both modes.
-- Colors：品牌色以 **顏色名稱 + `dark:` variants** 引用（`global.css` 的 `@theme static`
-  為唯一定義處；known_issues #16 第一階段）。`star-indigo-dark` `#2E2A4F`（深夜空）、
-  `moon-blue` `#8FB8E8`（月光藍）、`accent-blue` `#80A9D4`（accent）、`light-bg` `#EAF3F8`（內頁底）、
-  `star-gold` `#FCE794`（星金），另有 `star-indigo`、`dark-card`、`accent-blue-soft`、
-  `accent-blue-deep`（淺色模式需閱讀之強調文字）、`ink`、`ink-light`。寫法：class 用
-  `text-accent-blue`、`bg-star-gold/20`；頁內 `<style>`／行內樣式用 `var(--color-accent-blue)`。
-  **這些顏色不得再寫死色碼**。名稱是「色名」不是「用途」，同一色仍兼作文字／圖示／框線，
-  淺深配對仍靠 `dark:` 逐處指定。其餘零星色碼（第三方品牌色、粉彩漸層、星期標籤等）與
-  `rgba()` 陰影仍為寫死值。
+- Colors：**唯一定義處為 `global.css` 的 `@theme static`（＋其下 `.dark` 區塊）**，分兩層
+  （known_issues #16）：
+  - **語意色（優先使用）**：依用途命名，淺色／深色自動切換，**使用處不寫 `dark:`**。
+    文字 `text-heading`（標題）／`text-body`（內文）／`text-muted`（次要）／`text-emphasis`
+    （強調、連結）；框線 `border-line`／`border-line-strong`；底色 `bg-card`／`bg-card-soft`／
+    `bg-card-solid`／`bg-tint`（淡藍標籤底）。新增 UI 先從這裡選，不要自創不透明度
+    （如 `text-ink/65`、`border-accent-blue/25`）。
+  - **品牌色票**：以色名引用，用於語意色未涵蓋之處（按鈕、圖示、裝飾、漸層），淺深配對仍
+    靠 `dark:` 逐處指定。`star-indigo-dark` `#2E2A4F`（深夜空）、`moon-blue` `#8FB8E8`（月光藍）、
+    `accent-blue` `#80A9D4`（accent）、`light-bg` `#EAF3F8`（內頁底）、`star-gold` `#FCE794`（星金），
+    另有 `star-indigo`、`dark-card`、`night`、`night-deep`、`accent-blue-soft`、`accent-blue-deep`、
+    `ink`、`ink-light`。
+  - 寫法：class 用 `text-heading`、`bg-star-gold/20`；頁內 `<style>`／行內樣式用
+    `var(--color-…)`。**以上顏色不得再寫死色碼**。
+  - 刻意保留逐處指定：標題於深色模式用月光藍／星金者、圖示色（`text-accent-blue
+    dark:text-moon-blue`）、恆為淺底或深底之元件上的字。其餘零星色碼（第三方品牌色、
+    粉彩漸層、星期標籤等）與 `rgba()` 陰影仍為寫死值。
 - `font-huninn`（粉圓體）for headings/brand; Latin: Quicksand/Nunito;
   `<html lang="zh-Hant">`; full-width punctuation in copy.
 - Page content lives in **frontmatter data arrays** (courses, reviews, wishlist,

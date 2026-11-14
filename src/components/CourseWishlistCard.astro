@@ -26,7 +26,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
 ---
 
 <div
-  class="wish-card group bg-white/95 dark:bg-dark-card/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-gray-200/80 dark:border-white/20 flex flex-col"
+  class="wish-card group bg-card-solid backdrop-blur-md rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:-translate-y-1.5 transition-all duration-300 border border-line-strong flex flex-col"
   data-wish-card
   data-course-id={id}
   data-course-name={title}
@@ -52,11 +52,11 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
   <!-- 資訊區 -->
   <div class="p-5 sm:p-6 flex-1 flex flex-col gap-3">
     <div>
-      <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wide transition-colors">{title}</h3>
-      <p class="text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
+      <h3 class="wish-title text-lg sm:text-xl font-bold font-huninn text-heading tracking-wide transition-colors">{title}</h3>
+      <p class="text-xs sm:text-sm text-muted mt-1 font-huninn tracking-wider transition-colors">企劃講師｜<span class="wish-teacher">{teacher}</span></p>
       <!-- 課程時數／課程費用（試算表 I／J 欄自由文字；留空時整行隱藏，待 get_all 覆寫） -->
-      <p class:list={['text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !duration }]}>課程時數｜<span class="wish-duration">{duration}</span></p>
-      <p class:list={['text-xs sm:text-sm text-ink/70 dark:text-white/70 mt-1 font-huninn tracking-wider transition-colors', { hidden: !price }]}>課程費用｜<span class="wish-price">{price}</span></p>
+      <p class:list={['text-xs sm:text-sm text-muted mt-1 font-huninn tracking-wider transition-colors', { hidden: !duration }]}>課程時數｜<span class="wish-duration">{duration}</span></p>
+      <p class:list={['text-xs sm:text-sm text-muted mt-1 font-huninn tracking-wider transition-colors', { hidden: !price }]}>課程費用｜<span class="wish-price">{price}</span></p>
     </div>
 
     <!-- 進度條 -->
@@ -68,7 +68,7 @@ const percent = Math.min(100, Math.round((votes / threshold) * 100));
         ></div>
       </div>
       <div class="flex items-center justify-between text-xs sm:text-sm">
-        <span class="text-ink/75 dark:text-white/75 font-medium transition-colors">
+        <span class="text-muted font-medium transition-colors">
           <span class="wish-progress-text">{votes} / {threshold}</span> 人許願
         </span>
         <span class:list={['wish-reached font-bold text-[#58A497]', reached ? '' : 'hidden']}>✓ 達標籌備中</span>

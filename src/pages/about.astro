@@ -185,32 +185,32 @@ const members: Person[] = [
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <!-- Header -->
     <header class="text-center max-w-2xl mx-auto mb-16 space-y-4">
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-accent-blue/15 text-star-indigo-dark dark:text-moon-blue border border-accent-blue/25 dark:border-white/10">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium bg-accent-blue/15 text-star-indigo-dark dark:text-moon-blue border border-line">
         <span>✦</span>
         <span>ABOUT STARWOVEN</span>
         <span>✦</span>
       </div>
-      <h1 class="text-3xl sm:text-4xl font-bold text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <h1 class="text-3xl sm:text-4xl font-bold text-heading tracking-wider transition-colors">
         關於我們
       </h1>
-      <p class="text-lg text-ink/80 dark:text-white/80 leading-relaxed transition-colors font-serif">
+      <p class="text-lg text-body leading-relaxed transition-colors font-serif">
         陪你一起在星光下，織出屬於自己的生命故事。
       </p>
       <div class="w-16 h-1 bg-accent-blue mx-auto rounded-full"></div>
     </header>
 
     <!-- Section 1: 品牌故事 Section (左右雙欄格局，完美呼應 Canva 視覺與留圖槽) -->
-    <section class="bg-white/85 dark:bg-white/10 backdrop-blur-xs p-6 sm:p-10 lg:p-12 rounded-3xl border border-accent-blue/25 dark:border-white/15 shadow-sm mb-20 transition-all">
+    <section class="bg-card backdrop-blur-xs p-6 sm:p-10 lg:p-12 rounded-3xl border border-line shadow-sm mb-20 transition-all">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
         <!-- 左側：品牌文字 -->
         <div class="lg:col-span-7 space-y-6">
           <div class="inline-block px-3 py-1 text-xs font-semibold rounded-full bg-light-bg dark:bg-white/10 text-star-indigo-dark dark:text-[#B3C8E8] border border-accent-blue/20">
             星靈緣起
           </div>
-          <h2 class="text-2xl sm:text-3xl font-bold text-star-indigo-dark dark:text-white leading-snug transition-colors">
+          <h2 class="text-2xl sm:text-3xl font-bold text-heading leading-snug transition-colors">
             我們從抱團取暖開始，<br class="hidden sm:inline" />現在我們想要傳承。
           </h2>
-          <div class="space-y-4 text-base sm:text-lg text-ink/85 dark:text-white/85 leading-relaxed transition-colors">
+          <div class="space-y-4 text-base sm:text-lg text-body leading-relaxed transition-colors">
             <p>
               專業不該只是個人的累積，更應該透過交流、分享與陪伴，持續傳承下去。
             </p>
@@ -220,7 +220,7 @@ const members: Person[] = [
             <p>
               我們希望讓每一份知識與經驗不被埋沒，而是在一次次相遇中延續、傳承。
             </p>
-            <p class="font-medium text-star-indigo-dark dark:text-moon-blue pt-2 border-t border-accent-blue/20 dark:border-white/10">
+            <p class="font-medium text-star-indigo-dark dark:text-moon-blue pt-2 border-t border-line">
               星靈織語，織起人與人的連結，也讓每一道光持續傳下去。
             </p>
           </div>
@@ -228,7 +228,7 @@ const members: Person[] = [
 
         <!-- 右側：品牌故事氛圍插圖（留圖槽 關於-A，Canva 原版 w=447, h=517） -->
         <div class="lg:col-span-5">
-          <div class="relative w-full aspect-[447/517] rounded-3xl overflow-hidden border-2 border-accent-blue/30 dark:border-white/20 shadow-md bg-gradient-to-br from-accent-blue/15 via-[#B3C8E8]/10 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-[#1F1938]/80 group">
+          <div class="relative w-full aspect-[447/517] rounded-3xl overflow-hidden border-2 border-line-strong shadow-md bg-gradient-to-br from-accent-blue/15 via-[#B3C8E8]/10 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-night/80 group">
             {imgAboutBrand ? (
               <img
                 src={imgAboutBrand}
@@ -243,7 +243,7 @@ const members: Person[] = [
               <div class="flex flex-col items-center justify-center h-full p-6 text-center space-y-4">
                 <!-- 精美靈性編織光芒 SVG -->
                 <div class="relative w-28 h-28 flex items-center justify-center">
-                  <div class="absolute inset-0 rounded-full bg-accent-blue/20 dark:bg-white/10 animate-pulse"></div>
+                  <div class="absolute inset-0 rounded-full bg-tint animate-pulse"></div>
                   <svg class="w-16 h-16 text-accent-blue dark:text-[#B3C8E8] transform group-hover:rotate-12 transition-transform duration-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"></circle>
                     <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path>
@@ -260,10 +260,10 @@ const members: Person[] = [
                   <span class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-star-indigo-dark text-light-bg dark:bg-black/60 dark:text-moon-blue border border-white/20">
                     [關於]-[圖片 A]
                   </span>
-                  <p class="text-sm font-bold text-star-indigo-dark dark:text-white pt-1">
+                  <p class="text-sm font-bold text-heading pt-1">
                     品牌故事插圖展示槽
                   </p>
-                  <p class="text-xs text-ink/70 dark:text-white/60">
+                  <p class="text-xs text-muted">
                     Canva 規格 447 × 517 · 星空下編織的光芒網絡
                   </p>
                 </div>
@@ -282,13 +282,13 @@ const members: Person[] = [
       <div class="flex items-center justify-center gap-3">
         <span class="text-amber-400 text-base">✦</span>
         <div class="w-12 h-px bg-accent-blue/40"></div>
-        <h2 class="text-2xl sm:text-3xl font-bold text-star-indigo-dark dark:text-white tracking-wide transition-colors">
+        <h2 class="text-2xl sm:text-3xl font-bold text-heading tracking-wide transition-colors">
           認識星靈夥伴
         </h2>
         <div class="w-12 h-px bg-accent-blue/40"></div>
         <span class="text-amber-400 text-base">✦</span>
       </div>
-      <p class="text-base sm:text-lg text-ink/85 dark:text-white/85 leading-relaxed transition-colors font-serif px-4">
+      <p class="text-base sm:text-lg text-body leading-relaxed transition-colors font-serif px-4">
         每位夥伴都有不同的專長與風格，願用自己的專業與經驗，<br class="hidden sm:inline" />
         陪伴你看見更多可能，找到最適合自己的答案。
       </p>
@@ -303,7 +303,7 @@ const members: Person[] = [
     <section class="mb-20">
       <div class="flex items-center gap-3 mb-8">
         <div class="w-2 h-6 rounded-full bg-accent-blue"></div>
-        <h3 class="text-xl sm:text-2xl font-bold text-star-indigo-dark dark:text-white transition-colors">
+        <h3 class="text-xl sm:text-2xl font-bold text-heading transition-colors">
           星靈織語創辦人
         </h3>
         <span class="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-200 border border-amber-500/30 font-medium">
@@ -313,7 +313,7 @@ const members: Person[] = [
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {founders.map((founder) => (
-          <div class="group relative bg-white/85 dark:bg-white/10 backdrop-blur-xs p-6 sm:p-7 rounded-3xl border border-accent-blue/25 dark:border-white/15 shadow-sm hover:shadow-md hover:border-accent-blue/45 dark:hover:border-white/30 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
+          <div class="group relative bg-card backdrop-blur-xs p-6 sm:p-7 rounded-3xl border border-line shadow-sm hover:shadow-md hover:border-accent-blue/45 dark:hover:border-white/30 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6">
             <!-- 左側：269×269 規格大圓形頭像（若有 link 則為可點擊超連結，無額外圖標） -->
             {founder.link ? (
               <a
@@ -322,7 +322,7 @@ const members: Person[] = [
                 rel="noopener noreferrer"
                 aria-label={`前往 ${founder.name} 的個人連結`}
                 title={`${founder.name}（點擊前往個人連結）`}
-                class="group/avatar relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-accent-blue/40 dark:border-white/25 shadow-md bg-gradient-to-br from-accent-blue/25 via-[#B3C8E8]/15 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-[#1F1938]/80 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-accent-blue hover:shadow-lg"
+                class="group/avatar relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-line-strong shadow-md bg-gradient-to-br from-accent-blue/25 via-[#B3C8E8]/15 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-night/80 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-accent-blue hover:shadow-lg"
               >
                 {founder.image ? (
                   <img
@@ -332,7 +332,7 @@ const members: Person[] = [
                   />
                 ) : (
                   <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                    <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
+                    <div class="w-12 h-12 rounded-full bg-card flex items-center justify-center text-xl font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
                       {founder.name[0]}
                     </div>
                     <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-star-indigo-dark/85 text-white dark:bg-black/75 dark:text-moon-blue border border-white/20">
@@ -344,7 +344,7 @@ const members: Person[] = [
                 <span class="absolute top-1 right-2 text-amber-400 text-xs">✦</span>
               </a>
             ) : (
-              <div class="relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-accent-blue/40 dark:border-white/25 shadow-md bg-gradient-to-br from-accent-blue/25 via-[#B3C8E8]/15 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-[#1F1938]/80 flex items-center justify-center">
+              <div class="relative shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-line-strong shadow-md bg-gradient-to-br from-accent-blue/25 via-[#B3C8E8]/15 to-star-indigo-dark/20 dark:from-star-indigo-dark/60 dark:to-night/80 flex items-center justify-center">
                 {founder.image ? (
                   <img
                     src={founder.image}
@@ -353,7 +353,7 @@ const members: Person[] = [
                   />
                 ) : (
                   <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                    <div class="w-12 h-12 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-xl font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
+                    <div class="w-12 h-12 rounded-full bg-card flex items-center justify-center text-xl font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
                       {founder.name[0]}
                     </div>
                     <span class="px-2 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-star-indigo-dark/85 text-white dark:bg-black/75 dark:text-moon-blue border border-white/20">
@@ -369,7 +369,7 @@ const members: Person[] = [
             <!-- 右側：創辦人名稱、身分與技能 -->
             <div class="flex-1 text-center sm:text-left min-w-0">
               <div class="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-2.5 mb-2">
-                <h4 class="text-2xl font-bold text-star-indigo-dark dark:text-white tracking-wide transition-colors">
+                <h4 class="text-2xl font-bold text-heading tracking-wide transition-colors">
                   {founder.name}
                 </h4>
                 <span class="inline-block self-center sm:self-auto text-xs px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-800 dark:text-amber-200 border border-amber-500/30 font-semibold">
@@ -377,14 +377,14 @@ const members: Person[] = [
                 </span>
               </div>
 
-              <p class="text-xs text-ink/70 dark:text-white/60 mb-3">
+              <p class="text-xs text-muted mb-3">
                 專業領域與傳承項目
               </p>
 
               <!-- 專長項目標籤（呼應 Canva 排版內容） -->
               <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start">
                 {founder.skills.map((skill) => (
-                  <span class="text-xs bg-light-bg dark:bg-white/10 text-star-indigo-dark dark:text-white/90 px-2.5 py-1 rounded-lg border border-accent-blue/20 dark:border-white/5 transition-colors">
+                  <span class="text-xs bg-light-bg dark:bg-white/10 text-heading px-2.5 py-1 rounded-lg border border-line transition-colors">
                     {skill}
                   </span>
                 ))}
@@ -399,10 +399,10 @@ const members: Person[] = [
     <section class="mb-20">
       <div class="flex items-center gap-3 mb-8">
         <div class="w-2 h-6 rounded-full bg-accent-blue"></div>
-        <h3 class="text-xl sm:text-2xl font-bold text-star-indigo-dark dark:text-white transition-colors">
+        <h3 class="text-xl sm:text-2xl font-bold text-heading transition-colors">
           星靈織語夥伴
         </h3>
-        <span class="text-xs px-2.5 py-0.5 rounded-full bg-accent-blue/15 text-star-indigo-dark dark:text-moon-blue border border-accent-blue/25 dark:border-white/10 font-medium">
+        <span class="text-xs px-2.5 py-0.5 rounded-full bg-accent-blue/15 text-star-indigo-dark dark:text-moon-blue border border-line font-medium">
           {members.length} 位專業夥伴
         </span>
       </div>
@@ -410,7 +410,7 @@ const members: Person[] = [
       <!-- 2 欄網格佈局（沿用 Canva Section 4 & 5 版型） -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
         {members.map((member) => (
-          <div class="group relative bg-white/80 dark:bg-white/10 backdrop-blur-xs p-5 sm:p-6 rounded-3xl border border-accent-blue/20 dark:border-white/15 shadow-xs hover:shadow-md hover:border-accent-blue/40 dark:hover:border-white/25 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
+          <div class="group relative bg-card backdrop-blur-xs p-5 sm:p-6 rounded-3xl border border-line shadow-xs hover:shadow-md hover:border-accent-blue/40 dark:hover:border-white/25 transition-all duration-300 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
             <!-- 左側：269×269 規格大圓形頭像（若有 link 則為可點擊超連結，無額外圖標） -->
             {member.link ? (
               <a
@@ -419,7 +419,7 @@ const members: Person[] = [
                 rel="noopener noreferrer"
                 aria-label={`前往 ${member.name} 的個人連結`}
                 title={`${member.name}（點擊前往個人連結）`}
-                class="group/avatar relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-accent-blue/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-accent-blue/20 via-[#B3C8E8]/10 to-star-indigo-dark/15 dark:from-star-indigo-dark/50 dark:to-[#1F1938]/70 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-accent-blue hover:shadow-md"
+                class="group/avatar relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-line-strong shadow-sm bg-gradient-to-br from-accent-blue/20 via-[#B3C8E8]/10 to-star-indigo-dark/15 dark:from-star-indigo-dark/50 dark:to-night/70 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-105 active:scale-95 hover:border-accent-blue hover:shadow-md"
               >
                 {member.image ? (
                   <img
@@ -429,7 +429,7 @@ const members: Person[] = [
                   />
                 ) : (
                   <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                    <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
+                    <div class="w-10 h-10 rounded-full bg-card flex items-center justify-center text-lg font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
                       {member.name[0]}
                     </div>
                     <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-star-indigo-dark/80 text-white dark:bg-black/70 dark:text-moon-blue border border-white/20">
@@ -440,7 +440,7 @@ const members: Person[] = [
                 <span class="absolute top-1 right-1 text-accent-blue text-[10px]">✧</span>
               </a>
             ) : (
-              <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-accent-blue/30 dark:border-white/20 shadow-sm bg-gradient-to-br from-accent-blue/20 via-[#B3C8E8]/10 to-star-indigo-dark/15 dark:from-star-indigo-dark/50 dark:to-[#1F1938]/70 flex items-center justify-center">
+              <div class="relative shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-line-strong shadow-sm bg-gradient-to-br from-accent-blue/20 via-[#B3C8E8]/10 to-star-indigo-dark/15 dark:from-star-indigo-dark/50 dark:to-night/70 flex items-center justify-center">
                 {member.image ? (
                   <img
                     src={member.image}
@@ -449,7 +449,7 @@ const members: Person[] = [
                   />
                 ) : (
                   <div class="flex flex-col items-center justify-center w-full h-full text-center p-2">
-                    <div class="w-10 h-10 rounded-full bg-white/60 dark:bg-white/10 flex items-center justify-center text-lg font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
+                    <div class="w-10 h-10 rounded-full bg-card flex items-center justify-center text-lg font-bold text-star-indigo-dark dark:text-moon-blue shadow-xs mb-1">
                       {member.name[0]}
                     </div>
                     <span class="px-1.5 py-0.5 text-[9px] font-mono font-semibold rounded-full bg-star-indigo-dark/80 text-white dark:bg-black/70 dark:text-moon-blue border border-white/20">
@@ -464,10 +464,10 @@ const members: Person[] = [
             <!-- 右側：夥伴名稱與專長清單 -->
             <div class="flex-1 text-center sm:text-left min-w-0">
               <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mb-2">
-                <h4 class="text-xl font-bold text-star-indigo-dark dark:text-white tracking-wide transition-colors">
+                <h4 class="text-xl font-bold text-heading tracking-wide transition-colors">
                   {member.name}
                 </h4>
-                <span class="inline-block self-center sm:self-auto text-[11px] px-2 py-0.5 rounded-full bg-accent-blue/10 dark:bg-white/10 text-ink dark:text-white/80 border border-accent-blue/20">
+                <span class="inline-block self-center sm:self-auto text-[11px] px-2 py-0.5 rounded-full bg-tint text-body border border-accent-blue/20">
                   星靈夥伴
                 </span>
               </div>
@@ -475,7 +475,7 @@ const members: Person[] = [
               <!-- 專長標籤（對應 Canva 各成員專長條列） -->
               <div class="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1">
                 {member.skills.map((skill) => (
-                  <span class="text-[11px] sm:text-xs bg-light-bg/90 dark:bg-white/10 text-ink dark:text-white/85 px-2.5 py-0.5 rounded-md border border-accent-blue/15 dark:border-white/5 transition-colors">
+                  <span class="text-[11px] sm:text-xs bg-light-bg/90 dark:bg-white/10 text-body px-2.5 py-0.5 rounded-md border border-line transition-colors">
                     {skill}
                   </span>
                 ))}
@@ -487,16 +487,16 @@ const members: Person[] = [
     </section>
 
     <!-- Bottom CTA Section -->
-    <div class="text-center bg-white/70 dark:bg-white/10 backdrop-blur-xs p-8 sm:p-12 rounded-3xl border border-accent-blue/25 dark:border-white/15 max-w-2xl mx-auto space-y-5 transition-colors shadow-sm">
-      <div class="inline-flex items-center gap-1.5 text-xs text-accent-blue-deep dark:text-moon-blue font-medium">
+    <div class="text-center bg-card backdrop-blur-xs p-8 sm:p-12 rounded-3xl border border-line max-w-2xl mx-auto space-y-5 transition-colors shadow-sm">
+      <div class="inline-flex items-center gap-1.5 text-xs text-emphasis font-medium">
         <span>✦</span>
         <span>CONNECT WITH US</span>
         <span>✦</span>
       </div>
-      <h2 class="text-2xl sm:text-3xl font-bold text-star-indigo-dark dark:text-white transition-colors">
+      <h2 class="text-2xl sm:text-3xl font-bold text-heading transition-colors">
         想與星靈夥伴們相遇嗎？
       </h2>
-      <p class="text-sm sm:text-base text-ink/80 dark:text-white/80 transition-colors leading-relaxed">
+      <p class="text-sm sm:text-base text-body transition-colors leading-relaxed">
         無論是渴望深度對話的個別諮詢、還是想要一起學習交流的團練活動，<br class="hidden sm:inline" />
         歡迎加入我們的 LINE 官方帳號，開啟你的星靈對話。
       </p>

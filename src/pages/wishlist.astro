@@ -23,10 +23,10 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
         <span>敲碗開課・集氣許願</span>
         <span>✦</span>
       </div>
-      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-heading tracking-wider transition-colors">
         課程許願池
       </h1>
-      <p class="text-lg sm:text-xl text-ink/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+      <p class="text-lg sm:text-xl text-body font-light leading-relaxed tracking-wide transition-colors">
         有人跟你想的一樣，我們來促成它。<br class="hidden sm:inline" />
         按下「我想一起」為心儀的課程集氣，集滿人數即刻開班！
       </p>
@@ -35,7 +35,7 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
 
     <!-- 導引列（左側說明、右側「我想許願」LINE 按鈕） -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 sm:mb-12 border-b border-[#F5A623]/25 dark:border-white/10 pb-5">
-      <p class="text-sm sm:text-base text-ink/75 dark:text-white/70 font-light tracking-wide transition-colors">
+      <p class="text-sm sm:text-base text-muted font-light tracking-wide transition-colors">
         想許願的課程不在清單中？歡迎透過 LINE 官方帳號提案，我們會定期評估加入許願池。
       </p>
       <a
@@ -55,7 +55,7 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6" data-wish-grid>
       {Array.from({ length: 6 }).map(() => (
         <div
-          class="bg-white/95 dark:bg-dark-card/95 backdrop-blur-md rounded-3xl overflow-hidden shadow-lg border border-gray-200/80 dark:border-white/20 flex flex-col animate-pulse"
+          class="bg-card-solid backdrop-blur-md rounded-3xl overflow-hidden shadow-lg border border-line-strong flex flex-col animate-pulse"
           data-wish-skeleton
           aria-hidden="true"
         >
@@ -77,10 +77,10 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
     <!-- 初始載入失敗錯誤區塊（預設隱藏；API 無回應且頁面尚無卡片時由前端顯示） -->
     <div id="wish-error" class="hidden text-center py-14 sm:py-20 space-y-4">
       <p class="text-4xl" aria-hidden="true">☁️</p>
-      <p class="text-lg sm:text-xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <p class="text-lg sm:text-xl font-bold font-huninn text-heading tracking-wider transition-colors">
         許願池暫時連線異常
       </p>
-      <p class="text-sm sm:text-base text-ink/70 dark:text-white/70 font-light tracking-wide transition-colors">
+      <p class="text-sm sm:text-base text-muted font-light tracking-wide transition-colors">
         課程清單載入失敗，請稍候片刻後重新整理頁面。
       </p>
       <button
@@ -93,7 +93,7 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
     </div>
 
     <noscript>
-      <p class="text-center text-sm sm:text-base text-ink/75 dark:text-white/70 font-huninn tracking-wide py-14">
+      <p class="text-center text-sm sm:text-base text-muted font-huninn tracking-wide py-14">
         許願池需要啟用 JavaScript 才能顯示課程清單與投票。
       </p>
     </noscript>
@@ -121,7 +121,7 @@ import CourseWishlistCard from '../components/CourseWishlistCard.astro';
       import '../scripts/wishlist';
     </script>
 
-    <p class="text-center text-xs sm:text-sm text-ink/60 dark:text-white/50 font-huninn tracking-wide transition-colors mt-8 sm:mt-12">
+    <p class="text-center text-xs sm:text-sm text-muted font-huninn tracking-wide transition-colors mt-8 sm:mt-12">
       許願僅為開課意向統計，不收取任何費用；課程達標後將於 LINE 官方帳號優先公告開課資訊。
     </p>
   </div>

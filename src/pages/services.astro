@@ -224,10 +224,10 @@ const categorizedServices = serviceCategories.map((cat) => ({
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
     <!-- Header: 還原 Canva 頁頭標題與手繪感說明 -->
     <header class="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-4">
-      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-heading tracking-wider transition-colors">
         命理服務
       </h1>
-      <p class="text-lg sm:text-xl text-ink/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+      <p class="text-lg sm:text-xl text-body font-light leading-relaxed tracking-wide transition-colors">
         選擇適合你的命理陪伴，<br class="hidden sm:inline" />
         讓每一次探索，都能更靠近真實的自己。
       </p>
@@ -241,7 +241,7 @@ const categorizedServices = serviceCategories.map((cat) => ({
           <li>
             <a
               href={`#${cat.id}`}
-              class="flex items-center justify-center gap-1.5 h-full px-4 py-3 rounded-full font-huninn font-bold text-base sm:text-lg tracking-wider text-star-indigo-dark dark:text-white bg-white/85 dark:bg-white/10 border border-accent-blue/35 dark:border-white/20 shadow-sm hover:bg-accent-blue/15 dark:hover:bg-white/20 hover:border-accent-blue dark:hover:border-white/40 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue transition-all duration-300"
+              class="flex items-center justify-center gap-1.5 h-full px-4 py-3 rounded-full font-huninn font-bold text-base sm:text-lg tracking-wider text-heading bg-card border border-line-strong shadow-sm hover:bg-accent-blue/15 dark:hover:bg-white/20 hover:border-accent-blue dark:hover:border-white/40 hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-blue transition-all duration-300"
             >
               <span class="text-accent-blue dark:text-star-gold text-sm" aria-hidden="true">✦</span>
               {cat.label}
@@ -255,25 +255,25 @@ const categorizedServices = serviceCategories.map((cat) => ({
     <div class="space-y-16 sm:space-y-20">
     {categorizedServices.map((cat) => (
     <section id={cat.id} aria-labelledby={`${cat.id}-heading`} class="scroll-mt-28">
-      <h2 id={`${cat.id}-heading`} class:list={['text-center text-2xl sm:text-3xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors', cat.note ? 'mb-4' : 'mb-8 sm:mb-10']}>
+      <h2 id={`${cat.id}-heading`} class:list={['text-center text-2xl sm:text-3xl font-bold font-huninn text-heading tracking-wider transition-colors', cat.note ? 'mb-4' : 'mb-8 sm:mb-10']}>
         <span class="text-accent-blue dark:text-star-gold" aria-hidden="true">✦ </span>{cat.label}<span class="text-accent-blue dark:text-star-gold" aria-hidden="true"> ✦</span>
       </h2>
       {cat.note && (
-        <p class="w-fit max-w-full mx-auto mb-8 sm:mb-10 px-5 py-2 rounded-full text-center text-sm sm:text-base font-medium tracking-wide text-star-indigo-dark dark:text-white/90 bg-white/85 dark:bg-white/10 border border-accent-blue/35 dark:border-white/20 shadow-2xs transition-colors">
+        <p class="w-fit max-w-full mx-auto mb-8 sm:mb-10 px-5 py-2 rounded-full text-center text-sm sm:text-base font-medium tracking-wide text-heading bg-card border border-line-strong shadow-2xs transition-colors">
           <span class="text-accent-blue dark:text-star-gold" aria-hidden="true">✧ </span>{cat.note}
         </p>
       )}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
       {cat.items.map((item, index) => (
         <div class:list={[
-          'group bg-white/85 dark:bg-white/10 backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-accent-blue/25 dark:border-white/15 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between',
+          'group bg-card backdrop-blur-md rounded-3xl p-7 sm:p-9 border border-line shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between',
           // 奇數項目的最後一張：跨兩欄後以單欄寬度置中
           cat.items.length % 2 === 1 && index === cat.items.length - 1 && 'lg:col-span-2 lg:justify-self-center lg:w-[calc((100%-2.5rem)/2)]',
         ]}>
           
           <div>
             <!-- 1. 卡片頂部：專屬留圖空間（插圖） + 服務大標題 -->
-            <div class="flex items-center gap-5 sm:gap-6 pb-6 border-b border-accent-blue/15 dark:border-white/10">
+            <div class="flex items-center gap-5 sm:gap-6 pb-6 border-b border-line">
               
               <!-- 留圖空間（Image Slot / Placeholder） -->
               <div class="shrink-0 w-24 h-24 sm:w-28 sm:h-28 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
@@ -284,7 +284,7 @@ const categorizedServices = serviceCategories.map((cat) => ({
                     class="w-full h-full object-contain mx-auto"
                   />
                 ) : (
-                  <div class="w-full h-full rounded-2xl border-2 border-dashed border-accent-blue/50 dark:border-white/25 bg-light-bg/60 dark:bg-white/5 flex flex-col items-center justify-center p-2 text-center group-hover:border-star-indigo-dark/50 dark:group-hover:border-white/50 transition-colors">
+                  <div class="w-full h-full rounded-2xl border-2 border-dashed border-line-strong bg-light-bg/60 dark:bg-white/5 flex flex-col items-center justify-center p-2 text-center group-hover:border-star-indigo-dark/50 dark:group-hover:border-white/50 transition-colors">
                     
                     {/* 塔羅牌圖示 */}
                     {item.iconType === 'tarot' && (
@@ -364,7 +364,7 @@ const categorizedServices = serviceCategories.map((cat) => ({
 
               <!-- 標題與裝飾線 -->
               <div class="flex-1">
-                <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+                <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-heading tracking-wider transition-colors">
                   {item.title}
                 </h3>
                 <!-- 手繪微光底線 -->
@@ -382,21 +382,21 @@ const categorizedServices = serviceCategories.map((cat) => ({
             </div>
 
             <!-- 2. 卡片中部：收費標準區塊 -->
-            <div class="mt-6 p-4 sm:p-5 rounded-2xl bg-light-bg/70 dark:bg-white/5 border border-accent-blue/20 dark:border-white/10 space-y-2.5 transition-colors">
-              <div class="text-xs font-semibold uppercase tracking-wider text-accent-blue-deep dark:text-moon-blue flex items-center gap-1.5">
+            <div class="mt-6 p-4 sm:p-5 rounded-2xl bg-light-bg/70 dark:bg-white/5 border border-line space-y-2.5 transition-colors">
+              <div class="text-xs font-semibold uppercase tracking-wider text-emphasis flex items-center gap-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-accent-blue dark:bg-moon-blue"></span>
                 收費標準
               </div>
               <div class="space-y-1.5">
                 {item.prices.map((p) => (
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm sm:text-base font-semibold text-star-indigo-dark dark:text-white">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm sm:text-base font-semibold text-heading">
                     <span class="opacity-90">{p.label}</span>
                     <span class="text-star-indigo-dark dark:text-star-gold font-bold mt-0.5 sm:mt-0">{p.rate}</span>
                   </div>
                 ))}
               </div>
               {item.overtimeNote && (
-                <p class="text-xs text-ink/70 dark:text-white/60 pt-1 border-t border-current/10">
+                <p class="text-xs text-muted pt-1 border-t border-current/10">
                   ＊ {item.overtimeNote}
                 </p>
               )}
@@ -405,8 +405,8 @@ const categorizedServices = serviceCategories.map((cat) => ({
           </div>
 
           <!-- 3. 卡片底部：可預約占卜師 / 命理師團隊（原站特色名單） -->
-          <div class="mt-7 pt-5 border-t border-gray-100 dark:border-white/10">
-            <div class="text-xs sm:text-sm font-semibold text-accent-blue-deep dark:text-moon-blue flex items-center gap-1.5 mb-3">
+          <div class="mt-7 pt-5 border-t border-line">
+            <div class="text-xs sm:text-sm font-semibold text-emphasis flex items-center gap-1.5 mb-3">
               <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 20 20">
                 <path d="M10 2a1 1 0 011 1v1.323l3.954 1.582 1.599-.8a1 1 0 01.894 1.79l-1.233.616 2.052 4.103a1 1 0 01-.894 1.386H2.628a1 1 0 01-.894-1.386l2.052-4.103-1.233-.616a1 1 0 11.894-1.79l1.599.8L9 4.323V3a1 1 0 011-1z" />
               </svg>
@@ -417,13 +417,13 @@ const categorizedServices = serviceCategories.map((cat) => ({
               {item.practitioners.map((group) => (
                 <div class="flex flex-wrap items-center gap-2">
                   {group.system && (
-                    <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-accent-blue/20 text-star-indigo-dark dark:bg-white/20 dark:text-white shrink-0">
+                    <span class="text-xs font-semibold px-2 py-0.5 rounded-md bg-accent-blue/20 text-heading dark:bg-white/20 shrink-0">
                       {group.system}
                     </span>
                   )}
                   <div class="flex flex-wrap gap-1.5">
                     {group.names.map((name) => (
-                      <span class="px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-white dark:bg-white/10 border border-accent-blue/25 dark:border-white/15 text-star-indigo-dark dark:text-white shadow-2xs">
+                      <span class="px-3 py-1 rounded-full text-xs sm:text-sm font-medium bg-white dark:bg-white/10 border border-line text-heading shadow-2xs">
                         {name}
                       </span>
                     ))}
@@ -441,11 +441,11 @@ const categorizedServices = serviceCategories.map((cat) => ({
     </div>
 
     <!-- CTA Section: 還原 Canva 頁尾引導預約諮詢區塊 -->
-    <div class="mt-16 sm:mt-24 text-center bg-white/70 dark:bg-white/10 backdrop-blur-md p-8 sm:p-12 rounded-3xl border border-accent-blue/25 dark:border-white/15 max-w-2xl mx-auto space-y-4 shadow-sm transition-colors">
-      <h2 class="text-2xl sm:text-3xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+    <div class="mt-16 sm:mt-24 text-center bg-card backdrop-blur-md p-8 sm:p-12 rounded-3xl border border-line max-w-2xl mx-auto space-y-4 shadow-sm transition-colors">
+      <h2 class="text-2xl sm:text-3xl font-bold font-huninn text-heading tracking-wider transition-colors">
         準備好開啟您的心靈對話了嗎？
       </h2>
-      <p class="text-base text-ink/80 dark:text-white/80 leading-relaxed font-light transition-colors">
+      <p class="text-base text-body leading-relaxed font-light transition-colors">
         點選下方按鈕加入官方 LINE，專人為您安排預約諮詢時間。
       </p>
       <div class="pt-2">

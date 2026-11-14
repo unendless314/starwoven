@@ -29,10 +29,10 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
         <span>{UI_TEXT.badge}</span>
         <span>✦</span>
       </div>
-      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <h1 class="text-3xl sm:text-5xl font-bold font-huninn text-heading tracking-wider transition-colors">
         {UI_TEXT.heading}
       </h1>
-      <p class="text-lg sm:text-xl text-ink/85 dark:text-white/85 font-light leading-relaxed tracking-wide transition-colors">
+      <p class="text-lg sm:text-xl text-body font-light leading-relaxed tracking-wide transition-colors">
         {UI_TEXT.intro[0]}<br class="hidden sm:inline" />
         {UI_TEXT.intro[1]}
       </p>
@@ -44,12 +44,12 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
       <h2 id="tarot-setup-title" class="sr-only">{UI_TEXT.setupHeading}</h2>
       <form id="tarot-form" class="space-y-8" novalidate>
         <fieldset>
-          <legend class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white mb-4">
+          <legend class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-heading mb-4">
             {UI_TEXT.spreadLegend}
           </legend>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {SPREAD_IDS.map((id, i) => (
-              <label class="tarot-spread-option group relative cursor-pointer rounded-3xl border-2 p-5 sm:p-6 transition-all duration-200 bg-white/90 dark:bg-dark-card/90 border-gray-200/80 dark:border-white/15 hover:border-accent-blue dark:hover:border-moon-blue has-[:checked]:border-accent-blue dark:has-[:checked]:border-star-gold has-[:checked]:shadow-lg has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent-blue">
+              <label class="tarot-spread-option group relative cursor-pointer rounded-3xl border-2 p-5 sm:p-6 transition-all duration-200 bg-white/90 dark:bg-dark-card/90 border-line-strong hover:border-accent-blue dark:hover:border-moon-blue has-[:checked]:border-accent-blue dark:has-[:checked]:border-star-gold has-[:checked]:shadow-lg has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-accent-blue">
                 <input type="radio" name="spread" value={id} checked={i === 0} class="sr-only" />
                 <span class="flex items-center gap-3 mb-2">
                   <span class="flex gap-1" aria-hidden="true">
@@ -57,14 +57,14 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
                       <span class="tarot-mini-back"></span>
                     ))}
                   </span>
-                  <span class="text-lg font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white">
+                  <span class="text-lg font-bold font-huninn tracking-wider text-heading">
                     {SPREADS[id].name}
                   </span>
                 </span>
-                <span class="block text-sm sm:text-base text-ink/75 dark:text-white/70 leading-relaxed">
+                <span class="block text-sm sm:text-base text-muted leading-relaxed">
                   {SPREADS[id].description}
                 </span>
-                <span class="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-accent-blue/60 dark:border-white/30 flex items-center justify-center group-has-[:checked]:border-accent-blue dark:group-has-[:checked]:border-star-gold" aria-hidden="true">
+                <span class="absolute top-4 right-4 w-5 h-5 rounded-full border-2 border-line-strong flex items-center justify-center group-has-[:checked]:border-accent-blue dark:group-has-[:checked]:border-star-gold" aria-hidden="true">
                   <span class="w-2.5 h-2.5 rounded-full bg-accent-blue dark:bg-star-gold opacity-0 group-has-[:checked]:opacity-100 transition-opacity"></span>
                 </span>
               </label>
@@ -73,7 +73,7 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
         </fieldset>
 
         <div>
-          <label for="tarot-question" class="block text-lg sm:text-xl font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white mb-4">
+          <label for="tarot-question" class="block text-lg sm:text-xl font-bold font-huninn tracking-wider text-heading mb-4">
             {UI_TEXT.questionLabel}
           </label>
           <textarea
@@ -82,11 +82,11 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
             rows="3"
             placeholder={UI_TEXT.questionPlaceholder}
             aria-describedby="tarot-question-count tarot-privacy"
-            class="w-full rounded-2xl border px-4 py-3 text-base leading-relaxed resize-none transition-colors bg-white/95 dark:bg-dark-card/95 border-gray-200/80 dark:border-white/20 text-ink dark:text-white placeholder:text-ink/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent-blue dark:focus:ring-moon-blue"
+            class="w-full rounded-2xl border px-4 py-3 text-base leading-relaxed resize-none transition-colors bg-card-solid border-line-strong text-body placeholder:text-ink/40 dark:placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-accent-blue dark:focus:ring-moon-blue"
           ></textarea>
           <div class="flex flex-col-reverse sm:flex-row sm:items-start justify-between gap-2 mt-2 text-xs sm:text-sm">
-            <p id="tarot-privacy" class="text-ink/65 dark:text-white/60 leading-relaxed">🔒 {PRIVACY_NOTE}</p>
-            <p id="tarot-question-count" class="shrink-0 text-ink/60 dark:text-white/55 tabular-nums" aria-live="polite">
+            <p id="tarot-privacy" class="text-muted leading-relaxed">🔒 {PRIVACY_NOTE}</p>
+            <p id="tarot-question-count" class="shrink-0 text-muted tabular-nums" aria-live="polite">
               <span data-question-count>0</span> / {QUESTION_MAX_CHARS}
             </p>
           </div>
@@ -106,7 +106,7 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
 
     <!-- ② 洗牌＋扇形選牌（儀式性互動，不決定實際牌面） -->
     <section data-step="pick" aria-labelledby="tarot-pick-status" class="tarot-panel" hidden>
-      <p id="tarot-pick-status" class="text-center text-lg sm:text-xl font-huninn tracking-wider text-star-indigo-dark dark:text-white min-h-[1.75em]" aria-live="polite"></p>
+      <p id="tarot-pick-status" class="text-center text-lg sm:text-xl font-huninn tracking-wider text-heading min-h-[1.75em]" aria-live="polite"></p>
       <div class="tarot-fan mt-6" data-fan role="group" aria-label={UI_TEXT.fanLabel}></div>
       <div class="tarot-waiting text-center mt-8" data-waiting hidden>
         <span class="tarot-orbit" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -115,21 +115,21 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
 
     <!-- ③ 翻牌＋解讀 -->
     <section data-step="result" aria-labelledby="tarot-result-title" class="tarot-panel" hidden>
-      <h2 id="tarot-result-title" class="text-center text-2xl sm:text-3xl font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white mb-8" data-result-title></h2>
+      <h2 id="tarot-result-title" class="text-center text-2xl sm:text-3xl font-bold font-huninn tracking-wider text-heading mb-8" data-result-title></h2>
       <div class="flex justify-center gap-3 sm:gap-6 mb-10" data-result-cards></div>
       <div class="space-y-5" data-reading aria-live="polite"></div>
     </section>
 
     <!-- ③' 安全關懷（自傷相關提問：不抽牌、不呼叫 AI） -->
     <section data-step="care" aria-labelledby="tarot-care-title" class="tarot-panel" hidden>
-      <div class="max-w-xl mx-auto rounded-3xl border p-6 sm:p-8 bg-white/95 dark:bg-dark-card/95 border-accent-blue/40 dark:border-white/20 shadow-lg text-center space-y-5">
+      <div class="max-w-xl mx-auto rounded-3xl border p-6 sm:p-8 bg-card-solid border-line-strong shadow-lg text-center space-y-5">
         <p class="text-4xl" aria-hidden="true">🤍</p>
-        <h2 id="tarot-care-title" class="text-xl sm:text-2xl font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white">{CARE_COPY.title}</h2>
-        <p class="text-base leading-relaxed text-ink/85 dark:text-white/85">{CARE_COPY.body}</p>
+        <h2 id="tarot-care-title" class="text-xl sm:text-2xl font-bold font-huninn tracking-wider text-heading">{CARE_COPY.title}</h2>
+        <p class="text-base leading-relaxed text-body">{CARE_COPY.body}</p>
         <ul class="space-y-2.5">
           {CARE_COPY.hotlines.map((h) => (
             <li>
-              <a href={`tel:${h.number}`} class="flex items-center justify-between gap-3 rounded-2xl px-5 py-3 bg-light-bg dark:bg-white/10 text-star-indigo-dark dark:text-white hover:bg-[#DFECF3] dark:hover:bg-white/15 transition-colors">
+              <a href={`tel:${h.number}`} class="flex items-center justify-between gap-3 rounded-2xl px-5 py-3 bg-light-bg dark:bg-white/10 text-heading hover:bg-[#DFECF3] dark:hover:bg-white/15 transition-colors">
                 <span class="font-huninn tracking-wider">{h.name}{h.note && <span class="text-sm opacity-70">（{h.note}）</span>}</span>
                 <span class="text-xl font-bold tabular-nums tracking-widest">{h.number}</span>
               </a>
@@ -149,7 +149,7 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
     <section data-step="error" aria-labelledby="tarot-error-message" class="tarot-panel" hidden>
       <div class="text-center py-10 sm:py-14 space-y-5" role="alert">
         <p class="text-4xl" aria-hidden="true">☁️</p>
-        <p id="tarot-error-message" class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white" data-error-message></p>
+        <p id="tarot-error-message" class="text-lg sm:text-xl font-bold font-huninn tracking-wider text-heading" data-error-message></p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
           <button type="button" data-action="retry" class="inline-flex items-center gap-1.5 bg-accent-blue hover:bg-accent-blue-soft text-star-indigo-dark px-7 py-2.5 rounded-full font-huninn font-bold tracking-widest shadow-sm hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer" hidden>
             {UI_TEXT.retry}
@@ -160,19 +160,19 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
     </section>
 
     <noscript>
-      <p class="text-center text-sm sm:text-base text-ink/75 dark:text-white/70 font-huninn tracking-wide py-14">
+      <p class="text-center text-sm sm:text-base text-muted font-huninn tracking-wide py-14">
         {UI_TEXT.noscript}
       </p>
     </noscript>
 
-    <p class="text-center text-xs sm:text-sm text-ink/60 dark:text-white/50 font-huninn tracking-wide transition-colors mt-12 sm:mt-16">
+    <p class="text-center text-xs sm:text-sm text-muted font-huninn tracking-wide transition-colors mt-12 sm:mt-16">
       {PLACEHOLDER_NOTE}
     </p>
 
     <!-- 結果區：單張牌模板（前端 clone 填入；逆位時牌面旋轉 180° 並以文字標示） -->
     <template id="tarot-card-template">
       <figure class="tarot-result-card flex flex-col items-center gap-2.5">
-        <figcaption class="text-sm sm:text-base font-huninn tracking-wider text-accent-blue-deep dark:text-moon-blue" data-position></figcaption>
+        <figcaption class="text-sm sm:text-base font-huninn tracking-wider text-emphasis" data-position></figcaption>
         <div class="tarot-flip" data-flip>
           <div class="tarot-flip-inner">
             <div class="tarot-card-back tarot-flip-back" aria-hidden="true"></div>
@@ -184,8 +184,8 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
           </div>
         </div>
         <div class="text-center leading-snug">
-          <p class="font-bold font-huninn tracking-wider text-star-indigo-dark dark:text-white" data-name-zh></p>
-          <p class="text-xs text-ink/65 dark:text-white/60 font-['Quicksand']" data-name-en></p>
+          <p class="font-bold font-huninn tracking-wider text-heading" data-name-zh></p>
+          <p class="text-xs text-muted font-['Quicksand']" data-name-en></p>
           <p class="text-xs mt-1 inline-block px-2 py-0.5 rounded-full" data-orientation></p>
         </div>
       </figure>
@@ -194,7 +194,7 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
     <!-- 結果區：結尾（建議、告知、導流 CTA、再抽一次） -->
     <template id="tarot-outro-template">
       <div class="tarot-fade space-y-6">
-        <p class="text-xs sm:text-sm text-center text-ink/60 dark:text-white/50" data-notice></p>
+        <p class="text-xs sm:text-sm text-center text-muted" data-notice></p>
         <div class="rounded-3xl p-6 sm:p-8 text-center space-y-4 bg-gradient-to-br from-star-indigo-dark to-star-indigo text-white shadow-xl">
           <p class="text-xl sm:text-2xl font-bold font-huninn tracking-wider">{UI_TEXT.ctaTitle}</p>
           <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -243,7 +243,7 @@ const LINE_URL = 'https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url';
       radial-gradient(circle at 78% 30%, rgba(255, 255, 255, 0.55) 0 1%, transparent 1.4%),
       radial-gradient(circle at 30% 80%, rgba(143, 184, 232, 0.8) 0 1.2%, transparent 1.6%),
       radial-gradient(circle at 70% 75%, rgba(255, 255, 255, 0.5) 0 0.9%, transparent 1.3%),
-      linear-gradient(160deg, var(--color-star-indigo) 0%, var(--color-star-indigo-dark) 55%, #1c1834 100%);
+      linear-gradient(160deg, var(--color-star-indigo) 0%, var(--color-star-indigo-dark) 55%, var(--color-night) 100%);
     border: 2px solid rgba(252, 231, 148, 0.7);
     box-shadow: inset 0 0 0 4px var(--color-star-indigo-dark), inset 0 0 0 5px rgba(252, 231, 148, 0.45), 0 6px 16px rgba(46, 42, 79, 0.25);
   }

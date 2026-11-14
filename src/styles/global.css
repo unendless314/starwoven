@@ -2,8 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* 品牌色票（known_issues #16 第一階段）：全站以名稱引用，如 `text-accent-blue`、`bg-star-gold/20`；
-   頁內 <style> 與行內樣式用 `var(--color-accent-blue)`。換色只改這裡。
+/* 顏色唯一定義處（known_issues #16）。
+   1. 品牌色票：以色名引用，如 `text-accent-blue`、`bg-star-gold/20`。
+   2. 語意色：依用途命名，淺色／深色自動切換（深色值在下方 `.dark`），使用處不必再寫 `dark:`。
+   頁內 <style> 與行內樣式用 `var(--color-…)`。
    `static`：變數一律輸出，供未經 Tailwind 掃描之 <style>／行內樣式使用。 */
 @theme static {
   --font-huninn: 'Huninn', 'Quicksand', 'Nunito', sans-serif;
@@ -19,7 +21,35 @@
   --color-ink: #3A3A3A;              /* 淺底內文字 */
   --color-ink-light: #F5F5F5;        /* 深底內文字 */
   --color-star-gold: #FCE794;        /* 星金 */
+  --color-night: #1E1B3A;            /* 深色模式漸層暗部 */
+  --color-night-deep: #130F23;       /* 最深夜空（頁尾等漸層尾端） */
+
+  /* ── 語意色（淺色模式值；深色模式值見下方 .dark）── */
+  --color-heading: var(--color-star-indigo-dark);                                    /* 標題 */
+  --color-body: color-mix(in srgb, var(--color-ink) 90%, transparent);               /* 內文 */
+  --color-muted: color-mix(in srgb, var(--color-ink) 75%, transparent);              /* 次要文字（WCAG AA 下限，勿再調淡） */
+  --color-emphasis: var(--color-accent-blue-deep);                                   /* 強調文字／連結 */
+  --color-line: color-mix(in srgb, var(--color-accent-blue) 22%, transparent);       /* 一般框線／分隔線 */
+  --color-line-strong: color-mix(in srgb, var(--color-accent-blue) 35%, transparent);/* 較明顯框線 */
+  --color-card: rgb(255 255 255 / 0.8);                                              /* 卡片底 */
+  --color-card-soft: rgb(255 255 255 / 0.65);                                        /* 較透明之卡片底 */
+  --color-card-solid: rgb(255 255 255 / 0.95);                                       /* 近不透明卡片底（疊在裝飾背景上） */
+  --color-tint: color-mix(in srgb, var(--color-accent-blue) 15%, transparent);       /* 淡藍底（標籤、圖示底） */
 }
+
+.dark {
+  --color-heading: #FFFFFF;
+  --color-body: rgb(255 255 255 / 0.85);
+  --color-muted: rgb(255 255 255 / 0.7);
+  --color-emphasis: var(--color-moon-blue);
+  --color-line: rgb(255 255 255 / 0.12);
+  --color-line-strong: rgb(255 255 255 / 0.2);
+  --color-card: rgb(255 255 255 / 0.1);
+  --color-card-soft: rgb(255 255 255 / 0.05);
+  --color-card-solid: color-mix(in srgb, var(--color-dark-card) 95%, transparent);
+  --color-tint: rgb(255 255 255 / 0.1);
+}
+
 
 html {
   scroll-behavior: smooth;

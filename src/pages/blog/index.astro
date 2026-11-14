@@ -33,15 +33,15 @@ const formatDate = (date: Date) => {
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-16">
     <!-- Header -->
     <header class="text-center max-w-2xl mx-auto mb-14 space-y-4">
-      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium tracking-widest text-accent-blue-deep dark:text-moon-blue bg-accent-blue/15 dark:bg-white/10 border border-accent-blue/30 dark:border-white/15">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium tracking-widest text-emphasis bg-tint border border-line-strong">
         <span>✦</span>
         <span>STARWOVEN BLOG</span>
         <span>✦</span>
       </div>
-      <h1 class="text-3xl sm:text-4xl font-bold text-star-indigo-dark dark:text-white tracking-wider transition-colors">
+      <h1 class="text-3xl sm:text-4xl font-bold text-heading tracking-wider transition-colors">
         星靈專欄
       </h1>
-      <p class="text-base sm:text-lg text-ink/80 dark:text-white/80 leading-relaxed transition-colors">
+      <p class="text-base sm:text-lg text-body leading-relaxed transition-colors">
         每一篇文字，都是一場心靈的對話與自我照見。<br class="hidden sm:inline" />
         在星光與墨色之中，陪伴你梳理內在思緒，找回生活的寧靜與力量。
       </p>
@@ -58,7 +58,7 @@ const formatDate = (date: Date) => {
             'category-filter-btn px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 cursor-pointer border',
             idx === 0
               ? 'active-filter bg-star-indigo-dark text-white border-star-indigo-dark dark:bg-moon-blue dark:text-star-indigo-dark dark:border-moon-blue shadow-xs'
-              : 'bg-white/70 text-ink border-accent-blue/25 hover:bg-white dark:bg-white/10 dark:text-white/80 dark:border-white/15 dark:hover:bg-white/20'
+              : 'bg-card text-body border-line hover:bg-white dark:hover:bg-white/20'
           ]}
         >
           {cat}
@@ -71,11 +71,11 @@ const formatDate = (date: Date) => {
       <section
         id="featured-post-card"
         data-category={featuredPost.data.category}
-        class="blog-article-item mb-14 bg-white/85 dark:bg-white/10 rounded-3xl border border-accent-blue/25 dark:border-white/15 p-6 sm:p-10 shadow-sm transition-all hover:border-accent-blue/50 dark:hover:border-white/30"
+        class="blog-article-item mb-14 bg-card rounded-3xl border border-line p-6 sm:p-10 shadow-sm transition-all hover:border-accent-blue/50 dark:hover:border-white/30"
       >
         <div class="flex flex-col lg:flex-row gap-8 lg:gap-10 items-stretch">
           <!-- 氛圍插圖佔位/標籤區 -->
-          <div class="lg:w-5/12 min-h-[220px] sm:min-h-[260px] rounded-2xl bg-gradient-to-br from-accent-blue/20 via-light-bg to-star-indigo-dark/10 dark:from-star-indigo dark:via-star-indigo-dark dark:to-[#1E1B3A] p-6 flex flex-col justify-between border border-accent-blue/20 dark:border-white/10 relative overflow-hidden group">
+          <div class="lg:w-5/12 min-h-[220px] sm:min-h-[260px] rounded-2xl bg-gradient-to-br from-accent-blue/20 via-light-bg to-star-indigo-dark/10 dark:from-star-indigo dark:via-star-indigo-dark dark:to-night p-6 flex flex-col justify-between border border-line relative overflow-hidden group">
             {featuredPost.data.coverImage ? (
               <img
                 src={featuredPost.data.coverImage}
@@ -90,7 +90,7 @@ const formatDate = (date: Date) => {
                 <span>精選專文</span>
               </span>
               {!featuredPost.data.coverImage && (
-                <span class="text-xs text-accent-blue-deep dark:text-moon-blue font-medium tracking-wide">
+                <span class="text-xs text-emphasis font-medium tracking-wide">
                   {featuredPost.data.category}
                 </span>
               )}
@@ -99,7 +99,7 @@ const formatDate = (date: Date) => {
             <!-- 星靈靈性幾何符號圖示 -->
             {!featuredPost.data.coverImage && (
               <div class="my-auto py-6 flex justify-center items-center z-10">
-                <div class="w-20 h-20 rounded-full border border-accent-blue/40 dark:border-white/20 flex items-center justify-center bg-white/40 dark:bg-white/5 shadow-inner">
+                <div class="w-20 h-20 rounded-full border border-line-strong flex items-center justify-center bg-white/40 dark:bg-white/5 shadow-inner">
                   <CategoryIcon category={featuredPost.data.category} class="w-10 h-10 text-accent-blue dark:text-moon-blue transition-transform duration-300 group-hover:scale-110" />
                 </div>
               </div>
@@ -107,7 +107,7 @@ const formatDate = (date: Date) => {
 
             <!-- 無封面時之佔位資訊；有封面時不疊在圖上（右側內容區已列分類、日期與閱讀時間） -->
             {!featuredPost.data.coverImage && (
-              <div class="flex items-center justify-between text-xs text-ink/70 dark:text-white/60 z-10 font-medium">
+              <div class="flex items-center justify-between text-xs text-muted z-10 font-medium">
                 <span>{formatDate(featuredPost.data.pubDate)}</span>
                 <span>預估閱讀 {featuredPost.data.readTime}</span>
               </div>
@@ -118,34 +118,34 @@ const formatDate = (date: Date) => {
           <div class="lg:w-7/12 flex flex-col justify-between space-y-5">
             <div class="space-y-3">
               <div class="flex items-center gap-2 flex-wrap">
-                <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-accent-blue/20 text-star-indigo-dark dark:bg-white/15 dark:text-moon-blue">
+                <span class="px-2.5 py-0.5 rounded-md text-xs font-semibold bg-tint text-star-indigo-dark dark:text-moon-blue">
                   {featuredPost.data.category}
                 </span>
-                <span class="text-xs text-ink/60 dark:text-white/50">
+                <span class="text-xs text-muted">
                   {formatDate(featuredPost.data.pubDate)} · {featuredPost.data.readTime}
                 </span>
               </div>
-              <h2 class="text-2xl sm:text-3xl font-bold text-star-indigo-dark dark:text-white tracking-wide hover:text-accent-blue-deep dark:hover:text-moon-blue transition-colors">
+              <h2 class="text-2xl sm:text-3xl font-bold text-heading tracking-wide hover:text-accent-blue-deep dark:hover:text-moon-blue transition-colors">
                 <a href={`/blog/${featuredPost.id}`}>
                   {featuredPost.data.title}
                 </a>
               </h2>
-              <p class="text-sm sm:text-base text-ink/85 dark:text-white/80 leading-relaxed">
+              <p class="text-sm sm:text-base text-body leading-relaxed">
                 {featuredPost.data.description}
               </p>
             </div>
 
-            <div class="pt-4 border-t border-accent-blue/20 dark:border-white/10 flex items-center justify-between flex-wrap gap-4">
+            <div class="pt-4 border-t border-line flex items-center justify-between flex-wrap gap-4">
               <div class="flex items-center gap-3">
-                <div class="w-9 h-9 rounded-full bg-accent-blue/20 dark:bg-white/15 flex items-center justify-center font-bold text-xs text-star-indigo-dark dark:text-white">
+                <div class="w-9 h-9 rounded-full bg-tint flex items-center justify-center font-bold text-xs text-heading">
                   {featuredPost.data.author.charAt(0)}
                 </div>
                 <div>
-                  <div class="text-sm font-bold text-star-indigo-dark dark:text-white">
+                  <div class="text-sm font-bold text-heading">
                     {featuredPost.data.author}
                   </div>
                   {featuredPost.data.authorRole && (
-                    <div class="text-xs text-accent-blue-deep dark:text-moon-blue">
+                    <div class="text-xs text-emphasis">
                       {featuredPost.data.authorRole}
                     </div>
                   )}
@@ -171,13 +171,13 @@ const formatDate = (date: Date) => {
         {regularPosts.map((post) => (
           <article
             data-category={post.data.category}
-            class="blog-article-item bg-white/80 dark:bg-white/10 rounded-2xl sm:rounded-3xl border border-accent-blue/20 dark:border-white/15 p-5 sm:p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:border-accent-blue/40 dark:hover:border-white/30 transition-all duration-200 group"
+            class="blog-article-item bg-card rounded-2xl sm:rounded-3xl border border-line p-5 sm:p-6 flex flex-col justify-between shadow-xs hover:shadow-md hover:border-accent-blue/40 dark:hover:border-white/30 transition-all duration-200 group"
           >
             <div>
               <!-- 文章專屬封面圖槽 (16:10 寬幅比例) -->
               <a
                 href={`/blog/${post.id}`}
-                class="block relative aspect-16/10 rounded-xl sm:rounded-2xl overflow-hidden mb-5 bg-gradient-to-br from-accent-blue/20 via-light-bg to-star-indigo-dark/10 dark:from-star-indigo dark:via-star-indigo-dark dark:to-[#1E1B3A] border border-accent-blue/20 dark:border-white/10 group-hover:border-accent-blue/40 dark:group-hover:border-white/30 transition-all shadow-xs"
+                class="block relative aspect-16/10 rounded-xl sm:rounded-2xl overflow-hidden mb-5 bg-gradient-to-br from-accent-blue/20 via-light-bg to-star-indigo-dark/10 dark:from-star-indigo dark:via-star-indigo-dark dark:to-night border border-line group-hover:border-accent-blue/40 dark:group-hover:border-white/30 transition-all shadow-xs"
               >
                 {post.data.coverImage ? (
                   <img
@@ -194,17 +194,17 @@ const formatDate = (date: Date) => {
 
                     <!-- 頂部類別與閱讀時間 -->
                     <div class="flex items-center justify-between z-10">
-                      <span class="text-[11px] font-semibold tracking-wider text-accent-blue-deep dark:text-moon-blue">
+                      <span class="text-[11px] font-semibold tracking-wider text-emphasis">
                         ✦ {post.data.category}
                       </span>
-                      <span class="text-[11px] text-ink/60 dark:text-white/50 font-medium">
+                      <span class="text-[11px] text-muted font-medium">
                         {post.data.readTime}
                       </span>
                     </div>
 
                     <!-- 中心分類靈性幾何符號圖示 -->
                     <div class="my-auto py-2 flex justify-center items-center z-10">
-                      <div class="w-14 h-14 rounded-full border border-accent-blue/30 dark:border-white/20 flex items-center justify-center bg-white/50 dark:bg-white/5 shadow-xs backdrop-blur-xs transition-transform duration-300 group-hover:scale-110">
+                      <div class="w-14 h-14 rounded-full border border-line-strong flex items-center justify-center bg-card-soft shadow-xs backdrop-blur-xs transition-transform duration-300 group-hover:scale-110">
                         <CategoryIcon category={post.data.category} class="w-7 h-7 text-accent-blue dark:text-moon-blue" />
                       </div>
                     </div>
@@ -220,21 +220,21 @@ const formatDate = (date: Date) => {
               <!-- 卡片中段文字資訊 -->
               <div class="space-y-3">
                 <div class="flex items-center justify-between text-xs">
-                  <span class="px-2.5 py-0.5 rounded-full font-semibold bg-accent-blue/15 text-star-indigo-dark dark:bg-white/15 dark:text-moon-blue">
+                  <span class="px-2.5 py-0.5 rounded-full font-semibold bg-tint text-star-indigo-dark dark:text-moon-blue">
                     {post.data.category}
                   </span>
-                  <span class="text-ink/60 dark:text-white/50">
+                  <span class="text-muted">
                     {formatDate(post.data.pubDate)}
                   </span>
                 </div>
 
-                <h3 class="text-lg sm:text-xl font-bold text-star-indigo-dark dark:text-white tracking-wide group-hover:text-accent-blue-deep dark:group-hover:text-moon-blue transition-colors leading-snug line-clamp-2">
+                <h3 class="text-lg sm:text-xl font-bold text-heading tracking-wide group-hover:text-accent-blue-deep dark:group-hover:text-moon-blue transition-colors leading-snug line-clamp-2">
                   <a href={`/blog/${post.id}`}>
                     {post.data.title}
                   </a>
                 </h3>
 
-                <p class="text-xs sm:text-sm text-ink/80 dark:text-white/75 leading-relaxed line-clamp-3">
+                <p class="text-xs sm:text-sm text-body leading-relaxed line-clamp-3">
                   {post.data.description}
                 </p>
 
@@ -242,7 +242,7 @@ const formatDate = (date: Date) => {
                 {post.data.tags.length > 0 && (
                   <div class="flex flex-wrap gap-1.5 pt-1">
                     {post.data.tags.slice(0, 3).map((tag) => (
-                      <span class="text-[11px] px-2 py-0.5 rounded-md bg-accent-blue/10 text-ink/70 dark:bg-white/5 dark:text-white/60">
+                      <span class="text-[11px] px-2 py-0.5 rounded-md bg-tint text-muted">
                         #{tag}
                       </span>
                     ))}
@@ -252,18 +252,18 @@ const formatDate = (date: Date) => {
             </div>
 
             <!-- 卡片底部作者與連結 -->
-            <div class="pt-5 mt-5 border-t border-accent-blue/15 dark:border-white/10 flex items-center justify-between">
+            <div class="pt-5 mt-5 border-t border-line flex items-center justify-between">
               <div class="flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-full bg-accent-blue/20 dark:bg-white/15 flex items-center justify-center font-bold text-xs text-star-indigo-dark dark:text-white">
+                <div class="w-7 h-7 rounded-full bg-tint flex items-center justify-center font-bold text-xs text-heading">
                   {post.data.author.charAt(0)}
                 </div>
-                <span class="text-xs font-semibold text-star-indigo-dark dark:text-white">
+                <span class="text-xs font-semibold text-heading">
                   {post.data.author}
                 </span>
               </div>
               <a
                 href={`/blog/${post.id}`}
-                class="text-xs font-semibold text-accent-blue-deep dark:text-moon-blue group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1"
+                class="text-xs font-semibold text-emphasis group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1"
               >
                 <span>閱讀全文</span>
                 <span>→</span>
@@ -281,14 +281,14 @@ const formatDate = (date: Date) => {
           allPosts.length === 0 ? 'block' : 'hidden'
         ]}
       >
-        <p class="text-lg text-ink/70 dark:text-white/70">
+        <p class="text-lg text-muted">
           {allPosts.length === 0 ? '目前專欄籌備中，敬請期待全新靈性文章上線。' : '此分類目前尚無發布文章。'}
         </p>
         {allPosts.length > 0 && (
           <button
             type="button"
             id="reset-filter-btn"
-            class="text-sm font-semibold text-accent-blue-deep dark:text-moon-blue hover:underline cursor-pointer"
+            class="text-sm font-semibold text-emphasis hover:underline cursor-pointer"
           >
             查看全部文章
           </button>
@@ -297,18 +297,18 @@ const formatDate = (date: Date) => {
     </section>
 
     <!-- 底部諮詢預約 CTA 區塊 -->
-    <section class="text-center bg-white/75 dark:bg-white/10 p-8 sm:p-12 rounded-3xl border border-accent-blue/20 dark:border-white/15 max-w-2xl mx-auto space-y-5 transition-colors shadow-xs">
-      <div class="w-12 h-12 rounded-full bg-accent-blue/15 dark:bg-white/10 mx-auto flex items-center justify-center text-accent-blue dark:text-moon-blue">
+    <section class="text-center bg-card p-8 sm:p-12 rounded-3xl border border-line max-w-2xl mx-auto space-y-5 transition-colors shadow-xs">
+      <div class="w-12 h-12 rounded-full bg-tint mx-auto flex items-center justify-center text-accent-blue dark:text-moon-blue">
         <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9 9 0 100-18 9 9 0 000 18z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" />
         </svg>
       </div>
       <div class="space-y-2">
-        <h2 class="text-xl sm:text-2xl font-bold text-star-indigo-dark dark:text-white transition-colors">
+        <h2 class="text-xl sm:text-2xl font-bold text-heading transition-colors">
           在文字之外，渴望更深入的生命指引嗎？
         </h2>
-        <p class="text-xs sm:text-sm text-ink/80 dark:text-white/80 leading-relaxed max-w-lg mx-auto transition-colors">
+        <p class="text-xs sm:text-sm text-body leading-relaxed max-w-lg mx-auto transition-colors">
           星靈織語提供一對一命理諮詢、臼井靈氣與常態研習課程，陪伴你走過人生的每一個起伏轉折。
         </p>
       </div>
@@ -332,11 +332,11 @@ const formatDate = (date: Date) => {
         filterBtns.forEach((btn) => {
           const cat = btn.getAttribute('data-category-btn');
           if (cat === targetCat) {
-            btn.classList.add('active-filter', 'bg-star-indigo-dark', 'text-white', 'border-star-indigo-dark', 'dark:bg-moon-blue', 'dark:text-star-indigo-dark', 'dark:border-moon-blue');
-            btn.classList.remove('bg-white/70', 'text-ink', 'dark:bg-white/10', 'dark:text-white/80');
+            btn.classList.add('active-filter', 'bg-star-indigo-dark', 'text-white', 'border-star-indigo-dark', 'dark:bg-moon-blue', 'dark:text-star-indigo-dark', 'dark:border-moon-blue', 'shadow-xs');
+            btn.classList.remove('bg-card', 'text-body', 'border-line', 'hover:bg-white', 'dark:hover:bg-white/20');
           } else {
-            btn.classList.remove('active-filter', 'bg-star-indigo-dark', 'text-white', 'border-star-indigo-dark', 'dark:bg-moon-blue', 'dark:text-star-indigo-dark', 'dark:border-moon-blue');
-            btn.classList.add('bg-white/70', 'text-ink', 'dark:bg-white/10', 'dark:text-white/80');
+            btn.classList.remove('active-filter', 'bg-star-indigo-dark', 'text-white', 'border-star-indigo-dark', 'dark:bg-moon-blue', 'dark:text-star-indigo-dark', 'dark:border-moon-blue', 'shadow-xs');
+            btn.classList.add('bg-card', 'text-body', 'border-line', 'hover:bg-white', 'dark:hover:bg-white/20');
           }
         });
 
