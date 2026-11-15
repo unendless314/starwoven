@@ -26,6 +26,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://starwove
 // og:image 須為完整網址，部分平台不解析相對路徑
 const ogImageURL = new URL(ogImage, Astro.site || 'https://starwoven.xyz');
 const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === '/' || Astro.url.pathname === ''));
+const isGacha = Astro.url.pathname === '/gacha' || Astro.url.pathname === '/gacha/';
 ---
 
 <!DOCTYPE html>
@@ -82,6 +83,25 @@ const isDark = theme === 'dark' || (theme === 'auto' && (Astro.url.pathname === 
         } catch (e) {}
       })();
     </script>
+
+    {isGacha && (
+      <script is:inline>
+        (function () {
+          var match = window.location.hash.match(/^#code=([^&]*)$/);
+          if (!match) return;
+          var code = match[1];
+          try { code = decodeURIComponent(code); } catch (e) {}
+          try {
+            sessionStorage.setItem('starwoven_gacha_fragment_code', code);
+          } catch (e) {
+            window.__starwovenGachaCode = code;
+          }
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', window.location.pathname + window.location.search);
+          }
+        })();
+      </script>
+    )}
 
     <!-- Google Analytics (GA4: G-27D79HXXF5) -->
     <GoogleAnalytics />

@@ -49,6 +49,7 @@ pre-build planning repo and is obsolete.
 /blog/[slug]  blog/[...slug].astro   文章內頁（Content Collections，src/content/blog/ 共 5 篇）
 /tarot        tarot.astro            線上塔羅抽卡（AI 解讀）MVP Demo——noindex、不在導覽列（DEC-073）
 /astro-cards  astro-cards.astro      線上占星抽卡（AI 解讀）——導覽列「線上占星」、開放索引（DEC-080／DEC-082）
+/gacha       gacha.astro            星靈扭蛋（抽獎碼兌換服務體驗）MVP Demo——noindex、不在導覽列（DEC-083）
 POST /api/tarot/reading        api/tarot/reading.ts        on-demand 路由（Node 服務）
 POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（Node 服務）
 ```
@@ -66,6 +67,10 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
   `server-config.ts`／`ai.ts`／`prompt.ts` 為伺服器專用，**不得被前端 import**）＋`src/scripts/astro-cards.ts`。
   規格書：`demo_docs/astro_cards_plan.md`（DEC-080）。牌義與提示詞為佔位內容，待占星師審定。
 - 新增 AI 功能依 `ai_platform_plan.md` 第十節檢查清單；兩功能相似程式各自實作、不互相 import。
+- 星靈扭蛋集中於 `src/pages/gacha.astro`、`src/scripts/gacha.ts` 與 `src/lib/gacha/`；
+  以獨立 Google Apps Script＋試算表抽籤（JSONP），不使用 AI／Node API。後端正本為
+  `scripts/gacha_apps_script.gs`，Google 後台設置與 API 合約見 `demo_docs/gacha_plan.md`；
+  `PUBLIC_GACHA_API_URL` 未設定時為明確標示、無兌換效力的本機 Demo。
 
 - Nav (Navbar.astro): 關於我們 / 命理服務 / 活動與課程 / 課程許願池 / 星靈專欄 / 線上占星 + 「預約諮詢」CTA
 - **Removed routes — do not recreate without a DEC entry**:
@@ -76,7 +81,8 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 ## Layout & shared components (src/layouts/, src/components/)
 
 - `src/layouts/Layout.astro` — head/meta/OG/canonical, theme-init inline script
-  (zero-FOUC), GA component, global footer（聯絡我們 / 地址→Google Maps /
+  (zero-FOUC), `/gacha` 於 GA 前擷取並清除網址 fragment 抽獎碼之 inline script,
+  GA component, global footer（聯絡我們 / 地址→Google Maps /
   6 個社群圖示）, bottom-right floating LINE button.
 - `Navbar.astro` — sticky + backdrop-blur, desktop nav + mobile hamburger,
   dark/light toggle (persisted to `localStorage["starwoven_theme"]`).
@@ -190,6 +196,9 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
   demo 模式運行（不發網路請求，票數存 localStorage）。
 - `PUBLIC_BOOTH_API_URL` — 星靈出攤 Apps Script web app URL（`demo_docs/booth_plan.md`）；
   unset → 首頁出攤區直接顯示提示卡（不發網路請求）。build 時編譯進前端，修改後須重新 build＋部署。
+- `PUBLIC_GACHA_API_URL` — 星靈扭蛋 Apps Script web app URL（`demo_docs/gacha_plan.md`）；
+  unset → 明確標示之本機 Demo（結果不具兌換效力、不發網路請求）。build 時編譯進前端，
+  修改後須重新 build＋部署。
 - `AI_*` — AI 功能共用之供應商變數（DEC-079；原 `TAROT_AI_*`）、`TAROT_*`／`ASTROCARDS_*` — 塔羅／占星抽卡
   功能開關與每日上限（DEC-073／DEC-080，額度分開計算）。**唯一清單為 `astro.config.mjs` 的 `env.schema`**，一律 server secret
   （執行期讀取、不進 bundle；VPS 改 `app.env` 重啟即生效）。`AI_API_KEY` 選填，缺少時全部 AI
