@@ -46,6 +46,7 @@ const recurringCourses = [
     day: '每週二',
     dayColor: 'bg-[#E8E3EF] text-[#75579C] ring-1 ring-[#9880B8]',
     title: '占星循環班',
+    oneOnOne: true, // 可一對一教學（DEC-005）；刻意不寫講師與費用，一律「詳情請私訊」
     teacher: '皮皮老師',
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
@@ -63,6 +64,7 @@ const recurringCourses = [
     day: '每週三',
     dayColor: 'bg-[#DBE6EB] text-[#436A7C] ring-1 ring-[#5B8EA6]',
     title: '偉特塔羅循環班',
+    oneOnOne: true, // 可一對一教學（DEC-005）；刻意不寫講師與費用，一律「詳情請私訊」
     teacher: '以恩老師',
     time: '20:00 - 21:30',
     price: '包月四堂 1200元',
@@ -111,6 +113,7 @@ const recurringCourses = [
     day: '每週六',
     dayColor: 'bg-[#F8E6DB] text-[#A2501F] ring-1 ring-[#E08D5B]',
     title: '生命靈數循環班',
+    oneOnOne: true, // 可一對一教學（DEC-005）；刻意不寫講師與費用，一律「詳情請私訊」
     teacher: '皮皮老師',
     time: '20:00 - 23:00',
     price: '包月四堂 2000元',
@@ -351,9 +354,16 @@ const courseSections = [
                 <!-- 標題、講師、時間與價格基本列（隨時可見） -->
                 <div>
                   <div class="flex flex-wrap items-center justify-between gap-3 mb-2.5">
-                    <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-heading tracking-wide transition-colors">
-                      {c.title}
-                    </h3>
+                    <div class="flex flex-wrap items-center gap-2.5">
+                      <h3 class="text-2xl sm:text-3xl font-bold font-huninn text-heading tracking-wide transition-colors">
+                        {c.title}
+                      </h3>
+                      {c.oneOnOne && (
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm font-semibold bg-star-gold/45 dark:bg-star-gold/15 text-heading dark:text-star-gold ring-1 ring-star-gold dark:ring-star-gold/50">
+                          另有一對一教學
+                        </span>
+                      )}
+                    </div>
                     <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-tint text-sm font-semibold text-emphasis">
                       <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
                         <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
@@ -454,7 +464,9 @@ const courseSections = [
 
                 <!-- 底部報名諮詢列（隨時可見） -->
                 <div class="pt-3 border-t border-line flex flex-wrap items-center justify-between gap-3">
-                  <span class="text-xs sm:text-sm text-muted">採包月小班制・滿班即止</span>
+                  <span class="text-xs sm:text-sm text-muted">
+                    {c.oneOnOne ? '包月小班制・也可一對一教學（詳情請私訊）' : '採包月小班制・滿班即止'}
+                  </span>
                   <a
                     href="https://line.me/R/ti/p/@347fucvj?ts=07031038&oat_content=url"
                     target="_blank"
