@@ -10,7 +10,7 @@ export const UI_TEXT = {
   intro: ['每一次轉動，都是一次新的相遇。', '輸入你的抽獎碼，看看星靈為你安排了哪一項體驗。'],
   codeLabel: '抽獎碼',
   codePlaceholder: '請輸入抽獎碼',
-  codeHelp: '抽獎碼會由星靈織語透過官方 LINE 或活動貼文提供。英文字母會自動轉為大寫。',
+  codeHelp: '抽獎碼會由星靈織語透過官方 LINE 或活動貼文提供。',
   startButton: '轉動扭蛋',
   ritualStatus: '星靈正在整理訊息，請稍候…',
   resultEyebrow: '星靈為你抽到',
@@ -38,8 +38,8 @@ export const ERROR_MESSAGES: Record<string, { message: string; retry: boolean }>
   NO_ELIGIBLE_PRIZE: { message: '目前沒有符合這組抽獎碼的項目，請聯絡官方 LINE 協助處理。', retry: false },
   RATE_LIMITED: { message: '目前轉動扭蛋的人較多，請稍等片刻再試。', retry: true },
   BUSY: { message: '星靈正在忙碌中，請稍等片刻再試。', retry: true },
-  NETWORK: { message: '目前連線不穩，請確認網路後再試。一次性碼重試時會找回原本結果。', retry: true },
-  TIMEOUT: { message: '連線等待較久，請稍後再試。一次性碼重試時會找回原本結果。', retry: true },
+  NETWORK: { message: '目前連線不穩，請確認網路後再試。', retry: true },
+  TIMEOUT: { message: '連線等待較久，請稍後再試。', retry: true },
 };
 
 export const GENERIC_ERROR = '系統暫時無法完成抽籤，請稍後再試或聯絡官方 LINE。';

@@ -14,6 +14,16 @@ const MODE = API_URL ? 'live' : 'demo';
 const LINEAR_CODE = /^[A-Z0-9][A-Z0-9_-]{2,31}$/;
 const DEMO_POOL = PRIZES.filter((prize) => prize !== '塔羅占卜');
 
+const CONFETTI_COLORS = [
+  'var(--color-star-gold)',
+  '#F3D9E4',
+  '#B3D2EA',
+  '#C4B4DC',
+  '#A8D8CC',
+  '#EFC09C',
+  'var(--color-accent-blue)',
+];
+
 type Step = 'setup' | 'ritual' | 'result' | 'error';
 
 interface ApiResponse {
@@ -51,6 +61,9 @@ function init(root: HTMLElement) {
   const errorMessage = $('[data-error-message]');
   const retryButton = $<HTMLButtonElement>('[data-action="retry"]');
   const copyLabel = $('[data-copy-label]');
+  const ritualMachine = $('[data-gacha-ritual-machine]');
+  const resultCard = $('[data-result-card]');
+  const confettiBox = $('[data-confetti]');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   let pending = false;
@@ -101,7 +114,12 @@ function init(root: HTMLElement) {
   }
 
   function showResult(result: GachaResult, restored = false) {
+    const celebrate = !restored && !result.repeated;
     currentResult = result;
+    resultCard.classList.toggle('is-quick', !celebrate);
+    resultCard.classList.toggle('is-celebrating', celebrate);
+    confettiBox.replaceChildren();
+    if (celebrate && !reducedMotion) launchConfetti();
     resultPrize.textContent = result.prize;
     resultId.textContent = result.drawId;
     resultPublic.hidden = result.codeType !== '公開';
@@ -112,22 +130,52 @@ function init(root: HTMLElement) {
     show('result');
   }
 
+  function launchConfetti() {
+    const random = (min: number, max: number) => min + Math.random() * (max - min);
+    const pieces = Array.from({ length: 44 }, (_, i) => {
+      const piece = document.createElement('i');
+      const kind = i % 5;
+      if (kind === 3) piece.className = 'is-round';
+      if (kind === 4) {
+        piece.className = 'is-star';
+        piece.textContent = '✦';
+      }
+      const angle = random(-Math.PI, 0);
+      const power = random(5, 13);
+      piece.style.setProperty('--c', CONFETTI_COLORS[i % CONFETTI_COLORS.length]);
+      piece.style.setProperty('--x', `${(Math.cos(angle) * power * 1.4).toFixed(2)}rem`);
+      piece.style.setProperty('--y', `${(Math.sin(angle) * power).toFixed(2)}rem`);
+      piece.style.setProperty('--fall', `${random(12, 20).toFixed(2)}rem`);
+      piece.style.setProperty('--r', `${Math.round(random(-720, 720))}deg`);
+      piece.style.setProperty('--delay', `${random(1, 1.25).toFixed(2)}s`);
+      return piece;
+    });
+    confettiBox.replaceChildren(...pieces);
+  }
+
   async function redeem(code: string) {
     const run = ++runId;
     if (pending) return;
     lastCode = code;
     setPending(true);
+    ritualMachine.classList.remove('is-revealing');
+    ritualMachine.classList.add('is-spinning');
     show('ritual');
     track('gacha_start', { mode: MODE });
 
     try {
       const [result] = await Promise.all([
         API_URL ? liveRedeem(code) : demoRedeem(code),
-        wait(1400),
+        wait(1600),
       ]);
       if (run !== runId) return;
       if (result.codeType === '公開') savePublicResult(code, result);
       if (!API_URL && code === 'ONCE') saveDemoOnceResult(code, result);
+      // 結果已確定並保存後才播放揭曉動畫；動畫期間按下重新輸入不影響結果。
+      ritualMachine.classList.remove('is-spinning');
+      ritualMachine.classList.add('is-revealing');
+      await wait(1750);
+      if (run !== runId) return;
       track('gacha_redeem_success', {
         code_type: result.codeType,
         repeated: result.repeated,
