@@ -7,7 +7,10 @@ import CTAButton from '../components/CTAButton.astro';
 // 由 nginx `error_page 404 /404.html` 提供（狀態碼維持 404，網址列保留訪客原網址）。
 // 文案正本：content_inventory.md 第 9 節（開發暫擬，待業主確認；known_issues 第 17 項）。
 // 不另列頁面捷徑：Layout 已含完整導覽列，避免重複維護導覽資料。
+// 主視覺：image_prompts.md「共用-C」（去背透明 WebP，雙主題共用）。
+// 設為 null 時頁面退回純文字版。
 // ==========================================
+const imgLostStar: string | null = '/assets/common_c_lost_star_v1.webp';
 ---
 
 <Layout
@@ -16,6 +19,16 @@ import CTAButton from '../components/CTAButton.astro';
   noindex
 >
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-24 sm:py-32 text-center space-y-6">
+    {imgLostStar && (
+      <img
+        src={imgLostStar}
+        alt=""
+        width="1132"
+        height="1147"
+        class="w-56 sm:w-72 h-auto mx-auto -mb-2 drop-shadow-[0_0_24px_rgba(252,231,148,0.25)] select-none"
+        decoding="async"
+      />
+    )}
     <p class="text-6xl sm:text-7xl font-bold font-huninn text-star-indigo-dark/20 dark:text-white/20 tracking-widest select-none" aria-hidden="true">
       404
     </p>

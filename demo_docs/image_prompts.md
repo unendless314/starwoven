@@ -381,6 +381,32 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 
 ---
 
+### [共用]-[圖片 C]：404 頁主視覺・迷途小星與星圖（Lost Little Star）
+
+- **狀態**：已採用上架（2026-11-16，OpenAI Playground 生成，原圖即為透明背景）
+- **版位用途**：404 頁（`src/pages/404.astro`）標題上方主視覺，顯示寬度約 224~288px；頁內常數 `imgLostStar`。
+- **畫面概念**：呼應標題「這顆星星不在星圖上」——一張攤開、邊角微捲的手繪星圖，星座連線中有一處只剩淡淡虛線圓圈（星星的空位）；一顆有柔和表情的小星星浮在星圖旁，提著一盞小燈籠低頭照著星圖，像在找回自己的位置。氛圍是溫柔、好奇、帶點俏皮，**不是悲傷或迷失的孤單感**。
+- **開發者設計注意**：
+  1. **圖中不放任何文字與數字**：「404」由網頁文字呈現，AI 畫數字易變形。
+  2. **輪廓簡單、主體集中**：顯示尺寸小，星圖與小星星各一，不要加地景、人物或多顆角色星。
+  3. **星圖上的星座連線用抽象點線**，不要畫出可辨認的真實星座或黃道符號，避免被解讀成特定星座。
+  4. **小星星的臉只要點點眼睛與微笑**，避免畫成卡通吉祥物或寫實五官。
+  5. **畫風對齊服務插圖（服務-A~J）**：手繪水彩＋細鉛筆輪廓，去背後於淺色水彩底與深色夜空底都要好看。
+- **色彩規格**：星圖紙張用米白帶淡月光藍（`#8FB8E8`）暈染、靛藍細線（`#2E2A4F`）勾勒星座；小星星與燈籠光用暖柔星金（`#FCE794`）；點綴淡紫星塵。純白底、去背透明 WebP，支援深淺色雙主題。
+- **OpenAI（GPT Image）／Gemini 提示詞**：
+  ```text
+  A gentle, whimsical hand-drawn watercolor illustration for a "page not found" screen of a spiritual astrology studio. An open, slightly worn hand-drawn star chart (a sheet of paper with softly curled corners) lies at a gentle angle. On the chart, delicate dotted constellation lines connect small stars, but one spot in the pattern is empty, marked only by a faint dashed circle where a star should be. Beside the chart, a small glowing five-pointed star with a tiny, sweet face (just two dot eyes and a soft smile) floats in the air, holding a little lantern and leaning in curiously to look at the empty spot, as if searching for its place in the sky. The mood is tender, curious and slightly playful, not sad or lonely. A few tiny golden stardust sparkles drift around the star. Simple, clean composition with one star chart and one little star only, readable at small sizes. Hand-painted watercolor wash with soft bleeding edges and delicate pencil contour lines. Color palette: cream paper tinted with pale moonlight blue, fine deep indigo constellation lines, warm soft gold glow for the star and lantern, a hint of pastel lavender. Absolutely no text, no letters, no numbers anywhere in the image. Isolated on a pure, clean solid white background with no shadow and no ground plane, suitable for transparent background cutout. Square 1:1 composition with generous margins around the subject.
+  ```
+- **負面提示詞（支援時使用；不支援者已寫入正面提示詞）**：
+  ```text
+  text, letters, numbers, 404, words, watermark, signature, real constellation, zodiac symbols, multiple stars with faces, human figure, hands, landscape, ground, scenery, dark background, night sky background, complex background, sad expression, crying, mascot cartoon, 3d render, realistic photo, heavy bloom, smoke, low quality, blurry, deformed, noise, jpeg artifacts, overexposed, dirty texture, modern tech
+  ```
+- **後製紀錄**：原圖 1254×1254 透明 PNG，免去背。燈籠外圍半透明白色光暈在深色底上呈白霧，改以程式移除（自燈籠外緣連通之近白像素）並於燈籠後方疊星金 `#FCE794` 徑向漸層光；裁去四周透明邊（留 24px）為 1132×1147 / WebP Q85。
+- **經驗紀錄**：GPT Image 會在發光物周圍畫白色光暈，去背後只在淺底看不出來；重抽時可在提示詞補「The lantern's warm light stays inside and right around the lantern as a small golden glow, with no white halo or white haze around it.」
+- **存放檔名**：`common_c_lost_star_v1.webp`（`public/assets/` 與 `demo_docs/sd-assets/`）
+
+---
+
 ### [頁尾]-[圖片 A~D]：聯絡我們 官方社群與賣場 QR Code（4張）
 
 - **版位用途**：全站頁尾「聯絡我們」區塊之官方條碼
@@ -488,6 +514,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `共用-B` | 社群分享圖候選 00049 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上，星點最多 | 422759402323167 | 淘汰：次選 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00049_.png` |
 | `共用-B` | 社群分享圖候選 00050 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 148174810181506 | 淘汰：與 00051 相近 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00050_.png` |
 | `共用-B` | 社群分享圖 (v1) | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 夜空雲帶金線自兩側交會、上半部疊粉圓體品牌字 | 932090169070292 | 採用上架 | 1824×960 縮至 1200×630＋Pillow 疊字，JPG Q88（DEC-091） | `common_b_og_image_v1.jpg` |
+| `共用-C` | 404 頁迷途小星 (v1) | 2026-11-16 | OpenAI Playground（GPT Image） | 攤開星圖缺一顆星、提燈小星星找位置 | - | 採用上架 | 原生透明免去背；燈籠白暈改星金漸層光、裁邊 + WebP Q85 | `common_c_lost_star_v1.webp` |
 
 
 ---
