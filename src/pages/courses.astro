@@ -148,7 +148,7 @@ interface WorkshopSchedule {
 }
 
 interface Workshop {
-  id: string;
+  id: string;              // 僅供辨識資料，程式不讀取
   code: string;
   title: string;
   subtitle: string;
@@ -160,7 +160,6 @@ interface Workshop {
   schedule?: WorkshopSchedule[];
   image: string;
   badge: string;
-  icon: string;
   highlights?: string[];
   suitableFor?: string;
   youtubeId?: string;
@@ -181,7 +180,6 @@ const workshops: Workshop[] = [
     suitableFor: '面臨重大人生抉擇、渴望有系統學習理性決策心法的學員。',
     image: imgWorkshopMeihua,
     badge: '專業研修',
-    icon: 'meihua',
     youtubeId: 'pWMHtSA-h94',
   },
   {
@@ -200,7 +198,6 @@ const workshops: Workshop[] = [
     suitableFor: '喜歡水晶與手作、想為居家或工作空間添一件療癒擺件，或想在忙碌中留給自己一段安靜時光的朋友。',
     image: imgWorkshopOrgonite,
     badge: '療癒手作',
-    icon: 'orgonite',
   },
 ];
 

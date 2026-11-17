@@ -12,7 +12,7 @@ import { getCollection } from 'astro:content';
 // 【1. Hero 視覺區幻燈片輪播 (Crossfade)】
 // 未來透過 ComfyUI 或 Canva 產出新圖時，可隨時在此陣列新增或替換物件！
 interface HeroSlide {
-  id: string;
+  id: string;          // 僅供辨識是哪張海報，程式不讀取（輪播以陣列順序運作）
   image: string;
   alt: string;
   link?: string;
