@@ -315,7 +315,8 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 - **對應編號與檔案**：
   - `[課程]-[圖片 H]`：塏易學 梅花易數情境海報 (`courses_h_meihua.jpg` / `.png`)
   - `[課程]-[圖片 I]`：八字體驗情境海報 (`courses_i_bazi.jpg` / `.png`)
-  - `[課程]-[圖片 J]`：紫微斗數工作坊情境海報 (`courses_j_ziwei.jpg` / `.png`)
+  - `[課程]-[圖片 J]`：紫微斗數工作坊情境海報 (`courses_j_ziwei.jpg` / `.png`)（工作坊已於 2026-11-17 下架）
+  - `[課程]-[圖片 K]`：奧剛塔手作課情境海報 (`courses_k_orgonite.jpg` / `.png`)（尚未製作；以短影音為優先）
 
 ---
 
@@ -501,6 +502,7 @@ low quality, blurry, deformed, extra limbs, messy lines, text, watermark, noise,
 | `公告-202610-B` | 星靈實習生招募 (v1) | 2026-10-09 | Canva | 星空月亮以技能換技能培訓招募海報 | - | 採用上架 | 轉 WebP Q85 (896×1152) | `home_announcement_202610_intern_v1.webp` |
 | `公告-202611-A` | 2026 年底市集預告 (v1) | 2026-11-08 | 業主提供 | 夜空水晶塔羅四市集場次與服務項目海報 | - | 採用上架 | 轉 WebP Q85 (825×1024，原尺寸) | `home_announcement_202611_market_v1.webp` |
 | `公告-202611-B` | 年度流年塔羅 (v1) | 2026-11-08 | 業主提供 | 太陽牌粉紫星空年度報告內容與費用海報 | - | 採用上架 | 轉 WebP Q85 (1024×1536，原尺寸) | `home_announcement_202611_annual_tarot_v1.webp` |
+| `公告-202611-C` | 奧剛塔手作課 (v1) | 2026-11-17 | 業主提供 | 星空紫水晶金字塔奧剛塔手作課日期費用名額海報 | - | 採用上架 | 轉 WebP Q85 (1122×1402，原尺寸，4:5) | `home_announcement_202611_orgonite_v1.webp` |
 | `共用-B` | 社群分享圖候選 00039 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 漩渦星系與金色星座連線（初版提示詞） | 974073409220626 | 淘汰：中央漩渦過亮，不利疊字 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00039_.png` |
 | `共用-B` | 社群分享圖候選 00040 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 兩側雲與燙金線、中央留空 | 958450086481488 | 淘汰：左右鏡像、偏套版 | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00040_.png` |
 | `共用-B` | 社群分享圖候選 00041 | 2026-11-13 | ComfyUI (Z-Image-Turbo) | 同上 | 85263663017668 | 淘汰：上下白邊（提示詞 banner 所致） | 原圖已刪除（使用者指示，未移至 rejected） | `z-image-turbo_00041_.png` |

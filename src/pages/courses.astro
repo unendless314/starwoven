@@ -20,7 +20,7 @@ const imgMeetup = '/assets/courses_g_meetup_v1.webp';           // 課程-G：�
 
 // 【3. 精選主題工作坊情境海報（2張）】
 const imgWorkshopMeihua = '';   // 課程-H：塏易學 梅花易數情境海報
-const imgWorkshopZiwei = '';    // 課程-J：紫微斗數工作坊情境海報
+const imgWorkshopOrgonite = ''; // 課程-K：奧剛塔手作課情境海報（短影音待業主補上，見 known_issues 第 22 項）
 
 // 循環課程資料
 const recurringCourses = [
@@ -185,31 +185,22 @@ const workshops: Workshop[] = [
     youtubeId: 'pWMHtSA-h94',
   },
   {
-    id: 'ziwei',
-    code: '課程-J',
-    title: '紫微斗數工作坊',
-    subtitle: '兩日深度研修・解碼命盤十四主星',
-    teacher: '阿福老師',
-    duration: '11/8（日）、11/15（日）14:00 - 17:00',
-    fee: '一堂 600元 · 兩堂 1,200元 / 人',
-    feeNote: '兩天具備不同主題，可自由選擇單堂報名（600元）或兩堂合報（1,200元）',
-    description: '深入淺出解讀紫微斗數命盤，探索十二宮位與星曜互動玄機。兩日分別規劃不同深度主題，從認識本命格局到洞察人際互動與吉凶契機，全面掌握東方帝王之學的解析邏輯。',
-    highlights: ['深入淺出解讀命盤十二宮位架構', '十四主星性格原型與星曜互動玄機', '掌握東方帝王之學的系統化解析思維'],
-    suitableFor: '對紫微斗數有興趣、想有系統掌握個人命運藍圖的朋友。',
-    schedule: [
-      {
-        day: '11/08（日）Day 1',
-        topic: '宮位四化：看懂情緒、脾氣與價值觀',
-      },
-      {
-        day: '11/15（日）Day 2',
-        topic: '星曜基礎：讀懂性格與特質',
-      },
-    ],
-    image: imgWorkshopZiwei,
-    badge: '兩日專修',
-    icon: 'ziwei',
-    youtubeId: 'qIQLaGWaDn8',
+    // 時間、費用、名額、截止日、講師依業主海報（2026-11-17）；簡介、學習重點、適合對象為開發者草擬，待業主確認（known_issues 第 22 項）
+    // 尚無短影音：刻意不填 youtubeId，保留「短影音籌備中」提醒業主補上
+    id: 'orgonite',
+    code: '課程-K',
+    title: '奧剛塔手作課',
+    subtitle: '用雙手，創造屬於你的能量水晶塔',
+    teacher: '黎夢老師',
+    duration: '2027/1/16（六）14:00 - 17:00',
+    fee: 'NT$3,500元 / 人',
+    feeNote: '含材料費・5 人滿班・報名截止日 2027/1/10',
+    description: '結合水晶與能量的工藝，親手製作專屬於你的奧剛塔。三小時的手作時光，也是一段安靜向內的療癒練習，為生活注入更多正向能量。',
+    highlights: ['認識奧剛塔的組成與能量概念', '感受水晶與色彩帶來的能量', '親手製作專屬於你的奧剛塔'],
+    suitableFor: '喜歡水晶與手作、想為居家或工作空間添一件療癒擺件，或想在忙碌中留給自己一段安靜時光的朋友。',
+    image: imgWorkshopOrgonite,
+    badge: '療癒手作',
+    icon: 'orgonite',
   },
 ];
 
@@ -597,7 +588,7 @@ const courseSections = [
             </h2>
           </div>
           <p class="text-sm sm:text-base text-muted mt-2 font-light tracking-wide transition-colors">
-            不定期主題工作坊・八字命理・紫微斗數・易學哲思
+            不定期主題工作坊・易學哲思・療癒手作
           </p>
         </div>
         <span class="text-xs text-muted">採單場預約報名制</span>
