@@ -12,7 +12,9 @@ import { ERROR_MESSAGES, GENERIC_ERROR, UI_TEXT } from '../lib/gacha/copy';
 const API_URL = import.meta.env.PUBLIC_GACHA_API_URL || '';
 const MODE = API_URL ? 'live' : 'demo';
 const LINEAR_CODE = /^[A-Z0-9][A-Z0-9_-]{2,31}$/;
-const DEMO_POOL = PRIZES.filter((prize) => prize !== '塔羅占卜');
+// 本機 Demo 比照試算表「獎池設定」：靈擺調頻為暫停（2026-11-17）；ONCE 另模擬已購塔羅占卜。
+const DEMO_OPEN_PRIZES = PRIZES.filter((prize) => prize !== '靈擺調頻');
+const DEMO_POOL = DEMO_OPEN_PRIZES.filter((prize) => prize !== '塔羅占卜');
 
 const CONFETTI_COLORS = [
   'var(--color-star-gold)',
@@ -337,7 +339,7 @@ async function demoRedeem(code: string): Promise<GachaResult> {
   if (code === 'ENDED') throw new RedeemError('INACTIVE_CODE');
   if (code === 'EMPTY') throw new RedeemError('NO_ELIGIBLE_PRIZE');
   if (code !== 'DEMO' && code !== 'ONCE') throw new RedeemError('INVALID_CODE');
-  const pool = code === 'ONCE' ? DEMO_POOL : PRIZES;
+  const pool = code === 'ONCE' ? DEMO_POOL : DEMO_OPEN_PRIZES;
   return {
     drawId: `DEMO-${randomCode(8)}`,
     prize: pool[randomIndex(pool.length)],

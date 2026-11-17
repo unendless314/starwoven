@@ -14,6 +14,7 @@ export const PRIZES = [
   '天使靈氣',
   '亢達里尼靈氣',
   '靈擺調頻',
+  '脈輪檢測',
 ] as const;
 
 export type CodeType = '一次性' | '公開';

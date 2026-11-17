@@ -17,6 +17,7 @@ const imgPet = '/assets/services_g_pet_v1.webp';             // 服務-G：毛�
 const imgAngelReiki = '/assets/services_h_angel_reiki_v1.webp';      // 服務-H：天使靈氣手繪插圖
 const imgKundaliniReiki = '/assets/services_i_kundalini_reiki_v1.webp';  // 服務-I：亢達里尼靈氣手繪插圖
 const imgPendulum = '/assets/services_j_pendulum_v1.webp';        // 服務-J：靈擺調頻手繪插圖
+const imgChakra = '';                                              // 服務-K：脈輪檢測（待業主確認後再生成插圖，暫用 SVG 佔位）
 
 interface PractitionerGroup {
   system?: string;         // 例如：'偉特塔羅'、'托特塔羅'
@@ -186,6 +187,21 @@ const services: ServiceCard[] = [
       { names: ['黎夢'] },
     ],
   },
+  {
+    // 2026-11-17 開發者暫定：價格依擺攤現場定價、老師依關於我們頁白白之專業領域（known_issues 第 21 項）
+    code: '服務-K',
+    title: '脈輪檢測',
+    image: imgChakra,
+    iconType: 'reiki',
+    modalities: ['通話語音療癒', '面對面療癒（工作室）'],
+    prices: [
+      { label: '通話語音 / 面對面療癒', rate: '15分鐘 300元' },
+    ],
+    roleTitle: '可預約調頻師',
+    practitioners: [
+      { names: ['白白'] },
+    ],
+  },
 ];
 
 // ==========================================
@@ -202,7 +218,7 @@ interface ServiceCategory {
 const serviceCategories: ServiceCategory[] = [
   { id: 'divination', label: '占卜', codes: ['服務-A'] },
   { id: 'fortune', label: '命理', codes: ['服務-B', '服務-C', '服務-D'] },
-  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I', '服務-J'], note: '以下服務皆包含脈輪檢測與光的輔助' },
+  { id: 'healing', label: '身心靈療癒', codes: ['服務-E', '服務-F', '服務-H', '服務-I', '服務-J', '服務-K'], note: '30 分鐘以上之療程，皆於療程中包含脈輪檢測與光的輔助' },
   { id: 'pet', label: '毛孩', codes: ['服務-G'] },
 ];
 
@@ -218,7 +234,7 @@ const categorizedServices = serviceCategories.map((cat) => ({
 
 <Layout
   title="命理服務 — 星靈織語 Starwoven"
-  description="選擇適合你的命理陪伴，讓每一次探索都能更靠近真實的自己。提供星盤解析、塔羅占卜、生命靈數、八字命理、臼井靈氣、阿卡西紀錄解讀、天使靈氣、亢達里尼靈氣、靈擺調頻與毛孩溝通。"
+  description="選擇適合你的命理陪伴，讓每一次探索都能更靠近真實的自己。提供星盤解析、塔羅占卜、生命靈數、八字命理、臼井靈氣、阿卡西紀錄解讀、天使靈氣、亢達里尼靈氣、靈擺調頻、脈輪檢測與毛孩溝通。"
   theme="auto"
 >
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
@@ -325,7 +341,7 @@ const categorizedServices = serviceCategories.map((cat) => ({
                       </svg>
                     )}
 
-                    {/* 靈氣類服務圖示（臼井／天使／亢達里尼靈氣、靈擺調頻共用） */}
+                    {/* 靈氣類服務圖示（臼井／天使／亢達里尼靈氣、靈擺調頻、脈輪檢測共用） */}
                     {item.iconType === 'reiki' && (
                       <svg class="w-10 h-10 text-accent-blue dark:text-moon-blue mb-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                         <path d="M7 11c0-2.5 2-4.5 5-4.5s5 2 5 4.5" />
