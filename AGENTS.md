@@ -152,7 +152,8 @@ POST /api/astro-cards/reading  api/astro-cards/reading.ts  on-demand 路由（No
 - **No fabrication.** 事實類內容——價格、日期時段、人名、名額、課程或服務流程等
   對訪客的承諾——只能來自 `content_inventory.md` 或業主；缺少時用佔位，繼續推進。
   描述性文案（課程簡介、學習重點、適合對象等）業主未提供時，開發者可依既有資料
-  （海報、業主訊息）草擬，但不得夾帶上述事實類承諾；草擬內容須在
+  （海報、業主訊息）草擬，但不得夾帶上述事實類承諾——「學習重點」若寫出具體會教
+  的內容即屬課綱承諾，須有海報或業主訊息佐證，否則改寫成不承諾課綱的描述；草擬內容須在
   `content_inventory.md` 標明「開發者草擬，待業主確認」，並登記於
   `known_issues/README.md`。審查時，符合此流程的草擬文案不視為違規。
 - **`decisions.md` 不是變更日誌，預設不立 DEC**（next number: DEC-092）。
